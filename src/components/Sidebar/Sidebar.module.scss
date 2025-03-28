@@ -1,0 +1,42 @@
+.container {
+  width: 250px;
+  height: 100vh;
+  background: #333;
+  color: white;
+  padding: 60px 15px 15px 15px;
+}
+
+.item {
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #444;
+  margin: 5px 0;
+}
+
+.item:hover {
+  background: #555;
+}
+
+.subject {
+  margin-left: 10px;
+}
+
+.sub-items {
+  margin-left: 20px;
+}
+
+.sub-item {
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.sub-item:hover {
+  color: #00bcd4;
+}
+
+.icon {
+  margin-left: 10px;
+}
