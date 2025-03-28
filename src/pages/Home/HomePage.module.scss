@@ -1,0 +1,18 @@
+.container {
+  display: flex;
+  height: 100%;
+  margin-top: 60px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+
+.content {
+  flex-grow: 1;
+  margin-left: 250px;
+  padding: 20px;
+  overflow: auto;
+}
