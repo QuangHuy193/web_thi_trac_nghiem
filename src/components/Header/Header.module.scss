@@ -5,6 +5,10 @@
   background-color: #f8f9fa;
 }
 
+.logo {
+  margin-right: 20px;
+}
+
 .home {
   margin-right: 20px;
   cursor: pointer;
@@ -47,9 +51,16 @@
   display: none;
 }
 
+.search {
+  margin-left: auto;
+  margin-right: 30px;
+}
+
 /* Ẩn menu trên điện thoại, chỉ hiện "Trang chủ" và icon */
 @media (max-width: 768px) {
-  .menu {
+  .menu,
+  .search,
+  .btn-login {
     display: none;
   }
 

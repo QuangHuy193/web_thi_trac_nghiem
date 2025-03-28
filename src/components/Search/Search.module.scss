@@ -1,0 +1,49 @@
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 5px 10px;
+  background-color: white;
+}
+
+.search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  padding: 5px;
+}
+
+.search .clear {
+  display: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  margin-right: 10px;
+  color: #999;
+}
+
+.search .search-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Hiện nút clear khi có nội dung trong ô input */
+.search input:not(:placeholder-shown) + .clear {
+  display: block;
+}
+
+/* Hiệu ứng hover và focus */
+.search input:focus {
+  border-bottom: 2px solid #007bff;
+}
+
+.search .search-btn:hover,
+.search .clear:hover {
+  color: #007bff;
+}

@@ -9,6 +9,8 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import MenuMobile from "../MenuMobile/MenuMobile";
+import Button from "../Button/Button";
+import Search from "../Search/Search";
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +19,8 @@ function Header({ data }) {
 
   return (
     <header className={cx("container")}>
+      <div className={cx("logo")}>Ảnh logo</div>
+
       <div className={cx("home")}>Trang chủ</div>
 
       {/* Icon menu chỉ hiển thị trên mobile */}
@@ -44,6 +48,14 @@ function Header({ data }) {
             <div className={cx("menu-item")}>{subject.subjects}</div>
           </Tippy>
         ))}
+      </div>
+
+      <div className={cx('search')}>
+        <Search/>
+      </div>
+
+      <div className={cx("btn-login")}>
+        <Button>Đăng nhập</Button>
       </div>
 
       {showMenu && (
