@@ -3,8 +3,19 @@
   height: 100vh;
   background: #f0f8ff; /* Màu xanh nhạt */
   color: #004080; /* Xanh đậm */
-  padding: 60px 15px 15px 15px;
+  padding: 0px 15px 15px 15px;
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng đổ */
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.logo span {
+  margin-left: 15px;
 }
 
 .item {

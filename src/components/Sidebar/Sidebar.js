@@ -1,16 +1,31 @@
 import classNames from "classnames/bind";
 import styles from "./Sidebar.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import {
+  faBook,
+  faCaretDown,
+  faCaretRight,
+} from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 import { checkLogin } from "../../Utils/function";
 import { showErrorToast } from "../../Utils/ToastNotification";
+import { getAllSubjects } from "../../Api/api";
 
 const cx = classNames.bind(styles);
 
-function Sidebar({ data, setSelectedContent }) {
+function Sidebar({ setSelectedContent }) {
   const [showSubjects, setShowSubjects] = useState(false);
   const [activeSubject, setActiveSubject] = useState(null);
+  const [subjects, setSubjects] = useState([]);
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      const data = await getAllSubjects();
+      setSubjects(data);
+    };
+
+    fetchSubjects();
+  }, []);
 
   const handleCheckLogin = (selected) => {
     if (checkLogin()) {
@@ -30,12 +45,16 @@ function Sidebar({ data, setSelectedContent }) {
   };
 
   // Toggle môn học
-  const toggleSubject = (subject) => {
-    setActiveSubject(activeSubject === subject ? null : subject);
+  const toggleSubject = (subjectId) => {
+    setActiveSubject(activeSubject === subjectId ? null : subjectId);
   };
 
   return (
     <aside className={cx("container")}>
+      <div className={cx("logo")}>
+        <FontAwesomeIcon icon={faBook} /> <span >Edu Quiz</span>
+      </div>
+
       <div className={cx("item", "list")} onClick={toggleSubjects}>
         <div>Danh sách bài thi</div>
         <span>
@@ -43,35 +62,39 @@ function Sidebar({ data, setSelectedContent }) {
         </span>
       </div>
       {showSubjects &&
-        data.map((subject) => (
-          <div key={subject.subjects} className={cx("subject")}>
+        subjects.map((subject) => (
+          <div key={subject.subject_id} className={cx("subject")}>
             <div
               className={cx("item")}
-              onClick={() => toggleSubject(subject.subjects)}
+              onClick={() => toggleSubject(subject.subject_id)}
             >
-              {subject.subjects}
-              <FontAwesomeIcon
-                icon={
-                  activeSubject === subject.subjects
-                    ? faCaretDown
-                    : faCaretRight
-                }
-                className={cx("icon")}
-              />
+              {subject.name}
+              {subject.subsubjects.length !== 0 && (
+                <FontAwesomeIcon
+                  icon={
+                    activeSubject === subject.subject_id
+                      ? faCaretDown
+                      : faCaretRight
+                  }
+                  className={cx("icon")}
+                />
+              )}
             </div>
 
-            {activeSubject === subject.subjects && (
+            {activeSubject === subject.subject_id && (
               <div className={cx("sub-items")}>
-                {subject.item.map((subItem) => (
-                  <div key={subItem} className={cx("sub-item")}>
-                    {subItem}
+                {subject.subsubjects.map((subsubject) => (
+                  <div
+                    key={subsubject.subsubjects_id}
+                    className={cx("sub-item")}
+                  >
+                    {subsubject.subject_name}
                   </div>
                 ))}
               </div>
             )}
           </div>
         ))}
-
       <div className={cx("item")} onClick={() => handleCheckLogin("info")}>
         Thông tin cá nhân
       </div>

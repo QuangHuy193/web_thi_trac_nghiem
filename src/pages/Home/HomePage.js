@@ -11,6 +11,7 @@ import Info from "../../components/Info/Info";
 import History from "../../components/History/History";
 
 const cx = classNames.bind(styles);
+
 //fake data
 const dataFake = [
   {
@@ -24,18 +25,15 @@ const dataFake = [
 ];
 
 function Home() {
-  const [selectedContent, setSelectedContent] = useState(""); 
-  
+  const [selectedContent, setSelectedContent] = useState("");
+
   return (
     <div>
       <Header />
       <div className={cx("container")}>
         <div className={cx("sidebar")}>
           {" "}
-          <Sidebar
-            data={dataFake}
-            setSelectedContent={setSelectedContent}          
-          />
+          <Sidebar data={dataFake} setSelectedContent={setSelectedContent} />
         </div>
         <div className={cx("content")}>
           {selectedContent === "exam" && <Exam />}
