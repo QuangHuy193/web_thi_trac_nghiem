@@ -9,6 +9,7 @@ const cx = classNames.bind(styles);
 
 function Login() {
   return (
+    <div className={cx("wrapper")}>
     <div className={cx("container")}>
       <form>
         <h2>ĐĂNG NHẬP </h2>
@@ -29,6 +30,7 @@ function Login() {
         </div>
         <div className={cx("signup")}><a href="/signup">Đăng ký</a></div>
       </form>
+    </div>
     </div>
   );
 }
