@@ -12,6 +12,7 @@ function Login() {
     <div className={cx("wrapper")}>
     <div className={cx("container")}>
       <form>
+        <img src="/logoW.png" alt="Owl Logo" className={cx("logo")} />
         <h2>ĐĂNG NHẬP </h2>
         <div className={cx("input-group")}>
         <span className={cx("input-icon")}>
