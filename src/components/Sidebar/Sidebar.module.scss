@@ -1,23 +1,28 @@
 .container {
   width: 250px;
   height: 100vh;
-  background: #333;
-  color: white;
+  background: #f0f8ff; /* Màu xanh nhạt */
+  color: #004080; /* Xanh đậm */
   padding: 60px 15px 15px 15px;
+  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng đổ */
 }
 
 .item {
-  padding: 10px;
+  padding: 12px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #444;
+  background: #e3f2fd; /* Xanh nhạt */
   margin: 5px 0;
-}
+  border-radius: 6px;
+  transition: all 0.3s ease-in-out;
 
-.item:hover {
-  background: #555;
+  &:hover {
+    background: #cce5ff; /* Màu xanh sáng hơn khi hover */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+    transform: scale(1.03); /* Phóng to nhẹ khi hover */
+  }
 }
 
 .subject {
@@ -29,14 +34,17 @@
 }
 
 .sub-item {
-  padding: 5px 0;
+  padding: 6px 0;
   cursor: pointer;
-}
+  transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
 
-.sub-item:hover {
-  color: #00bcd4;
+  &:hover {
+    color: #007bff; /* Xanh dương chủ đạo */
+    transform: translateX(5px); /* Dịch chuyển nhẹ sang phải */
+  }
 }
 
 .icon {
   margin-left: 10px;
+  color: #007bff; /* Đồng bộ màu icon */
 }

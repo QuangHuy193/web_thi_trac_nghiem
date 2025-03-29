@@ -3,12 +3,26 @@ import styles from "./Sidebar.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { checkLogin } from "../../Utils/function";
+import { showErrorToast } from "../../Utils/ToastNotification";
 
 const cx = classNames.bind(styles);
 
-function Sidebar({ data }) {
+function Sidebar({ data, setSelectedContent }) {
   const [showSubjects, setShowSubjects] = useState(false);
   const [activeSubject, setActiveSubject] = useState(null);
+
+  const handleCheckLogin = (selected) => {
+    if (checkLogin()) {
+      handleSetSelectedContent(selected);
+    } else {
+      showErrorToast("Bận cần đăng nhập để thực hiện chức năng này!");
+    }
+  };
+
+  const handleSetSelectedContent = (selected) => {
+    setSelectedContent(selected);
+  };
 
   // Toggle danh sách môn thi
   const toggleSubjects = () => {
@@ -58,8 +72,12 @@ function Sidebar({ data }) {
           </div>
         ))}
 
-      <div className={cx("item")}>Thông tin cá nhân</div>
-      <div className={cx("item")}>Lịch sử làm bài</div>
+      <div className={cx("item")} onClick={() => handleCheckLogin("info")}>
+        Thông tin cá nhân
+      </div>
+      <div className={cx("item")} onClick={() => handleCheckLogin("history")}>
+        Lịch sử làm bài
+      </div>
     </aside>
   );
 }

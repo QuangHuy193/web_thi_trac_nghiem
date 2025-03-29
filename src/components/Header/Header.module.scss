@@ -2,7 +2,8 @@
   display: flex;
   align-items: center;
   padding: 10px 50px;
-  background-color: #f8f9fa;
+  background-color: var(--secondary);
+  color: #ffffff;
   position: fixed;
   top: 0;
   left: 250px;
@@ -12,6 +13,12 @@
 .home {
   margin-right: 20px;
   cursor: pointer;
+  font-size: 2rem;
+
+  &:hover {
+    text-shadow: -1px -1px 0 #cccccc, 1px -1px 0 #cccccc, -1px 1px 0 #cccccc,
+      1px 1px 0 #cccccc;
+  }
 }
 
 .menu-toggle {

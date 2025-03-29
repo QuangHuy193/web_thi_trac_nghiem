@@ -1,38 +1,61 @@
 .container {
-  width: 360px;
-  background-color: red;
   margin: 100px auto;
   padding: 20px 10px;
-  border-radius: 8px;
+  border-radius: 10px;
+  border: 2px solid #0170cb; /* Thêm viền xanh dương */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 500px;
+  height: 300px;
 }
 
+h2 {
+  display: flex;
+  justify-content: center;
+}
 .input-group {
   position: relative;
-  width: 100%;
-  padding: 10px;
+  margin-bottom: 1.5rem;
 }
 
-input {
-  width: 100%;
-  font-size: 1.8rem;
-  padding: 5px 10px;
-  border-radius: 8px;
+.input-group input {
+  width: 80%;
+  padding: 13px;
+  border: none;
+  border-bottom: 2px solid #aaa;
+  font-size: 16px;
+  background: transparent;
+  outline: none;
+  transition: border-color 0.3s ease-in-out, background 0.3s ease-in-out;
 }
 
 .input-icon {
   position: absolute;
   right: 10px;
-  transform: translateX(-50%);
   font-size: 1.8rem;
+  padding: 12px;
+}
+.input-group input:hover {
+  border-bottom: 2px solid #0170cb; /* Thay đổi màu viền dưới khi hover */
 }
 
 .login {
-  margin-top: 5px;
-  margin-bottom: 10px;
+  display: flex;
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  margin-top: 1rem; /* Khoảng cách phía trên */
+}
+
+.login button {
+  width: 40%; /* Đặt chiều rộng là 50% */
 }
 
 .signup {
   width: 100%;
   display: flex;
   justify-content: right;
+}
+
+.signup:hover {
+  color: blue;
+  text-decoration: underline;
 }

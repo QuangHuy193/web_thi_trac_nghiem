@@ -1,4 +1,6 @@
 :root {
+  --primary: #007bff;
+  --secondary: #ffc107;
 }
 
 * {
@@ -16,7 +18,7 @@ body {
   font-size: 1.6rem;
   line-height: 1.5;
   text-rendering: optimizeSpeed;
-  color: var(--text-color);
+  background-color: #f8f9fa;
 }
 
 button,

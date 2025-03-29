@@ -13,10 +13,10 @@ function Login() {
       <form>
         <h2>ĐĂNG NHẬP </h2>
         <div className={cx("input-group")}>
-          <input type="text" placeholder="Nhập email" />
-          <span className={cx("input-icon")}>
+        <span className={cx("input-icon")}>
             <FontAwesomeIcon icon={faEnvelope} />
-          </span>
+          </span><input type="text" placeholder="Nhập email" />
+      
         </div>
         <div className={cx("input-group")}>
           <input type="password" placeholder="Nhập mật khẩu" />
@@ -27,7 +27,7 @@ function Login() {
         <div className={cx("login")}>
           <Button>Đăng nhập</Button>
         </div>
-        <div className={cx("signup")}>Đăng ký</div>
+        <div className={cx("signup")}><a href="/signup">Đăng ký</a></div>
       </form>
     </div>
   );

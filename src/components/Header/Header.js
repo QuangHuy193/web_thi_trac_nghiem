@@ -7,6 +7,7 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import Button from "../Button/Button";
+import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
@@ -22,9 +23,9 @@ function Header({ data }) {
         <FontAwesomeIcon icon={faBars} />
       </div>
 
-      <div className={cx("btn-login")}>
+      <Link className={cx("btn-login")} to={"/login"}>
         <Button>Đăng nhập</Button>
-      </div>     
+      </Link>
     </header>
   );
 }
