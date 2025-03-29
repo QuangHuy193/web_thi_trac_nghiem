@@ -12,28 +12,16 @@ import History from "../../components/History/History";
 
 const cx = classNames.bind(styles);
 
-//fake data
-const dataFake = [
-  {
-    subjects: "Toán",
-    item: ["Toán 10", "Toán 11", "Toán 12"],
-  },
-  {
-    subjects: "Văn",
-    item: ["Văn 10", "Văn 11", "Văn 12"],
-  },
-];
-
 function Home() {
   const [selectedContent, setSelectedContent] = useState("");
 
   return (
     <div>
-      <Header />
+      <Header setSelectedContent={setSelectedContent}/>
       <div className={cx("container")}>
         <div className={cx("sidebar")}>
           {" "}
-          <Sidebar data={dataFake} setSelectedContent={setSelectedContent} />
+          <Sidebar setSelectedContent={setSelectedContent} />
         </div>
         <div className={cx("content")}>
           {selectedContent === "exam" && <Exam />}

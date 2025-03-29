@@ -14,6 +14,7 @@ import { getAllSubjects } from "../../Api/api";
 const cx = classNames.bind(styles);
 
 function Sidebar({ setSelectedContent }) {
+  
   const [showSubjects, setShowSubjects] = useState(false);
   const [activeSubject, setActiveSubject] = useState(null);
   const [subjects, setSubjects] = useState([]);

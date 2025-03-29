@@ -8,6 +8,7 @@ import {
   faBook,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "../../components/Button/Button";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -27,9 +28,9 @@ const Signup = () => {
 
   return (
     <div className={styles.signupContainer}>
-      <a href="/" className={styles.homeLink}>
+      <Link to={"/"} className={styles.homeLink}>
         <FontAwesomeIcon icon={faBook} /> Edu Quiz
-      </a>
+      </Link>
       <div className={styles.signupBox}>
         <h2>ĐĂNG KÝ TÀI KHOẢN MỚI</h2>
         <form onSubmit={handleSubmit}>

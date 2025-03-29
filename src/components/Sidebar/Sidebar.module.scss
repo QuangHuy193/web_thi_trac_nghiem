@@ -1,8 +1,8 @@
 .container {
   width: 250px;
   height: 100vh;
-  background: #f0f8ff; /* Màu xanh nhạt */
-  color: #004080; /* Xanh đậm */
+  background: var(--color-bg-sidebar); /* Màu xanh nhạt */
+  color: var(--color-text-sidebar); /* Xanh đậm */
   padding: 0px 15px 15px 15px;
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng đổ */
 }
@@ -58,4 +58,10 @@
 .icon {
   margin-left: 10px;
   color: #007bff; /* Đồng bộ màu icon */
+}
+
+@media (max-width: 768px) {
+  .container {
+    display: none;
+  }
 }
