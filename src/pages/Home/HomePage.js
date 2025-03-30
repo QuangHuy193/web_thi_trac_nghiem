@@ -13,18 +13,29 @@ import History from "../../components/History/History";
 const cx = classNames.bind(styles);
 
 function Home() {
+  //xem menu nào dc chọn để hiển thị content tương ứng
   const [selectedContent, setSelectedContent] = useState("");
+  // xem môn nào dc chọn để hiện bài thi của môn đó
+  const [selectedSubject, setSelectedSubject] = useState("");
+  //xem nó là môn cha hay con
+  const [typeSubject, setTypeSubject] = useState("");
 
   return (
     <div>
-      <Header setSelectedContent={setSelectedContent}/>
+      <Header setSelectedContent={setSelectedContent} />
       <div className={cx("container")}>
         <div className={cx("sidebar")}>
           {" "}
-          <Sidebar setSelectedContent={setSelectedContent} />
+          <Sidebar
+            setSelectedContent={setSelectedContent}
+            setSelectedSubject={setSelectedSubject}
+            setTypeSubject={setTypeSubject}
+          />
         </div>
         <div className={cx("content")}>
-          {selectedContent === "exam" && <Exam />}
+          {selectedContent === "exam" && (
+            <Exam selectedSubject={selectedSubject} typeSubject={typeSubject} />
+          )}
           {selectedContent === "info" && <Info />}
           {selectedContent === "history" && <History />}
         </div>

@@ -13,8 +13,7 @@ import { getAllSubjects } from "../../Api/api";
 
 const cx = classNames.bind(styles);
 
-function Sidebar({ setSelectedContent }) {
-  
+function Sidebar({ setSelectedContent, setSelectedSubject, setTypeSubject }) {
   const [showSubjects, setShowSubjects] = useState(false);
   const [activeSubject, setActiveSubject] = useState(null);
   const [subjects, setSubjects] = useState([]);
@@ -28,6 +27,7 @@ function Sidebar({ setSelectedContent }) {
     fetchSubjects();
   }, []);
 
+  //kiểm tra đã đăng nhập chưa
   const handleCheckLogin = (selected) => {
     if (checkLogin()) {
       handleSetSelectedContent(selected);
@@ -36,8 +36,17 @@ function Sidebar({ setSelectedContent }) {
     }
   };
 
+  // set menu dc chọn
   const handleSetSelectedContent = (selected) => {
     setSelectedContent(selected);
+  };
+
+  //set môn dc chọn
+  const handleSelectdSubject = (selected, subject_id, typeSubject) => {
+    setSelectedSubject(subject_id);
+    setTypeSubject(typeSubject);
+    setSelectedContent(selected);
+    setShowSubjects(null);
   };
 
   // Toggle danh sách môn thi
@@ -53,7 +62,7 @@ function Sidebar({ setSelectedContent }) {
   return (
     <aside className={cx("container")}>
       <div className={cx("logo")}>
-        <FontAwesomeIcon icon={faBook} /> <span >Edu Quiz</span>
+        <FontAwesomeIcon icon={faBook} /> <span>Edu Quiz</span>
       </div>
 
       <div className={cx("item", "list")} onClick={toggleSubjects}>
@@ -67,7 +76,11 @@ function Sidebar({ setSelectedContent }) {
           <div key={subject.subject_id} className={cx("subject")}>
             <div
               className={cx("item")}
-              onClick={() => toggleSubject(subject.subject_id)}
+              onClick={() =>
+                subject.subsubjects.length === 0
+                  ? handleSelectdSubject("exam", subject.subject_id, "subject")
+                  : toggleSubject(subject.subject_id)
+              }
             >
               {subject.name}
               {subject.subsubjects.length !== 0 && (
@@ -88,6 +101,13 @@ function Sidebar({ setSelectedContent }) {
                   <div
                     key={subsubject.subsubjects_id}
                     className={cx("sub-item")}
+                    onClick={() =>
+                      handleSelectdSubject(
+                        "exam",
+                        subsubject.subsubjects_id,
+                        "subsubject"
+                      )
+                    }
                   >
                     {subsubject.subject_name}
                   </div>

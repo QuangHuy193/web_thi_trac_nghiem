@@ -4,7 +4,8 @@ import classNames from "classnames/bind"
 
 const cx = classNames.bind(styles)
 
-function Exam() {
+function Exam({selectedSubject, typeSubject}) {
+    console.log(selectedSubject, typeSubject);
     return ( <div>exam</div> );
 }
 
