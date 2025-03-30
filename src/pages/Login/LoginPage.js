@@ -4,6 +4,7 @@ import styles from "./LoginPage.module.scss";
 import classNames from "classnames/bind";
 import {
   faBook,
+  faClose,
   faEnvelope,
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
@@ -21,7 +22,11 @@ const cx = classNames.bind(styles);
 function Login() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [isValid, setIsValid] = useState(false); // State kiểm tra hợp lệ
+  const [isValid, setIsValid] = useState({
+    valid: true,
+    email: true,
+    password: true,
+  }); // State kiểm tra hợp lệ
   const timeoutRef = useRef(null);
 
   const handleChangePass = (e) => {
@@ -33,9 +38,9 @@ function Login() {
     timeoutRef.current = setTimeout(() => {
       if (value.length < 8) {
         showErrorToast("Mật khẩu phải có ít nhất 8 ký tự!", 1200);
-        setIsValid(false);
+        setIsValid({ ...isValid, valid: false, password: false });
       } else {
-        setIsValid(true);
+        setIsValid({ ...isValid, valid: true, password: true });
       }
     }, 800);
   };
@@ -55,9 +60,9 @@ function Login() {
           "Email không hợp lệ! Vui lòng nhập đúng định dạng.",
           1200
         );
-        setIsValid(false);
+        setIsValid({ ...isValid, valid: false, email: false });
       } else {
-        setIsValid(true);
+        setIsValid({ ...isValid, valid: true, email: true });
       }
     }, 800);
   };
@@ -90,17 +95,23 @@ function Login() {
               setEmail={email}
               onChange={handleChangeEmail}
             />
+            {!isValid.email && (
+              <FontAwesomeIcon className={cx("icon-close")} icon={faClose} />
+            )}
           </div>
           <div className={cx("input-group")}>
+            <span className={cx("input-icon")}>
+              <FontAwesomeIcon icon={faLock} />
+            </span>
             <input
               type="password"
               placeholder="Nhập mật khẩu"
               value={password}
               onChange={handleChangePass}
             />
-            <span className={cx("input-icon")}>
-              <FontAwesomeIcon icon={faLock} />
-            </span>
+            {!isValid.password && (
+              <FontAwesomeIcon className={cx("icon-close")} icon={faClose} />
+            )}
           </div>
           <div className={cx("login")}>
             <Button>Đăng nhập</Button>
