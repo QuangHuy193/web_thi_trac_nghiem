@@ -1,3 +1,8 @@
+component: chứa các component
+page: chứa các trang 
+api: chứa các hàm sử dụng api
+util: chứa các tác vụ khác dùng chung (hàm dùng chung, hằng dùng chung,...)
+
 menu mobile và search tạm thời k cần thiết
 quan tâm sidebar, header và trang đăng nhập
 

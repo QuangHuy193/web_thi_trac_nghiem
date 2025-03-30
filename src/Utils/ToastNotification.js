@@ -4,10 +4,10 @@ import "react-toastify/dist/ReactToastify.css";
 const ToastNotification = () => {
   return (
     <ToastContainer
-      position="top-right" 
-      autoClose={2500} 
-      hideProgressBar={false} 
-      newestOnTop={true} 
+      position="top-right"
+      autoClose={2500}
+      hideProgressBar={false}
+      newestOnTop={true}
       closeOnClick
       pauseOnHover
       draggable
@@ -15,14 +15,14 @@ const ToastNotification = () => {
   );
 };
 
-// Hàm hiển thị toast lỗi
-export const showErrorToast = (message) => {
-  toast.error(message);
+// Hàm hiển thị toast lỗi với thời gian tùy chỉnh
+export const showErrorToast = (message, duration = 2500) => {
+  toast.error(message, { autoClose: duration });
 };
 
-// Hàm hiển thị toast thành công
-export const showSuccessToast = (message) => {
-  toast.success(message);
+// Hàm hiển thị toast thành công với thời gian tùy chỉnh
+export const showSuccessToast = (message, duration = 2500) => {
+  toast.success(message, { autoClose: duration });
 };
 
 export default ToastNotification;
