@@ -5,7 +5,6 @@ import classNames from "classnames/bind";
 import {
   faBook,
   faEnvelope,
-  faHome,
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "../../components/Button/Button";

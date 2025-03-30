@@ -9,3 +9,7 @@ quan tâm sidebar, header và trang đăng nhập
 thêm api lấy ds tất cả môn, responsive để hiện thị menu mobile
 
 thêm logic hiển thị exam
+
+ràng buộc và thông báo cho login
+
+ràng buộc và thông báo cho signup
