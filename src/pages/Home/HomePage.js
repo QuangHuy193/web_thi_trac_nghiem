@@ -5,10 +5,13 @@ import Header from "../../components/Header/Header";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import styles from "./HomePage.module.scss";
 import classNames from "classnames/bind";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Exam from "../../components/Exam/Exam";
 import Info from "../../components/Info/Info";
 import History from "../../components/History/History";
+import DoExam from "../../components/DoExam/DoExam";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 const cx = classNames.bind(styles);
 
@@ -19,12 +22,36 @@ function Home() {
   const [selectedSubject, setSelectedSubject] = useState("");
   // title header
   const [headerTitle, setHeaderTitle] = useState(null);
+  //scroll up
+  const [showScroll, setShowScroll] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 200) {
+        setShowScroll(true);
+      } else {
+        setShowScroll(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div>
-      <Header setSelectedContent={setSelectedContent} headerTitle={headerTitle}/>
+      <Header
+        setSelectedContent={setSelectedContent}
+        headerTitle={headerTitle}
+        setSelectedSubject={setSelectedSubject}
+        setHeaderTitle={setHeaderTitle}
+      />
       <div className={cx("container")}>
-        <div className={cx("sidebar")}>       
+        <div className={cx("sidebar")}>
           <Sidebar
             setSelectedContent={setSelectedContent}
             setSelectedSubject={setSelectedSubject}
@@ -33,10 +60,24 @@ function Home() {
         </div>
         <div className={cx("content")}>
           {selectedContent === "exam" && (
-            <Exam selectedSubject={selectedSubject} />
+            <Exam
+              selectedSubject={selectedSubject}
+              setSelectedContent={setSelectedContent}
+              setHeaderTitle={setHeaderTitle}
+            />
           )}
           {selectedContent === "info" && <Info />}
           {selectedContent === "history" && <History />}
+          {selectedContent === "doExam" && (
+            <DoExam selectedSubject={selectedSubject} />
+          )}
+          {showScroll && (
+            <FontAwesomeIcon
+              className={cx("icon-up")}
+              icon={faChevronUp}
+              onClick={scrollToTop}
+            />
+          )}
         </div>
       </div>
     </div>

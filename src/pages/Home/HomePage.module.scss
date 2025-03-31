@@ -16,3 +16,20 @@
   padding: 20px;
   overflow: auto;
 }
+
+.icon-up {
+  position: fixed;
+  right: 15px;
+  bottom: 15px;
+  border-radius: 50%;
+  padding: 10px;
+  color: var(--color-text-sidebar);
+  background-color: #d0e0ff;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0px;
+  }
+}

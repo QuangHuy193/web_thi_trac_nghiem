@@ -14,7 +14,13 @@ import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
-function MenuMobile({ showMenu, setShowMenu, setSelectedContent }) {
+function MenuMobile({
+  showMenu,
+  setShowMenu,
+  setSelectedContent,
+  setHeaderTitle,
+  setSelectedSubject,
+}) {
   const [openSubjects, setOpenSubjects] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [showSubjects, setShowSubjects] = useState(false);
@@ -27,6 +33,13 @@ function MenuMobile({ showMenu, setShowMenu, setSelectedContent }) {
 
     fetchSubjects();
   }, []);
+
+  const handleSelectdSubject = (selected, subject_id, subsubject_name) => {
+    setSelectedSubject(subject_id);
+    setSelectedContent(selected);
+    setHeaderTitle(subsubject_name);
+    setShowMenu(false);
+  };
 
   // Toggle hiển thị danh sách môn học
   const toggleSubjectsList = () => {
@@ -100,7 +113,18 @@ function MenuMobile({ showMenu, setShowMenu, setSelectedContent }) {
                     subject.subsubjects.length > 0 && (
                       <ul className={cx("submenu")}>
                         {subject.subsubjects.map((sub) => (
-                          <li key={sub.subsubjects_id}>{sub.subject_name}</li>
+                          <li
+                            key={sub.subsubjects_id}
+                            onClick={() => {
+                              handleSelectdSubject(
+                                "exam",
+                                sub.subsubjects_id,
+                                sub.subject_name
+                              );
+                            }}
+                          >
+                            {sub.subject_name}
+                          </li>
                         ))}
                       </ul>
                     )}

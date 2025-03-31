@@ -7,17 +7,22 @@ import MenuMobile from "../MenuMobile/MenuMobile";
 import classNames from "classnames/bind";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faBook } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
-function Header({ setSelectedContent, headerTitle }) {
+function Header({
+  setSelectedContent,
+  headerTitle,
+  setHeaderTitle,
+  setSelectedSubject,
+}) {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
     <header className={cx("container")}>
-      <div className={cx("home")}>
+      <div className={cx("title")}>
         {headerTitle ? headerTitle : "Trang chủ"}
       </div>
 
@@ -31,6 +36,8 @@ function Header({ setSelectedContent, headerTitle }) {
           showMenu={showMenu}
           setShowMenu={setShowMenu}
           setSelectedContent={setSelectedContent}
+          setSelectedSubject={setSelectedSubject}
+          setHeaderTitle={setHeaderTitle}
         />
       )}
 

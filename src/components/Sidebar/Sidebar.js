@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { checkLogin } from "../../Utils/function";
 import { showErrorToast } from "../../Utils/ToastNotification";
 import { getAllSubjects } from "../../Api/api";
-import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 

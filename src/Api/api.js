@@ -27,4 +27,18 @@ const getAllExamsBySubSubjectId = async (subsubject_id) => {
   }
 };
 
-export { getAllSubjects, getAllExamsBySubSubjectId };
+//lấy ds bài thi thuộc môn học
+const getQuestionBySubSubject = async (subsubject_id) => {
+  try {
+    const response = await axios.get(`${API_URL}/questions/${subsubject_id}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Lỗi khi lấy danh sách câu hỏi của môn học có id là: ${subsubject_id}`,
+      error
+    );
+    return [];
+  }
+};
+
+export { getAllSubjects, getAllExamsBySubSubjectId,getQuestionBySubSubject };
