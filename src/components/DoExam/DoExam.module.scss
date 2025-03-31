@@ -19,9 +19,19 @@
 }
 
 .question {
+  position: relative;
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 10px;
+}
+
+.error-icon {
+  font-size: 2.5rem;
+  position: absolute;
+  color: red;
+  top: 50%;
+  transform: translateY(-50%);
+  right: -7px;
 }
 
 .options {
