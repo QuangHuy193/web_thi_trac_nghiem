@@ -5,6 +5,7 @@ import { getQuestionBySubSubject } from "../../Api/api";
 import classNames from "classnames/bind";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { showErrorToast } from "../../Utils/ToastNotification";
+import { showConfirmDialog } from "../../Utils/confirmDialog";
 
 const cx = classNames.bind(styles);
 
@@ -12,6 +13,8 @@ function DoExam({ selectedSubject }) {
   const [listQuestion, setListQuestion] = useState([]);
   const [answers, setAnswers] = useState({});
   const [errors, setErrors] = useState({}); // Trạng thái lỗi các câu chưa làm
+  // Thời gian đếm ngược (60 phút)
+  const [timeLeft, setTimeLeft] = useState(45 * 60);
 
   useEffect(() => {
     const getQuestion = async () => {
@@ -21,6 +24,24 @@ function DoExam({ selectedSubject }) {
 
     getQuestion();
   }, [selectedSubject]);
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      handleSubmit(); // Tự động nộp bài khi hết giờ
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+  };
 
   const handleSelectAnswer = (questionId, answerId) => {
     setAnswers({ ...answers, [questionId]: answerId });
@@ -63,11 +84,25 @@ function DoExam({ selectedSubject }) {
       setErrors(newErrors); // Cập nhật trạng thái lỗi
       showErrorToast("Bạn chưa trả lời hết tất cả câu hỏi!", 1500);
       return;
+    } else {
+      showConfirmDialog(
+        "Bạn có chắc chắn?",
+        "Sau khi nộp bài, bạn sẽ không thể thay đổi câu trả lời!",
+        "warning",
+        "function",
+        "Đồng ý",
+        "Hủy"
+      );
     }
   };
 
   return (
     <div className={cx("container")}>
+      {/* clock */}
+      <div className={cx("timer")}>
+        Thời gian còn lại: {formatTime(timeLeft)}
+      </div>
+
       <form onSubmit={handleSubmit} className={cx("form")}>
         {listQuestion.map((question, index) => (
           <div key={question.question_id} className={cx("card")}>
