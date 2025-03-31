@@ -7,6 +7,8 @@ import {
   faUser,
   faBook,
   faClose,
+  faEye,
+  faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import classNames from "classnames/bind";
@@ -15,19 +17,32 @@ import {
   showSuccessToast,
 } from "../../Utils/ToastNotification";
 import { EMAILREGEX } from "../../Utils/const";
+import {
+  handleChangePass,
+  togglePasswordVisibility,
+} from "../../Utils/function";
 
 const cx = classNames.bind(styles);
 
 const Signup = () => {
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmPassword: false,
+  });
   const timeoutRef = useRef(null);
   const [isValid, setIsValid] = useState({
-    valid: false,
     name: true,
     password: true,
-    comfirmPassword: true,
+    confirmPassword: true,
     email: true,
-  }); // State kiểm tra hợp lệ
-  const [comfirmPass, setComfirmPass] = useState("");
+  });
+  const [isTouched, setIsTouched] = useState({
+    email: false,
+    password: false,
+    name: false,
+    confirmPassword: false,
+  });
+  const [confirmPass, setConfirmPass] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -35,6 +50,8 @@ const Signup = () => {
   });
   const handleChangeEmail = (e) => {
     const value = e.target.value;
+
+    setIsTouched((prev) => ({ ...prev, [e.target.name]: true }));
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
     clearTimeout(timeoutRef.current);
@@ -42,21 +59,23 @@ const Signup = () => {
     timeoutRef.current = setTimeout(() => {
       if (value.length === 0) {
         showErrorToast("Vui lòng nhập email!", 1200);
-        setIsValid(false);
+        setIsValid({ ...isValid, email: false });
       } else if (!EMAILREGEX.test(value)) {
         showErrorToast(
           "Email không hợp lệ! Vui lòng nhập đúng định dạng.",
           1200
         );
-        setIsValid({ ...isValid, valid: false, email: false });
+        setIsValid({ ...isValid, email: false });
       } else {
-        setIsValid({ ...isValid, valid: true, email: true });
+        setIsValid({ ...isValid, email: true });
       }
     }, 800);
   };
 
   const handleChangeName = (e) => {
     const value = e.target.value;
+
+    setIsTouched((prev) => ({ ...prev, [e.target.name]: true }));
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
     clearTimeout(timeoutRef.current);
@@ -64,52 +83,42 @@ const Signup = () => {
     timeoutRef.current = setTimeout(() => {
       if (value.length === 0) {
         showErrorToast("Vui lòng nhập tên của bạn!", 1200);
-        setIsValid({ ...isValid, valid: false, name: false });
+        setIsValid({ ...isValid, name: false });
       } else {
-        setIsValid({ ...isValid, valid: true, name: true });
-      }
-    }, 800);
-  };
-
-  const handleChangePass = (e) => {
-    const value = e.target.value;
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-    clearTimeout(timeoutRef.current);
-
-    timeoutRef.current = setTimeout(() => {
-      if (value.length < 8) {
-        showErrorToast("Mật khẩu phải có ít nhất 8 ký tự!", 1200);
-        setIsValid({ ...isValid, valid: false, password: false });
-      } else {
-        setIsValid({ ...isValid, valid: true, password: true });
+        setIsValid({ ...isValid, name: true });
       }
     }, 800);
   };
 
   const handleChangePass2 = (e) => {
     const value = e.target.value;
-    setComfirmPass(value);
+
+    setIsTouched((prev) => ({ ...prev, [e.target.name]: true }));
+    setConfirmPass(value);
 
     clearTimeout(timeoutRef.current);
 
     timeoutRef.current = setTimeout(() => {
       if (value !== formData.password) {
         showErrorToast("Mật khẩu nhập lại không đúng!", 1200);
-        setIsValid({ ...isValid, valid: false, comfirmPassword: false });
+        setIsValid({ ...isValid, confirmPassword: false });
       } else {
-        setIsValid({ ...isValid, valid: true, comfirmPassword: true });
+        setIsValid({ ...isValid, confirmPassword: true });
       }
     }, 800);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!isValid.valid) {
+
+    const allTouched = Object.values(isTouched).every((touched) => touched);
+    const allValid = Object.values(isValid).every((valid) => valid);
+
+    if (allTouched && allValid) {
+      showSuccessToast("Đăng ký thành công!", 1500); // Thay thế bằng logic xử lý form
+    } else {
       showErrorToast("Vui lòng nhập thông tin hợp lệ!", 1500);
-      return;
     }
-    showSuccessToast("Đăng ký thành công!", 1500); // Thay thế bằng logic xử lý form
   };
 
   return (
@@ -133,7 +142,7 @@ const Signup = () => {
                 value={formData.name}
                 onChange={handleChangeName}
               />
-              {!isValid.name && (
+              {isTouched.name && !isValid.name && (
                 <FontAwesomeIcon className={cx("icon-close")} icon={faClose} />
               )}
             </div>
@@ -145,13 +154,13 @@ const Signup = () => {
             </label>
             <div className={cx("input-and-icon")}>
               <input
-                type="email"
+                type="text"
                 name="email"
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChangeEmail}
               />
-              {!isValid.email && (
+              {isTouched.email && !isValid.email && (
                 <FontAwesomeIcon className={cx("icon-close")} icon={faClose} />
               )}
             </div>
@@ -163,13 +172,28 @@ const Signup = () => {
             </label>
             <div className={cx("input-and-icon")}>
               <input
-                type="password"
+                type={showPassword.password ? "text" : "password"}
                 name="password"
                 placeholder="Mật khẩu"
                 value={formData.password}
-                onChange={handleChangePass}
+                onChange={(e) =>
+                  handleChangePass(
+                    e,
+                    setFormData,
+                    setIsValid,
+                    setIsTouched,
+                    timeoutRef
+                  )
+                }
               />
-              {!isValid.password && (
+              <FontAwesomeIcon
+                className={cx("icon-eye")}
+                icon={!showPassword.password ? faEye : faEyeSlash}
+                onClick={() =>
+                  togglePasswordVisibility(setShowPassword, "password")
+                }
+              />
+              {isTouched.password && !isValid.password && (
                 <FontAwesomeIcon className={cx("icon-close")} icon={faClose} />
               )}
             </div>
@@ -181,13 +205,20 @@ const Signup = () => {
             </label>
             <div className={cx("input-and-icon")}>
               <input
-                type="password"
+                type={showPassword.confirmPassword ? "text" : "password"}
                 name="confirmPassword"
                 placeholder="Nhập lại mật khẩu"
-                value={comfirmPass}
+                value={confirmPass}
                 onChange={handleChangePass2}
               />
-              {!isValid.comfirmPassword && (
+              <FontAwesomeIcon
+                className={cx("icon-eye")}
+                icon={!showPassword.confirmPassword ? faEye : faEyeSlash}
+                onClick={() =>
+                  togglePasswordVisibility(setShowPassword, "confirmPassword")
+                }
+              />
+              {isTouched.confirmPassword && !isValid.confirmPassword && (
                 <FontAwesomeIcon className={cx("icon-close")} icon={faClose} />
               )}
             </div>

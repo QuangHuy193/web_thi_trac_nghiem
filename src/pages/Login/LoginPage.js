@@ -6,6 +6,8 @@ import {
   faBook,
   faClose,
   faEnvelope,
+  faEye,
+  faEyeSlash,
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "../../components/Button/Button";
@@ -15,65 +17,67 @@ import {
   showErrorToast,
   showSuccessToast,
 } from "../../Utils/ToastNotification";
+import {
+  handleChangePass,
+  togglePasswordVisibility,
+} from "../../Utils/function";
 import { EMAILREGEX } from "../../Utils/const";
 
 const cx = classNames.bind(styles);
 
 function Login() {
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmPassword: false,
+  });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const [isValid, setIsValid] = useState({
-    valid: true,
     email: true,
     password: true,
   }); // State kiểm tra hợp lệ
+  const [isTouched, setIsTouched] = useState({ email: false, password: false }); // Thêm trạng thái này
+
   const timeoutRef = useRef(null);
-
-  const handleChangePass = (e) => {
-    const value = e.target.value;
-    setPassword(value);
-
-    clearTimeout(timeoutRef.current);
-
-    timeoutRef.current = setTimeout(() => {
-      if (value.length < 8) {
-        showErrorToast("Mật khẩu phải có ít nhất 8 ký tự!", 1200);
-        setIsValid({ ...isValid, valid: false, password: false });
-      } else {
-        setIsValid({ ...isValid, valid: true, password: true });
-      }
-    }, 800);
-  };
 
   const handleChangeEmail = (e) => {
     const value = e.target.value;
-    setEmail(value);
+
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setIsTouched((prev) => ({ ...prev, email: true }));
 
     clearTimeout(timeoutRef.current);
 
     timeoutRef.current = setTimeout(() => {
       if (value.length === 0) {
         showErrorToast("Vui lòng nhập email!", 1200);
-        setIsValid(false);
+        setIsValid({ ...isValid, email: false });
       } else if (!EMAILREGEX.test(value)) {
         showErrorToast(
           "Email không hợp lệ! Vui lòng nhập đúng định dạng.",
           1200
         );
-        setIsValid({ ...isValid, valid: false, email: false });
+        setIsValid({ ...isValid, email: false });
       } else {
-        setIsValid({ ...isValid, valid: true, email: true });
+        setIsValid({ ...isValid, email: true });
       }
     }, 800);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Ngăn form submit mặc định
-    if (!isValid) {
+    if (
+      isTouched.email &&
+      isTouched.password &&
+      isValid.password &&
+      isValid.email
+    ) {
+      showSuccessToast("Đăng nhập thành công!", 1500); // Thay thế bằng logic xử lý form
+    } else {
       showErrorToast("Vui lòng nhập thông tin hợp lệ!", 1500);
-      return;
     }
-    showSuccessToast("Đăng nhập thành công!", 1500); // Thay thế bằng logic xử lý form
   };
 
   return (
@@ -90,12 +94,13 @@ function Login() {
               <FontAwesomeIcon icon={faEnvelope} />
             </span>
             <input
-              type="email"
+              type="text"
+              name="email"
               placeholder="Nhập email"
-              setEmail={email}
+              setEmail={formData.email}
               onChange={handleChangeEmail}
             />
-            {!isValid.email && (
+            {isTouched.email && !isValid.email && (
               <FontAwesomeIcon className={cx("icon-close")} icon={faClose} />
             )}
           </div>
@@ -104,12 +109,28 @@ function Login() {
               <FontAwesomeIcon icon={faLock} />
             </span>
             <input
-              type="password"
+              type={showPassword.password ? "text" : "password"}
+              name="password"
               placeholder="Nhập mật khẩu"
-              value={password}
-              onChange={handleChangePass}
+              value={formData.password}
+              onChange={(e) =>
+                handleChangePass(
+                  e,
+                  setFormData,
+                  setIsValid,
+                  setIsTouched,
+                  timeoutRef
+                )
+              }
             />
-            {!isValid.password && (
+            <FontAwesomeIcon
+              className={cx("icon-eye")}
+              icon={!showPassword.password ? faEye : faEyeSlash}
+              onClick={() =>
+                togglePasswordVisibility(setShowPassword, "password")
+              }
+            />
+            {isTouched.password && !isValid.password && (
               <FontAwesomeIcon className={cx("icon-close")} icon={faClose} />
             )}
           </div>

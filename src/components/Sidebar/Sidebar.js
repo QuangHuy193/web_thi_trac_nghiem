@@ -10,10 +10,11 @@ import { useEffect, useState } from "react";
 import { checkLogin } from "../../Utils/function";
 import { showErrorToast } from "../../Utils/ToastNotification";
 import { getAllSubjects } from "../../Api/api";
+import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
-function Sidebar({ setSelectedContent, setSelectedSubject, setTypeSubject }) {
+function Sidebar({ setSelectedContent, setSelectedSubject, setHeaderTitle }) {
   const [showSubjects, setShowSubjects] = useState(false);
   const [activeSubject, setActiveSubject] = useState(null);
   const [subjects, setSubjects] = useState([]);
@@ -28,11 +29,12 @@ function Sidebar({ setSelectedContent, setSelectedSubject, setTypeSubject }) {
   }, []);
 
   //kiểm tra đã đăng nhập chưa
-  const handleCheckLogin = (selected) => {
+  const handleCheckLogin = (selected, titlePage) => {
     if (checkLogin()) {
       handleSetSelectedContent(selected);
+      setHeaderTitle(titlePage);
     } else {
-      showErrorToast("Bận cần đăng nhập để thực hiện chức năng này!");
+      showErrorToast("Bận cần đăng nhập để thực hiện chức năng này!", 1500);
     }
   };
 
@@ -42,10 +44,10 @@ function Sidebar({ setSelectedContent, setSelectedSubject, setTypeSubject }) {
   };
 
   //set môn dc chọn
-  const handleSelectdSubject = (selected, subject_id, typeSubject) => {
+  const handleSelectdSubject = (selected, subject_id, subsubject_name) => {
     setSelectedSubject(subject_id);
-    setTypeSubject(typeSubject);
     setSelectedContent(selected);
+    setHeaderTitle(subsubject_name);
     setShowSubjects(null);
   };
 
@@ -61,9 +63,11 @@ function Sidebar({ setSelectedContent, setSelectedSubject, setTypeSubject }) {
 
   return (
     <aside className={cx("container")}>
-      <div className={cx("logo")}>
-        <FontAwesomeIcon icon={faBook} /> <span>Edu Quiz</span>
-      </div>
+      <Link to={"/"}>
+        <div className={cx("logo")}>
+          <FontAwesomeIcon icon={faBook} /> <span>Edu Quiz</span>
+        </div>
+      </Link>
 
       <div className={cx("item", "list")} onClick={toggleSubjects}>
         <div>Danh sách bài thi</div>
@@ -76,11 +80,7 @@ function Sidebar({ setSelectedContent, setSelectedSubject, setTypeSubject }) {
           <div key={subject.subject_id} className={cx("subject")}>
             <div
               className={cx("item")}
-              onClick={() =>
-                subject.subsubjects.length === 0
-                  ? handleSelectdSubject("exam", subject.subject_id, "subject")
-                  : toggleSubject(subject.subject_id)
-              }
+              onClick={() => toggleSubject(subject.subject_id)}
             >
               {subject.name}
               {subject.subsubjects.length !== 0 && (
@@ -105,7 +105,7 @@ function Sidebar({ setSelectedContent, setSelectedSubject, setTypeSubject }) {
                       handleSelectdSubject(
                         "exam",
                         subsubject.subsubjects_id,
-                        "subsubject"
+                        subsubject.subject_name
                       )
                     }
                   >
@@ -116,10 +116,16 @@ function Sidebar({ setSelectedContent, setSelectedSubject, setTypeSubject }) {
             )}
           </div>
         ))}
-      <div className={cx("item")} onClick={() => handleCheckLogin("info")}>
+      <div
+        className={cx("item")}
+        onClick={() => handleCheckLogin("info", "Thông tin cá nhân")}
+      >
         Thông tin cá nhân
       </div>
-      <div className={cx("item")} onClick={() => handleCheckLogin("history")}>
+      <div
+        className={cx("item")}
+        onClick={() => handleCheckLogin("history", "Lịch sử làm bài")}
+      >
         Lịch sử làm bài
       </div>
     </aside>

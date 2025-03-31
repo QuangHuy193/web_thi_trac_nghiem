@@ -12,12 +12,14 @@ import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
-function Header({ setSelectedContent }) {
+function Header({ setSelectedContent, headerTitle }) {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
     <header className={cx("container")}>
-      <div className={cx("home")}>Trang chủ</div>
+      <div className={cx("home")}>
+        {headerTitle ? headerTitle : "Trang chủ"}
+      </div>
 
       {/* Icon menu chỉ hiển thị trên mobile */}
       <div className={cx("menu-toggle")} onClick={() => setShowMenu(!showMenu)}>

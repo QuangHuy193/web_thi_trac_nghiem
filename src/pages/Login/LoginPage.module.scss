@@ -60,9 +60,18 @@ h2 {
     color: #777;
   }
 
-  .icon-close {
+  .icon-eye {
     position: absolute;
     right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  .icon-close {
+    position: absolute;
+    right: 43px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 18px;

@@ -13,3 +13,5 @@ thêm logic hiển thị exam
 ràng buộc và thông báo cho login
 
 ràng buộc và thông báo cho signup
+
+hiển thị bài thi theo môn, sửa lại logic báo lỗi của login, signup

@@ -74,13 +74,24 @@ h2 {
   position: relative;
 }
 
+.icon-eye {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  cursor: pointer;
+}
+
 .icon-close {
   position: absolute;
+  right: 43px;
   top: 50%;
-  color: red;
-  right: 10px;
   transform: translateY(-50%);
+  font-size: 18px;
+  color: red;
 }
+
 .signupBtn {
   width: 50%;
   padding: 12px;

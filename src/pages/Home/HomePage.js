@@ -15,26 +15,25 @@ const cx = classNames.bind(styles);
 function Home() {
   //xem menu nào dc chọn để hiển thị content tương ứng
   const [selectedContent, setSelectedContent] = useState("");
-  // xem môn nào dc chọn để hiện bài thi của môn đó
+  // xem môn nào dc chọn để hiện bài thi của môn đó (theo id)
   const [selectedSubject, setSelectedSubject] = useState("");
-  //xem nó là môn cha hay con
-  const [typeSubject, setTypeSubject] = useState("");
+  // title header
+  const [headerTitle, setHeaderTitle] = useState(null);
 
   return (
     <div>
-      <Header setSelectedContent={setSelectedContent} />
+      <Header setSelectedContent={setSelectedContent} headerTitle={headerTitle}/>
       <div className={cx("container")}>
-        <div className={cx("sidebar")}>
-          {" "}
+        <div className={cx("sidebar")}>       
           <Sidebar
             setSelectedContent={setSelectedContent}
             setSelectedSubject={setSelectedSubject}
-            setTypeSubject={setTypeSubject}
+            setHeaderTitle={setHeaderTitle}
           />
         </div>
         <div className={cx("content")}>
           {selectedContent === "exam" && (
-            <Exam selectedSubject={selectedSubject} typeSubject={typeSubject} />
+            <Exam selectedSubject={selectedSubject} />
           )}
           {selectedContent === "info" && <Info />}
           {selectedContent === "history" && <History />}

@@ -5,6 +5,7 @@
   color: var(--color-text-sidebar); /* Xanh đậm */
   padding: 0px 15px 15px 15px;
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng đổ */
+  overflow-y: scroll;
 }
 
 .logo {
