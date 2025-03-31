@@ -61,13 +61,18 @@ function Sidebar({ setSelectedContent, setSelectedSubject, setHeaderTitle }) {
     setActiveSubject(activeSubject === subjectId ? null : subjectId);
   };
 
+  //reser trang home
+  const resetHome = () => {
+    setSelectedContent(null);
+    setSelectedSubject(null);
+    setHeaderTitle(null);
+  };
+
   return (
     <aside className={cx("container")}>
-      <Link to={"/"}>
-        <div className={cx("logo")}>
-          <FontAwesomeIcon icon={faBook} /> <span>Edu Quiz</span>
-        </div>
-      </Link>
+      <div className={cx("logo")} onClick={resetHome}>
+        <FontAwesomeIcon icon={faBook} /> <span>Edu Quiz</span>
+      </div>
 
       <div className={cx("item", "list")} onClick={toggleSubjects}>
         <div>Danh sách bài thi</div>
