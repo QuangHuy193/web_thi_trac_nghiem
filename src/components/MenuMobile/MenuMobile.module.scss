@@ -21,12 +21,14 @@
 .menu-overlay {
   background: var(--color-bg-sidebar);
   width: 90%;
-  max-width: 400px;
+  max-width: min(90vw, 400px);
+  max-height: min(90vh, 500px);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
   position: relative;
   color: var(--color-text-sidebar);
+  overflow-y: scroll;
 }
 
 .menu-close {
