@@ -7,7 +7,7 @@ import {
 import classNames from "classnames/bind";
 import styles from "./MenuMobile.module.scss";
 import { useEffect, useState } from "react";
-import { getAllSubjects } from "../../Api/api";
+import { getAllSubjectsAPI } from "../../Api/api";
 import { checkLogin } from "../../Utils/function";
 import { showErrorToast } from "../../Utils/ToastNotification";
 import { Link } from "react-router-dom";
@@ -27,7 +27,7 @@ function MenuMobile({
 
   useEffect(() => {
     const fetchSubjects = async () => {
-      const data = await getAllSubjects();
+      const data = await getAllSubjectsAPI();
       setSubjects(data);
     };
 

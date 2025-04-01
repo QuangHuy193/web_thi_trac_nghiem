@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import styles from "./DoExam.module.scss";
-import { getQuestionBySubSubject } from "../../Api/api";
+import {  getQuestionBySubSubjectAPI } from "../../Api/api";
 
 import classNames from "classnames/bind";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { showErrorToast } from "../../Utils/ToastNotification";
 import { showConfirmDialog } from "../../Utils/confirmDialog";
 
@@ -18,7 +17,7 @@ function DoExam({ selectedSubject }) {
 
   useEffect(() => {
     const getQuestion = async () => {
-      const data = await getQuestionBySubSubject(selectedSubject);
+      const data = await getQuestionBySubSubjectAPI(selectedSubject);
       setListQuestion(data.questions);
     };
 
@@ -89,7 +88,7 @@ function DoExam({ selectedSubject }) {
         "Bạn có chắc chắn?",
         "Sau khi nộp bài, bạn sẽ không thể thay đổi câu trả lời!",
         "warning",
-        "function",
+        ()=>{}, // logic xử lý nộp bài
         "Đồng ý",
         "Hủy"
       );

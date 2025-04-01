@@ -9,7 +9,6 @@ const ToastNotification = () => {
       hideProgressBar={false}
       newestOnTop={true}
       closeOnClick
-      pauseOnHover
       draggable
     />
   );

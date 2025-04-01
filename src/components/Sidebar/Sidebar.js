@@ -9,18 +9,24 @@ import {
 import { useEffect, useState } from "react";
 import { checkLogin } from "../../Utils/function";
 import { showErrorToast } from "../../Utils/ToastNotification";
-import { getAllSubjects } from "../../Api/api";
+import { getAllSubjectsAPI } from "../../Api/api";
+import { showConfirmDialog } from "../../Utils/confirmDialog";
 
 const cx = classNames.bind(styles);
 
-function Sidebar({ setSelectedContent, setSelectedSubject, setHeaderTitle }) {
+function Sidebar({
+  selectedContent,
+  setSelectedContent,
+  setSelectedSubject,
+  setHeaderTitle,
+}) {
   const [showSubjects, setShowSubjects] = useState(false);
   const [activeSubject, setActiveSubject] = useState(null);
   const [subjects, setSubjects] = useState([]);
 
   useEffect(() => {
     const fetchSubjects = async () => {
-      const data = await getAllSubjects();
+      const data = await getAllSubjectsAPI();
       setSubjects(data);
     };
 
@@ -30,24 +36,53 @@ function Sidebar({ setSelectedContent, setSelectedSubject, setHeaderTitle }) {
   //kiểm tra đã đăng nhập chưa
   const handleCheckLogin = (selected, titlePage) => {
     if (checkLogin()) {
-      handleSetSelectedContent(selected);
-      setHeaderTitle(titlePage);
+      if (selectedContent === "doExam") {
+        showConfirmDialog(
+          "",
+          "Bạn đang làm bài, hành động này sẽ hủy kết quả làm bài của bạn, bạn vẫn muốn tiếp tục",
+          "",
+          () => {
+            handleSetSelectedContent(selected, titlePage);
+          },
+          "",
+          ""
+        );
+      } else {
+        handleSetSelectedContent(selected, titlePage);
+      }
     } else {
       showErrorToast("Bận cần đăng nhập để thực hiện chức năng này!", 1500);
     }
   };
 
   // set menu dc chọn
-  const handleSetSelectedContent = (selected) => {
+  const handleSetSelectedContent = (selected, titlePage) => {
     setSelectedContent(selected);
+    setHeaderTitle(titlePage);
   };
 
   //set môn dc chọn
   const handleSelectdSubject = (selected, subject_id, subsubject_name) => {
-    setSelectedSubject(subject_id);
-    setSelectedContent(selected);
-    setHeaderTitle(subsubject_name);
-    setShowSubjects(null);
+    if (selectedContent === "doExam") {
+      showConfirmDialog(
+        "",
+        "Bạn đang làm bài, hành động này sẽ hủy kết quả làm bài của bạn, bạn vẫn muốn tiếp tục",
+        "",
+        () => {
+          setSelectedSubject(subject_id);
+          setSelectedContent(selected);
+          setHeaderTitle(subsubject_name);
+          setShowSubjects(null);
+        },
+        "",
+        ""
+      );
+    } else {
+      setSelectedSubject(subject_id);
+      setSelectedContent(selected);
+      setHeaderTitle(subsubject_name);
+      setShowSubjects(null);
+    }
   };
 
   // Toggle danh sách môn thi

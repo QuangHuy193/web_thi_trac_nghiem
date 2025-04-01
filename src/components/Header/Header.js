@@ -7,8 +7,16 @@ import MenuMobile from "../MenuMobile/MenuMobile";
 import classNames from "classnames/bind";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBars,
+  faRightFromBracket,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import {
+  showErrorToast,
+  showSuccessToast,
+} from "../../Utils/ToastNotification";
 
 const cx = classNames.bind(styles);
 
@@ -17,8 +25,10 @@ function Header({
   headerTitle,
   setHeaderTitle,
   setSelectedSubject,
+  selectedContent,
 }) {
   const [showMenu, setShowMenu] = useState(false);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
   return (
     <header className={cx("container")}>
@@ -40,10 +50,33 @@ function Header({
           setHeaderTitle={setHeaderTitle}
         />
       )}
-
-      <Link className={cx("btn-login")} to={"/login"}>
-        <Button>Đăng nhập</Button>
-      </Link>
+      {user ? (
+        <div className={cx("username")}>
+          <FontAwesomeIcon icon={faUser} /> <span>{user.username}</span>
+          <FontAwesomeIcon
+            className={cx("logout")}
+            icon={faRightFromBracket}
+            onClick={() => {
+              if (selectedContent !== "doExam") {
+                localStorage.removeItem("user");
+                setHeaderTitle("");
+                setSelectedContent("");
+                setUser(JSON.parse(localStorage.getItem("user")));
+                showSuccessToast("Đăng xuất thành công!", 1200);
+              } else {
+                showErrorToast(
+                  "Bạn không thể đăng xuất khi đang làm bài!",
+                  1200
+                );
+              }
+            }}
+          />
+        </div>
+      ) : (
+        <Link className={cx("btn-login")} to={"/login"}>
+          <Button>Đăng nhập</Button>
+        </Link>
+      )}
     </header>
   );
 }

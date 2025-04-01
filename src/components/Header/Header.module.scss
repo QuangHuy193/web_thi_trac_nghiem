@@ -29,6 +29,20 @@
   margin-left: auto;
 }
 
+.username {
+  margin-left: auto;
+  font-size: 2rem;
+
+  span {
+    margin-left: 8px;
+    margin-right: 15px;
+  }
+
+  .logout {
+    cursor: pointer;
+  }
+}
+
 /* Ẩn menu trên điện thoại, chỉ hiện "Trang chủ" và icon */
 @media (max-width: 768px) {
   .btn-login {

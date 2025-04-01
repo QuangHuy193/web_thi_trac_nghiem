@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./Exam.module.scss";
 
 import classNames from "classnames/bind";
-import { getAllExamsBySubSubjectId } from "../../Api/api";
+import { getAllExamsBySubSubjectIdAPI } from "../../Api/api";
 
 const cx = classNames.bind(styles);
 
@@ -11,14 +11,14 @@ function Exam({ selectedSubject, setSelectedContent, setHeaderTitle }) {
 
   useEffect(() => {
     const getExams = async () => {
-      const data = await getAllExamsBySubSubjectId(selectedSubject);
+      const data = await getAllExamsBySubSubjectIdAPI(selectedSubject);
       setExams(data);
     };
 
     getExams();
   }, [selectedSubject]);
 
-  const handleClickDoExam = (content, nameExam) => {
+  const handleClickDoExam = (nameExam) => {
     setSelectedContent("doExam");
     setHeaderTitle(nameExam);
   };
@@ -32,7 +32,7 @@ function Exam({ selectedSubject, setSelectedContent, setHeaderTitle }) {
             <p className={cx("exam-description")}>{exam.description}</p>
             <button
               className={cx("exam-button")}
-              onClick={() => handleClickDoExam("doExam", exam.title)}
+              onClick={() => handleClickDoExam(exam.title)}
             >
               Làm bài
             </button>

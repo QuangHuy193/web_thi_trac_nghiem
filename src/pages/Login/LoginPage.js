@@ -11,7 +11,7 @@ import {
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "../../components/Button/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import {
   showErrorToast,
@@ -22,10 +22,13 @@ import {
   togglePasswordVisibility,
 } from "../../Utils/function";
 import { EMAILREGEX } from "../../Utils/const";
+import { loginAPI } from "../../Api/api";
 
 const cx = classNames.bind(styles);
 
 function Login() {
+  const navigative = useNavigate()
+
   const [showPassword, setShowPassword] = useState({
     password: false,
     confirmPassword: false,
@@ -66,7 +69,7 @@ function Login() {
     }, 800);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Ngăn form submit mặc định
     if (
       isTouched.email &&
@@ -74,7 +77,18 @@ function Login() {
       isValid.password &&
       isValid.email
     ) {
-      showSuccessToast("Đăng nhập thành công!", 1500); // Thay thế bằng logic xử lý form
+      try {
+        const result = await loginAPI(formData.email, formData.password);
+        if (result.token) {
+          showSuccessToast(result.message || "Đăng nhập thành công!", 1000);
+          localStorage.setItem("user", JSON.stringify(result.user));
+          navigative("/")
+        } else {
+          showErrorToast(result.message || "Đăng nhập thất bại!", 1500);
+        }
+      } catch (error) {
+        showErrorToast("Có lỗi xảy ra, vui lòng thử lại!", 1500);
+      }
     } else {
       showErrorToast("Vui lòng nhập thông tin hợp lệ!", 1500);
     }

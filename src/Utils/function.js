@@ -1,7 +1,7 @@
 import { showErrorToast } from "./ToastNotification";
 
 const checkLogin = () => {
-  const isAuthenticated = !!localStorage.getItem("token");
+  const isAuthenticated = !!localStorage.getItem("user");
   return isAuthenticated;
 };
 

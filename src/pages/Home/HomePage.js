@@ -49,10 +49,12 @@ function Home() {
         headerTitle={headerTitle}
         setSelectedSubject={setSelectedSubject}
         setHeaderTitle={setHeaderTitle}
+        selectedContent={selectedContent}
       />
       <div className={cx("container")}>
         <div className={cx("sidebar")}>
           <Sidebar
+            selectedContent={selectedContent}
             setSelectedContent={setSelectedContent}
             setSelectedSubject={setSelectedSubject}
             setHeaderTitle={setHeaderTitle}
@@ -63,7 +65,7 @@ function Home() {
             <Exam
               selectedSubject={selectedSubject}
               setSelectedContent={setSelectedContent}
-              setHeaderTitle={setHeaderTitle}
+              setHeaderTitle={setHeaderTitle}    
             />
           )}
           {selectedContent === "info" && <Info />}
