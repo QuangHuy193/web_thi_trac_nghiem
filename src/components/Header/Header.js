@@ -2,8 +2,9 @@
 import styles from "./Header.module.scss";
 import Button from "../Button/Button";
 import MenuMobile from "../MenuMobile/MenuMobile";
+// Thêm import này cùng với các import khác
+import Search from "../Search/Search";//thư viện
 
-//thư viện
 import classNames from "classnames/bind";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -35,7 +36,11 @@ function Header({
       <div className={cx("title")}>
         {headerTitle ? headerTitle : "Trang chủ"}
       </div>
-
+     
+      <div className={cx("search-wrapper")}>
+        <Search />
+      </div>
+      
       {/* Icon menu chỉ hiển thị trên mobile */}
       <div className={cx("menu-toggle")} onClick={() => setShowMenu(!showMenu)}>
         <FontAwesomeIcon icon={faBars} />
