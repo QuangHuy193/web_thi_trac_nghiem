@@ -37,6 +37,7 @@ function Header({
         {headerTitle ? headerTitle : "Trang chủ"}
       </div>
      
+     {/* tạm ẩn ở mobile */}
       <div className={cx("search-wrapper")}>
         <Search />
       </div>
@@ -55,6 +56,7 @@ function Header({
           setHeaderTitle={setHeaderTitle}
         />
       )}
+      {/* thêm xử lý mobile */}
       {user ? (
         <div className={cx("username")}>
           <FontAwesomeIcon icon={faUser} /> <span>{user.username}</span>

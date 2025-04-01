@@ -25,12 +25,7 @@
   display: none;
 }
 
-.btn-login {
-  margin-left: auto;
-}
-
 .username {
-  margin-left: auto;
   font-size: 2rem;
 
   span {
@@ -42,9 +37,12 @@
     cursor: pointer;
   }
 }
-
+.search-wrapper {
+  margin-right: 20px;
+  margin-left: auto;
+}
 /* Ẩn menu trên điện thoại, chỉ hiện "Trang chủ" và icon */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .btn-login {
     display: none;
   }
@@ -60,8 +58,8 @@
     padding: 10px 20px;
     left: 0;
   }
-}
 
-.search-wrapper {
-  padding-left: 600px;
+  .search-wrapper {
+    display: none;
+  }
 }
