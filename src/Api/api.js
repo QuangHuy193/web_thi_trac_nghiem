@@ -60,6 +60,25 @@ const loginAPI = async (email, password) => {
   }
 };
 
+//nộp bài
+const submitExamAPI = async (email, password) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/login`,{
+      email,
+      password
+    });
+    return response.data;
+  } catch (error) {
+    // Kiểm tra nếu server trả về lỗi có response
+    if (error.response && error.response.data) {
+      return error.response.data; // Trả về thông báo lỗi từ API
+    }
+    
+    // Nếu lỗi không có response từ server (lỗi mạng, timeout, ...)
+    return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
+  }
+};
+
 export {
   getAllSubjectsAPI,
   getAllExamsBySubSubjectIdAPI,

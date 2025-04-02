@@ -24,6 +24,8 @@ function Home() {
   const [headerTitle, setHeaderTitle] = useState(null);
   //scroll up
   const [showScroll, setShowScroll] = useState(false);
+  //
+  const [idExam, setIdExam] = useState("");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,15 +65,21 @@ function Home() {
         <div className={cx("content")}>
           {selectedContent === "exam" && (
             <Exam
+              setIdExam={setIdExam}
               selectedSubject={selectedSubject}
               setSelectedContent={setSelectedContent}
-              setHeaderTitle={setHeaderTitle}    
+              setHeaderTitle={setHeaderTitle}
             />
           )}
           {selectedContent === "info" && <Info />}
           {selectedContent === "history" && <History />}
           {selectedContent === "doExam" && (
-            <DoExam selectedSubject={selectedSubject} />
+            <DoExam
+              selectedSubject={selectedSubject}
+              setSelectedContent={setSelectedContent}
+              setHeaderTitle={setHeaderTitle}
+              idExam={idExam}
+            />
           )}
           {showScroll && (
             <FontAwesomeIcon

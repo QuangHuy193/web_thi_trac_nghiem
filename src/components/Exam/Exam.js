@@ -6,7 +6,12 @@ import { getAllExamsBySubSubjectIdAPI } from "../../Api/api";
 
 const cx = classNames.bind(styles);
 
-function Exam({ selectedSubject, setSelectedContent, setHeaderTitle }) {
+function Exam({
+  setIdExam,
+  selectedSubject,
+  setSelectedContent,
+  setHeaderTitle,
+}) {
   const [exams, setExams] = useState([]);
 
   useEffect(() => {
@@ -18,8 +23,9 @@ function Exam({ selectedSubject, setSelectedContent, setHeaderTitle }) {
     getExams();
   }, [selectedSubject]);
 
-  const handleClickDoExam = (nameExam) => {
+  const handleClickDoExam = (idExam, nameExam) => {
     setSelectedContent("doExam");
+    setIdExam(idExam);  
     setHeaderTitle(nameExam);
   };
 
@@ -32,7 +38,7 @@ function Exam({ selectedSubject, setSelectedContent, setHeaderTitle }) {
             <p className={cx("exam-description")}>{exam.description}</p>
             <button
               className={cx("exam-button")}
-              onClick={() => handleClickDoExam(exam.title)}
+              onClick={() => handleClickDoExam(exam.exam_id, exam.title)}
             >
               Làm bài
             </button>

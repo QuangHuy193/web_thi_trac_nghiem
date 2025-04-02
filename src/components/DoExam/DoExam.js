@@ -1,19 +1,32 @@
 import { useEffect, useState } from "react";
 import styles from "./DoExam.module.scss";
-import {  getQuestionBySubSubjectAPI } from "../../Api/api";
+import { getQuestionBySubSubjectAPI } from "../../Api/api";
 
 import classNames from "classnames/bind";
-import { showErrorToast } from "../../Utils/ToastNotification";
+import {
+  showErrorToast,
+  showSuccessToast,
+} from "../../Utils/ToastNotification";
 import { showConfirmDialog } from "../../Utils/confirmDialog";
 
 const cx = classNames.bind(styles);
 
-function DoExam({ selectedSubject }) {
+function DoExam({
+  selectedSubject,
+  setSelectedContent,
+  setHeaderTitle,
+  idExam,
+}) {
   const [listQuestion, setListQuestion] = useState([]);
   const [answers, setAnswers] = useState({});
   const [errors, setErrors] = useState({}); // Trạng thái lỗi các câu chưa làm
   // Thời gian đếm ngược (60 phút)
   const [timeLeft, setTimeLeft] = useState(45 * 60);
+  //form
+  const [formData, setFormData] = useState({
+    exam_id: idExam,
+    reselts: {},
+  });
 
   useEffect(() => {
     const getQuestion = async () => {
@@ -53,7 +66,7 @@ function DoExam({ selectedSubject }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e) => {  
     e.preventDefault();
 
     // Kiểm tra câu nào chưa làm
@@ -88,7 +101,14 @@ function DoExam({ selectedSubject }) {
         "Bạn có chắc chắn?",
         "Sau khi nộp bài, bạn sẽ không thể thay đổi câu trả lời!",
         "warning",
-        ()=>{}, // logic xử lý nộp bài
+        () => {
+          setSelectedContent("history");
+          setHeaderTitle("Lịch sử làm bài");
+          // !
+          // setFormData({ ...formData, reselts: answers });
+          // console.log(JSON.stringify(formData, null, 2));
+          showSuccessToast("Nộp bài thành công!", 1200);
+        }, 
         "Đồng ý",
         "Hủy"
       );
@@ -103,36 +123,43 @@ function DoExam({ selectedSubject }) {
       </div>
 
       <form onSubmit={handleSubmit} className={cx("form")}>
-        {listQuestion.map((question, index) => (
-          <div key={question.question_id} className={cx("card")}>
-            <h3
-              id={`question-${question.question_id}`}
-              className={cx("question")}
-            >
-              {index + 1}. {question.question_text}
-              {errors[question.question_id] && (
-                <div className={cx("error-icon")}>*</div>
-              )}
-            </h3>
+        {Array.isArray(listQuestion) &&
+          listQuestion.map((question, index) => (
+            <div key={question.question_id} className={cx("card")}>
+              <h3
+                id={`question-${question.question_id}`}
+                className={cx("question")}
+              >
+                {index + 1}. {question.question_text}
+                {errors[question.question_id] && (
+                  <div className={cx("error-icon")}>*</div>
+                )}
+              </h3>
 
-            <div className={cx("options")}>
-              {question.answers.map((answer) => (
-                <label key={answer.answer_id} className={cx("answer")}>
-                  <input
-                    type="radio"
-                    name={`question-${question.question_id}`}
-                    value={answer.answer_id}
-                    checked={answers[question.question_id] === answer.answer_id}
-                    onChange={() =>
-                      handleSelectAnswer(question.question_id, answer.answer_id)
-                    }
-                  />
-                  {answer.answer_text}
-                </label>
-              ))}
+              <div className={cx("options")}>
+                {Array.isArray(question.answers) &&
+                  question.answers.map((answer) => (
+                    <label key={answer.answer_id} className={cx("answer")}>
+                      <input
+                        type="radio"
+                        name={`question-${question.question_id}`}
+                        value={answer.answer_id}
+                        checked={
+                          answers[question.question_id] === answer.answer_id
+                        }
+                        onChange={() =>
+                          handleSelectAnswer(
+                            question.question_id,
+                            answer.answer_id
+                          )
+                        }
+                      />
+                      {answer.answer_text}
+                    </label>
+                  ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
         <button type="submit" className={cx("submit-button")}>
           Nộp bài
         </button>
