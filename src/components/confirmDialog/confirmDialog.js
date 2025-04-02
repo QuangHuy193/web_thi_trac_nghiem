@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+import "./SweetAlert.scss";
 
 /**
  * Hiển thị hộp thoại xác nhận
@@ -11,12 +12,21 @@ import Swal from "sweetalert2";
  */
 const showConfirmDialog = (title, text, icon, onConfirm, btnYes, btnNo) => {
   Swal.fire({
-    title: title || "Bạn có chắc chắn?",
-    text: text || "Sau khi nộp bài, bạn sẽ không thể thay đổi câu trả lời!",
-    icon: icon || "warning",
+    title: title || "",
+    text: text || "",
+    icon: icon || "",
     showCancelButton: true,
-    confirmButtonText: btnYes || "Đồng ý",
-    cancelButtonText: btnNo || "Hủy",
+    confirmButtonText: btnYes || "",
+    cancelButtonText: btnNo || "",
+    customClass: {
+      popup: "custom-swal-popup",
+      title: "custom-swal-title",     
+      confirmButton: "custom-swal-confirm",
+      cancelButton: "custom-swal-cancel",
+    },
+    didOpen: () => {
+      document.querySelector(".swal2-html-container").classList.add("custom-swal-text");
+  }
   }).then((result) => {
     if (result.isConfirmed && typeof onConfirm === "function") {
       onConfirm();

@@ -1,10 +1,5 @@
 import { showErrorToast } from "./ToastNotification";
 
-const checkLogin = () => {
-  const isAuthenticated = !!localStorage.getItem("user");
-  return isAuthenticated;
-};
-
 const handleChangePass = (
   e,
   setFormData,
@@ -38,4 +33,4 @@ const togglePasswordVisibility = (setShowPassword, fieldName) => {
   }));
 };
 
-export { checkLogin, handleChangePass, togglePasswordVisibility };
+export {  handleChangePass, togglePasswordVisibility };

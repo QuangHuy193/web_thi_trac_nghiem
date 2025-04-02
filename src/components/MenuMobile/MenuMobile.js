@@ -20,6 +20,7 @@ function MenuMobile({
   setSelectedContent,
   setHeaderTitle,
   setSelectedSubject,
+  user,
 }) {
   const [openSubjects, setOpenSubjects] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -56,16 +57,18 @@ function MenuMobile({
     );
   };
 
-  const handleCheckLogin = (selected) => {
-    if (checkLogin()) {
-      handleSetSelectedContent(selected);
+  const handleCheckLogin = (selected, titlePage) => {
+    if (user) {
+      handleSetSelectedContent(selected,titlePage);
     } else {
       showErrorToast("Bận cần đăng nhập để thực hiện chức năng này!");
     }
   };
 
-  const handleSetSelectedContent = (selected) => {
+  const handleSetSelectedContent = (selected, titlePage) => {
     setSelectedContent(selected);
+    setHeaderTitle(titlePage);
+    setShowMenu(false);
   };
 
   return (
@@ -133,18 +136,21 @@ function MenuMobile({
             </ul>
           )}
 
-          <Link to={"/login"}>
-            <div className={cx("menu-item-parent")}>Đăng nhập</div>
-          </Link>
+          {!user && (
+            <Link to={"/login"}>
+              <div className={cx("menu-item-parent")}>Đăng nhập</div>
+            </Link>
+          )}
+
           <div
             className={cx("menu-item-parent")}
-            onClick={() => handleCheckLogin("info")}
+            onClick={() => handleCheckLogin("info", "Thông tin cá nhân")}
           >
             Thông tin cá nhân
           </div>
           <div
             className={cx("menu-item-parent")}
-            onClick={() => handleCheckLogin("history")}
+            onClick={() => handleCheckLogin("history", "Lịch sử làm bài")}
           >
             Lịch sử làm bài
           </div>

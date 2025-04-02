@@ -37,6 +37,15 @@
     cursor: pointer;
   }
 }
+
+.btn-login {
+  margin-left: auto;
+}
+
+.username {
+  margin-left: auto;
+}
+
 .search-wrapper {
   margin-right: 20px;
   margin-left: auto;
@@ -54,12 +63,21 @@
     margin-left: auto;
   }
 
+  .username {
+    margin-left: 10px;
+  }
+
   .container {
     padding: 10px 20px;
     left: 0;
   }
 
   .search-wrapper {
+    display: none;
+  }
+
+  .username-icon,
+  .username-name {
     display: none;
   }
 }

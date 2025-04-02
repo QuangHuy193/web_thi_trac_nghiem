@@ -24,8 +24,10 @@ function Home() {
   const [headerTitle, setHeaderTitle] = useState(null);
   //scroll up
   const [showScroll, setShowScroll] = useState(false);
-  //
+  // id bài thi dùng để gửi lên server lưu lịch sử
   const [idExam, setIdExam] = useState("");
+  // kiểm tra trạng thái đăng nhập
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,6 +54,8 @@ function Home() {
         setSelectedSubject={setSelectedSubject}
         setHeaderTitle={setHeaderTitle}
         selectedContent={selectedContent}
+        user={user}
+        setUser={setUser}
       />
       <div className={cx("container")}>
         <div className={cx("sidebar")}>
@@ -60,6 +64,7 @@ function Home() {
             setSelectedContent={setSelectedContent}
             setSelectedSubject={setSelectedSubject}
             setHeaderTitle={setHeaderTitle}
+            user={user}
           />
         </div>
         <div className={cx("content")}>
@@ -71,7 +76,7 @@ function Home() {
               setHeaderTitle={setHeaderTitle}
             />
           )}
-          {selectedContent === "info" && <Info />}
+          {selectedContent === "info" && <Info user={user} setUser={setUser} />}
           {selectedContent === "history" && <History />}
           {selectedContent === "doExam" && (
             <DoExam

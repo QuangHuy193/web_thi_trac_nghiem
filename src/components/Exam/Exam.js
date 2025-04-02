@@ -3,6 +3,7 @@ import styles from "./Exam.module.scss";
 
 import classNames from "classnames/bind";
 import { getAllExamsBySubSubjectIdAPI } from "../../Api/api";
+import { showConfirmDialog } from "../confirmDialog/confirmDialog";
 
 const cx = classNames.bind(styles);
 
@@ -24,9 +25,18 @@ function Exam({
   }, [selectedSubject]);
 
   const handleClickDoExam = (idExam, nameExam) => {
-    setSelectedContent("doExam");
-    setIdExam(idExam);  
-    setHeaderTitle(nameExam);
+    showConfirmDialog(
+      "Bạn chưa đăng nhập",
+      "Lịch sử làm bài sẽ không được lưu",
+      "info",
+      () => {
+        setSelectedContent("doExam");
+        setIdExam(idExam);
+        setHeaderTitle(nameExam);
+      },
+      "Đồng ý",
+      "Hủy"
+    );
   };
 
   return (

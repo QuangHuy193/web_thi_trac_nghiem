@@ -10,7 +10,7 @@ import {
   faEye,
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import classNames from "classnames/bind";
 import {
   showErrorToast,
@@ -21,10 +21,12 @@ import {
   handleChangePass,
   togglePasswordVisibility,
 } from "../../Utils/function";
+import { registerAPI } from "../../Api/api";
 
 const cx = classNames.bind(styles);
 
 const Signup = () => {
+  const navigative = useNavigate();
   const [showPassword, setShowPassword] = useState({
     password: false,
     confirmPassword: false,
@@ -108,16 +110,32 @@ const Signup = () => {
     }, 800);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const allTouched = Object.values(isTouched).every((touched) => touched);
     const allValid = Object.values(isValid).every((valid) => valid);
 
     if (allTouched && allValid) {
-      showSuccessToast("Đăng ký thành công!", 1500); // Thay thế bằng logic xử lý form
+      try {      
+        const result = await registerAPI(
+          formData.name,
+          formData.email,
+          formData.password,
+          "student"
+        );
+
+        if (result.user) {
+          navigative("/login");
+          showSuccessToast(result.message || "Đăng ký thành công!", 1200);
+        } else {
+          showErrorToast(result.message || "Đăng ký thất bại!", 1200);
+        }
+      } catch (error) {
+        showErrorToast("Có lỗi xảy ra, vui lòng thử lại!", 1200);
+      }
     } else {
-      showErrorToast("Vui lòng nhập thông tin hợp lệ!", 1500);
+      showErrorToast("Vui lòng nhập thông tin hợp lệ!", 1200);
     }
   };
 

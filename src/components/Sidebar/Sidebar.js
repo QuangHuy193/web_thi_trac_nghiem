@@ -7,10 +7,9 @@ import {
   faCaretRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import { checkLogin } from "../../Utils/function";
 import { showErrorToast } from "../../Utils/ToastNotification";
 import { getAllSubjectsAPI } from "../../Api/api";
-import { showConfirmDialog } from "../../Utils/confirmDialog";
+import { showConfirmDialog } from "../confirmDialog/confirmDialog";
 
 const cx = classNames.bind(styles);
 
@@ -19,6 +18,7 @@ function Sidebar({
   setSelectedContent,
   setSelectedSubject,
   setHeaderTitle,
+  user,
 }) {
   const [showSubjects, setShowSubjects] = useState(false);
   const [activeSubject, setActiveSubject] = useState(null);
@@ -35,17 +35,17 @@ function Sidebar({
 
   //kiểm tra đã đăng nhập chưa
   const handleCheckLogin = (selected, titlePage) => {
-    if (checkLogin()) {
+    if (user) {
       if (selectedContent === "doExam") {
         showConfirmDialog(
-          "",
+          "Bạn có muốn tiếp tục?",
           "Bạn đang làm bài, hành động này sẽ hủy kết quả làm bài của bạn, bạn vẫn muốn tiếp tục",
-          "",
+          "warning",
           () => {
             handleSetSelectedContent(selected, titlePage);
           },
-          "",
-          ""
+          "Tiếp tục",
+          "Không"
         );
       } else {
         handleSetSelectedContent(selected, titlePage);
@@ -65,17 +65,17 @@ function Sidebar({
   const handleSelectdSubject = (selected, subject_id, subsubject_name) => {
     if (selectedContent === "doExam") {
       showConfirmDialog(
-        "",
+        "Bạn có muốn tiếp tục?",
         "Bạn đang làm bài, hành động này sẽ hủy kết quả làm bài của bạn, bạn vẫn muốn tiếp tục",
-        "",
+        "warning",
         () => {
           setSelectedSubject(subject_id);
           setSelectedContent(selected);
           setHeaderTitle(subsubject_name);
           setShowSubjects(null);
         },
-        "",
-        ""
+        "Tiếp tục",
+        "Không"
       );
     } else {
       setSelectedSubject(subject_id);
@@ -97,9 +97,24 @@ function Sidebar({
 
   //reser trang home
   const resetHome = () => {
-    setSelectedContent(null);
-    setSelectedSubject(null);
-    setHeaderTitle(null);
+    if (selectedContent === "doExam") {
+      showConfirmDialog(
+        "Bạn có muốn tiếp tục?",
+        "Bạn đang làm bài, hành động này sẽ hủy kết quả làm bài của bạn, bạn vẫn muốn tiếp tục",
+        "warning",
+        () => {
+          setSelectedContent(null);
+          setSelectedSubject(null);
+          setHeaderTitle(null);
+        },
+        "Tiếp tục",
+        "Hủy"
+      );
+    } else {
+      setSelectedContent(null);
+      setSelectedSubject(null);
+      setHeaderTitle(null);
+    }
   };
 
   return (

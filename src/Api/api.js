@@ -41,12 +41,12 @@ const getQuestionBySubSubjectAPI = async (subsubject_id) => {
   }
 };
 
-//lấy ds bài thi thuộc môn học
+//đăng nhập
 const loginAPI = async (email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/login`,{
+    const response = await axios.post(`${API_URL}/auth/login`, {
       email,
-      password
+      password,
     });
     return response.data;
   } catch (error) {
@@ -54,7 +54,28 @@ const loginAPI = async (email, password) => {
     if (error.response && error.response.data) {
       return error.response.data; // Trả về thông báo lỗi từ API
     }
-    
+
+    // Nếu lỗi không có response từ server (lỗi mạng, timeout, ...)
+    return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
+  }
+};
+
+//đăng ký
+const registerAPI = async (username, email, password, role) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/register`, {
+      email,
+      password,
+      username,
+      role,
+    });
+    return response.data;
+  } catch (error) {
+    // Kiểm tra nếu server trả về lỗi có response
+    if (error.response && error.response.data) {
+      return error.response.data; // Trả về thông báo lỗi từ API
+    }
+
     // Nếu lỗi không có response từ server (lỗi mạng, timeout, ...)
     return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
   }
@@ -63,9 +84,9 @@ const loginAPI = async (email, password) => {
 //nộp bài
 const submitExamAPI = async (email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/login`,{
+    const response = await axios.post(`${API_URL}/auth/login`, {
       email,
-      password
+      password,
     });
     return response.data;
   } catch (error) {
@@ -73,7 +94,7 @@ const submitExamAPI = async (email, password) => {
     if (error.response && error.response.data) {
       return error.response.data; // Trả về thông báo lỗi từ API
     }
-    
+
     // Nếu lỗi không có response từ server (lỗi mạng, timeout, ...)
     return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
   }
@@ -84,4 +105,5 @@ export {
   getAllExamsBySubSubjectIdAPI,
   getQuestionBySubSubjectAPI,
   loginAPI,
+  registerAPI
 };

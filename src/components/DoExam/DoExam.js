@@ -7,7 +7,7 @@ import {
   showErrorToast,
   showSuccessToast,
 } from "../../Utils/ToastNotification";
-import { showConfirmDialog } from "../../Utils/confirmDialog";
+import { showConfirmDialog } from "../confirmDialog/confirmDialog";
 
 const cx = classNames.bind(styles);
 
@@ -100,7 +100,7 @@ function DoExam({
       showConfirmDialog(
         "Bạn có chắc chắn?",
         "Sau khi nộp bài, bạn sẽ không thể thay đổi câu trả lời!",
-        "warning",
+        "info",
         () => {
           setSelectedContent("history");
           setHeaderTitle("Lịch sử làm bài");
