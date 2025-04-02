@@ -182,6 +182,11 @@ function Sidebar({
       >
         Lịch sử làm bài
       </div>
+      {user && user.role === "teacher" && (
+        <div className={cx("item")} onClick={() => setSelectedContent("makeExam")}>
+          Tạo bài thi
+        </div>
+      )}
     </aside>
   );
 }

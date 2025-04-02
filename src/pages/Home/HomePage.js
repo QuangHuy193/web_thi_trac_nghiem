@@ -12,6 +12,7 @@ import History from "../../components/History/History";
 import DoExam from "../../components/DoExam/DoExam";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import MakeExam from "../../components/MakeExam/MakeExam";
 
 const cx = classNames.bind(styles);
 
@@ -86,6 +87,7 @@ function Home() {
               idExam={idExam}
             />
           )}
+          {selectedContent === "makeExam" && <MakeExam />}
           {showScroll && (
             <FontAwesomeIcon
               className={cx("icon-up")}

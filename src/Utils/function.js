@@ -33,4 +33,17 @@ const togglePasswordVisibility = (setShowPassword, fieldName) => {
   }));
 };
 
-export {  handleChangePass, togglePasswordVisibility };
+const getDifficultyLabel = (difficulty) => {
+  switch (difficulty) {
+    case "easy":
+      return "Dễ";
+    case "medium":
+      return "Trung bình";
+    case "hard":
+      return "Khó";
+    default:
+      return "Không xác định";
+  }
+};
+
+export { handleChangePass, togglePasswordVisibility, getDifficultyLabel };

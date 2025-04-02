@@ -13,6 +13,28 @@ const getAllSubjectsAPI = async () => {
   }
 };
 
+//lấy ds môn học tổng
+const getSubjectsAPI = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/subjects`);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách tất cả môn học:", error);
+    return [];
+  }
+};
+
+//lấy ds môn học con
+const getSubSubjectsAPI = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/subsubjects`);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách tất cả môn học:", error);
+    return [];
+  }
+};
+
 //lấy ds bài thi thuộc môn học
 const getAllExamsBySubSubjectIdAPI = async (subsubject_id) => {
   try {
@@ -23,6 +45,17 @@ const getAllExamsBySubSubjectIdAPI = async (subsubject_id) => {
       `Lỗi khi lấy danh sách bài thi của môn học có id là: ${subsubject_id}`,
       error
     );
+    return [];
+  }
+};
+
+//lấy ds câu hỏi thuộc môn học
+const getQUestionBySubSubjectIdAPI = async (subsubject_id) => {
+  try {
+    const response = await axios.get(`${API_URL}/questions/${subsubject_id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách tất cả môn học:", error);
     return [];
   }
 };
@@ -102,8 +135,11 @@ const submitExamAPI = async (email, password) => {
 
 export {
   getAllSubjectsAPI,
+  getSubjectsAPI,
+  getSubSubjectsAPI,
   getAllExamsBySubSubjectIdAPI,
+  getQUestionBySubSubjectIdAPI,
   getQuestionBySubSubjectAPI,
   loginAPI,
-  registerAPI
+  registerAPI,
 };
