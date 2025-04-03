@@ -118,6 +118,25 @@
   background-color: #f9f9f9;
 }
 
+.title-group {
+  position: relative;
+
+  .icon-plus {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+    padding: 5px;
+    font-size: 2rem;
+    color: #28a745;
+    cursor: pointer;
+
+    &:hover {
+      color: #218838;
+    }
+  }
+}
+
 .title {
   text-align: center;
   font-size: 18px;

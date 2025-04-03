@@ -71,6 +71,7 @@ function Home() {
         <div className={cx("content")}>
           {selectedContent === "exam" && (
             <Exam
+            user={user}
               setIdExam={setIdExam}
               selectedSubject={selectedSubject}
               setSelectedContent={setSelectedContent}
@@ -87,7 +88,9 @@ function Home() {
               idExam={idExam}
             />
           )}
-          {selectedContent === "makeExam" && <MakeExam />}
+          {selectedContent === "makeExam" && (
+            <MakeExam user={user} />
+          )}
           {showScroll && (
             <FontAwesomeIcon
               className={cx("icon-up")}

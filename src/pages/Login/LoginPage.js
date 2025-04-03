@@ -79,7 +79,7 @@ function Login() {
     ) {
       try {
         const result = await loginAPI(formData.email, formData.password);
-        if (result.token) {
+        if (result.user) {
           showSuccessToast(result.message || "Đăng nhập thành công!", 1000);
           localStorage.setItem("user", JSON.stringify(result.user));
           navigative("/")

@@ -8,6 +8,7 @@ import { showConfirmDialog } from "../confirmDialog/confirmDialog";
 const cx = classNames.bind(styles);
 
 function Exam({
+  user,
   setIdExam,
   selectedSubject,
   setSelectedContent,
@@ -25,18 +26,24 @@ function Exam({
   }, [selectedSubject]);
 
   const handleClickDoExam = (idExam, nameExam) => {
-    showConfirmDialog(
-      "Bạn chưa đăng nhập",
-      "Lịch sử làm bài sẽ không được lưu",
-      "info",
-      () => {
-        setSelectedContent("doExam");
-        setIdExam(idExam);
-        setHeaderTitle(nameExam);
-      },
-      "Đồng ý",
-      "Hủy"
-    );
+    if (!user) {
+      showConfirmDialog(
+        "Bạn chưa đăng nhập",
+        "Lịch sử làm bài sẽ không được lưu",
+        "info",
+        () => {
+          setSelectedContent("doExam");
+          setIdExam(idExam);
+          setHeaderTitle(nameExam);
+        },
+        "Đồng ý",
+        "Hủy"
+      );
+    } else {
+      setSelectedContent("doExam");
+      setIdExam(idExam);
+      setHeaderTitle(nameExam);
+    }
   };
 
   return (

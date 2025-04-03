@@ -1,22 +1,27 @@
 import classNames from "classnames/bind";
 import styles from "./MakeExam.module.scss";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
-  getQUestionBySubSubjectIdAPI,
+  getQuestionBySubSubjectIdAPI,
   getSubjectsAPI,
   getSubSubjectsAPI,
 } from "../../Api/api";
 import { getDifficultyLabel } from "../../Utils/function";
 import { showErrorToast } from "../../Utils/ToastNotification";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import MakeQuestion from "../MakeQuestion/MakeQuestion";
 
 const cx = classNames.bind(styles);
 
-function MakeExam() {
+function MakeExam({ user }) {
   const [subjects, setSubjects] = useState([]);
   const [subSubjects, setSubSubjects] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedSubSubject, setSelectedSubSubject] = useState(null);
   const [questions, setQuestions] = useState({});
+  const [isMakeQuestion, setIsMakeQuestion] = useState(false);
+  const [refreshQuestion, setRefreshQuestion] = useState(false);
 
   const [exam, setExam] = useState({
     exam_name: "",
@@ -48,7 +53,7 @@ function MakeExam() {
   useEffect(() => {
     if (selectedSubSubject) {
       const fetchQuestions = async () => {
-        const questionResult = await getQUestionBySubSubjectIdAPI(
+        const questionResult = await getQuestionBySubSubjectIdAPI(
           selectedSubSubject
         );
         setQuestions(questionResult);
@@ -57,7 +62,7 @@ function MakeExam() {
     } else {
       setQuestions({});
     }
-  }, [selectedSubSubject]);
+  }, [selectedSubSubject, refreshQuestion]);
 
   const filteredSubSubjects = selectedSubject
     ? subSubjects.filter((sub) => sub.subject_id === selectedSubject)
@@ -82,6 +87,10 @@ function MakeExam() {
       ...prev,
       questions: prev.questions.filter((id) => id !== questionId),
     }));
+  };
+
+  const handleMakeQuestion = () => {
+    setIsMakeQuestion(true);
   };
 
   const handleSubmit = (e) => {
@@ -110,21 +119,30 @@ function MakeExam() {
 
   return (
     <div className={cx("container")}>
+      {isMakeQuestion && (
+        <div style={{ position: "relative" }}>
+          <MakeQuestion
+            setIsMakeQuestion={setIsMakeQuestion}
+            user={user}
+            selectedSubSubject={selectedSubSubject}
+            setRefreshQuestion={setRefreshQuestion}
+          />
+        </div>
+      )}
       <div className={cx("subject-container")}>
         {/* Dropdown chọn Subject */}
-        {Array.isArray(subjects) && subjects.length !== 0 && (
-          <select
-            className={cx("select")}
-            onChange={(e) => setSelectedSubject(Number(e.target.value))}
-          >
-            <option value="">Chọn môn học</option>
-            {subjects.map((subject) => (
-              <option key={subject.subject_id} value={subject.subject_id}>
-                {subject.name}
-              </option>
-            ))}
-          </select>
-        )}
+
+        <select
+          className={cx("select")}
+          onChange={(e) => setSelectedSubject(Number(e.target.value))}
+        >
+          <option value="">Chọn môn học</option>
+          {subjects.map((subject) => (
+            <option key={subject.subject_id} value={subject.subject_id}>
+              {subject.name}
+            </option>
+          ))}
+        </select>
 
         {/* Dropdown chọn subSubject */}
         <select
@@ -171,7 +189,15 @@ function MakeExam() {
       <div className={cx("question-container")}>
         {/* Danh sách câu hỏi từ API */}
         <div className={cx("question-list")}>
-          <h3 className={cx("title")}>Danh sách câu hỏi:</h3>
+          <div className={cx("title-group")}>
+            <h3 className={cx("title")}>Danh sách câu hỏi:</h3>
+            {selectedSubject && selectedSubSubject && (
+              <span className={cx("icon-plus")} onClick={handleMakeQuestion}>
+                <FontAwesomeIcon icon={faPlusCircle} />
+              </span>
+            )}
+          </div>
+
           {questions?.questions?.length > 0 && (
             <ul>
               {questions.questions.map((question) => (

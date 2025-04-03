@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./DoExam.module.scss";
-import { getQuestionBySubSubjectAPI } from "../../Api/api";
+import { getQuestionBySubSubjectIdAPI } from "../../Api/api";
 
 import classNames from "classnames/bind";
 import {
@@ -30,7 +30,7 @@ function DoExam({
 
   useEffect(() => {
     const getQuestion = async () => {
-      const data = await getQuestionBySubSubjectAPI(selectedSubject);
+      const data = await getQuestionBySubSubjectIdAPI(selectedSubject);
       setListQuestion(data.questions);
     };
 
