@@ -1,6 +1,12 @@
 import { useState } from "react";
 import styles from "./Info.module.scss";
 import classNames from "classnames/bind";
+import { updateUserInfoAPI } from "../../Api/api";
+import {
+  showErrorToast,
+  showSuccessToast,
+} from "../../Utils/ToastNotification";
+import { EMAILREGEX } from "../../Utils/const";
 
 const cx = classNames.bind(styles);
 
@@ -12,18 +18,55 @@ function Info({ user, setUser }) {
   });
 
   const handleEdit = async () => {
+    let err = "";
     if (isEditing) {
+      if (!formUpdate.name) {
+        err = "Tên không được để trống!";
+      } else if (!EMAILREGEX.test(formUpdate.email)) {
+        err = "Email không đúng định dạng!";
+      }
+
+      if (err) {
+        showErrorToast(err, 1200);
+      } else {
         try {
-            //!
+          const result = await updateUserInfoAPI(
+            user.user_id,
+            formUpdate.name,
+            formUpdate.email
+          );
+
+          if (result.user) {
+            showSuccessToast("Cập nhật thông tin thành công", 1200);
+            setUser({
+              ...user,
+              username: formUpdate.name,
+              email: formUpdate.email,
+            });
+            localStorage.setItem("user", JSON.stringify(user));
+          } else {
+            showErrorToast(result.message, 1200);
+          }
         } catch (error) {
-            
+          showErrorToast("Có lỗi xảy ra. Vui lòng thử lại...", 1200);
         }
+        setIsEditing(!isEditing);
+      }
+    } else {
+      setIsEditing(!isEditing);
     }
+  };
+
+  const handleExit = () => {
+    setFormUpdate({
+      name: user.username,
+      email: user.email,
+    });
+
     setIsEditing(!isEditing);
   };
 
   const handleChange = (e) => {
-    // gọi api xử lý sửa thông tin
     setFormUpdate({ ...formUpdate, [e.target.name]: e.target.value });
   };
 
@@ -65,6 +108,11 @@ function Info({ user, setUser }) {
       <button onClick={handleEdit} className={cx("button")}>
         {isEditing ? "Lưu" : "Chỉnh sửa"}
       </button>
+      {isEditing && (
+        <button onClick={handleExit} className={cx("button-exit")}>
+          Hủy
+        </button>
+      )}
     </div>
   );
 }

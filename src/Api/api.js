@@ -85,7 +85,7 @@ const loginAPI = async (email, password) => {
 //sửa thông tin người dùng (trừ pass)
 const updateUserInfoAPI = async (user_id, username, email) => {
   try {
-    const response = await axios.post(`${API_URL}/user/${user_id}`, {
+    const response = await axios.put(`${API_URL}/users/${user_id}`, {
       username,
       email,
     });
