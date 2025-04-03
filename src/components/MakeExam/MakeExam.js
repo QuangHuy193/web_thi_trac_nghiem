@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import styles from "./MakeExam.module.scss";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getQuestionBySubSubjectIdAPI,
   getSubjectsAPI,
@@ -22,6 +22,9 @@ function MakeExam({ user }) {
   const [questions, setQuestions] = useState({});
   const [isMakeQuestion, setIsMakeQuestion] = useState(false);
   const [refreshQuestion, setRefreshQuestion] = useState(false);
+  const [filterSelectd, setFilterSelected] = useState("all");
+  const [filteredQuestions, setFilteredQuestions] = useState(questions);
+  const difficulties = ["all", "easy", "medium", "hard"];
 
   const [exam, setExam] = useState({
     exam_name: "",
@@ -57,6 +60,7 @@ function MakeExam({ user }) {
           selectedSubSubject
         );
         setQuestions(questionResult);
+        setFilteredQuestions(questionResult);
       };
       fetchQuestions();
     } else {
@@ -91,6 +95,20 @@ function MakeExam({ user }) {
 
   const handleMakeQuestion = () => {
     setIsMakeQuestion(true);
+  };
+
+  const handleFilterQuestion = (difficulty) => {
+    setFilterSelected(difficulty);
+    console.log(filteredQuestions);
+
+    if (difficulty === "all") {
+      setFilteredQuestions(questions);
+    } else {
+      const result = questions.questions.filter(
+        (q) => q.difficulty === difficulty
+      );
+      setFilteredQuestions({ questions: result });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -198,9 +216,24 @@ function MakeExam({ user }) {
             )}
           </div>
 
-          {questions?.questions?.length > 0 && (
+          <div className={cx("filter-difficuty")}>
+            <label className={cx("filter-difficulty-title")}>Lọc độ khó:</label>
+            {difficulties.map((difficulty) => (
+              <button
+                key={difficulty}
+                className={cx("filter-difficulty-item", {
+                  active: filterSelectd === difficulty, // Thêm class 'active' nếu được chọn
+                })}
+                onClick={() => handleFilterQuestion(difficulty)}
+              >
+                {getDifficultyLabel(difficulty)}
+              </button>
+            ))}
+          </div>
+
+          {filteredQuestions.questions?.length > 0 && (
             <ul>
-              {questions.questions.map((question) => (
+              {filteredQuestions.questions.map((question) => (
                 <li key={question.question_id} className={cx("question-item")}>
                   <div>
                     <strong>{question.question_text}</strong>

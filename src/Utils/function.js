@@ -41,6 +41,8 @@ const getDifficultyLabel = (difficulty) => {
       return "Trung bình";
     case "hard":
       return "Khó";
+    case "all":
+      return "Tất cả";
     default:
       return "Không xác định";
   }

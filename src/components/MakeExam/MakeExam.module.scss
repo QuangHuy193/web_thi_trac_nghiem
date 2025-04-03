@@ -81,6 +81,41 @@
   }
 }
 
+.filter-difficuty {
+  display: flex;
+  padding: 8px;
+  background-color: #f8f9fa; /* Màu nền nhẹ */
+  border-radius: 8px;
+  align-items: center;
+
+  .filter-difficulty-title {
+    margin-right: 5px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .filter-difficulty-item {
+    padding: 6px 12px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+  }
+
+  .filter-difficulty-item.active {
+    background-color: black !important;
+    color: white !important;
+    font-weight: bold;
+    border: 2px solid white;
+  }
+}
+
 .add-button,
 .remove-button {
   color: white;
