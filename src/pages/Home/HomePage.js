@@ -13,6 +13,7 @@ import DoExam from "../../components/DoExam/DoExam";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import MakeExam from "../../components/MakeExam/MakeExam";
+import ListExam from "../../components/ListExam/ListExam";
 
 const cx = classNames.bind(styles);
 
@@ -31,6 +32,8 @@ function Home() {
   const [timeExam, setTimeExam] = useState(0);
   // kiểm tra trạng thái đăng nhập
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  // bài thi dc sửa
+  const [examEdited, setExamEdited] = useState({});
 
   useEffect(() => {
     const handleScroll = () => {
@@ -94,9 +97,18 @@ function Home() {
           )}
           {selectedContent === "makeExam" && (
             <MakeExam
-              user={user}            
-              selectedContent={selectedContent}
+              user={user}
+              setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
+              examEdited={examEdited}
+            />
+          )}
+          {selectedContent === "listExam" && (
+            <ListExam
+              user={user}
+              setSelectedContent={setSelectedContent}
+              setHeaderTitle={setHeaderTitle}
+              setExamEdited={setExamEdited}
             />
           )}
           {showScroll && (

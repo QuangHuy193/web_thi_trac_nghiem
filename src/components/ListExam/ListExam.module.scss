@@ -1,0 +1,79 @@
+.exam-list {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.no-exams {
+  color: red;
+  text-align: center;
+}
+
+.exam-container {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(300px, 1fr)
+  ); // Tự co giãn thành 1 hoặc 2 cột
+  gap: 15px;
+  padding: 0;
+}
+
+.exam-item {
+  background: #fff;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  list-style: none;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+.exam-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.exam-description {
+  color: #666;
+}
+
+.exam-time {
+  font-style: italic;
+}
+
+.exam-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}

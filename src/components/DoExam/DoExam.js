@@ -117,7 +117,7 @@ function DoExam({
           "Hủy"
         );
       }
-    }else{
+    } else {
       // khi hết giờ tự nộp bài
       // ! xử lý API
     }

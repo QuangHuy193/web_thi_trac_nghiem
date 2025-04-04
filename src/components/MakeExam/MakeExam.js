@@ -19,7 +19,7 @@ import MakeQuestion from "../MakeQuestion/MakeQuestion";
 
 const cx = classNames.bind(styles);
 
-function MakeExam({ user, selectedContent, setHeaderTitle }) {
+function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
   // ds môn chính
   const [subjects, setSubjects] = useState([]);
   // ds môn phân lớp
@@ -65,7 +65,6 @@ function MakeExam({ user, selectedContent, setHeaderTitle }) {
   useEffect(() => {
     const getSubSubject = async () => {
       const subSubjectResult = await getSubSubjectsAPI();
-
       setSubSubjects(subSubjectResult);
     };
 
@@ -87,6 +86,25 @@ function MakeExam({ user, selectedContent, setHeaderTitle }) {
       setQuestions({});
     }
   }, [selectedSubSubject, refreshQuestion]);
+
+  //xử lý khi cập nhật exam
+  useEffect(() => {
+    if (examEdited && Object.keys(examEdited).length !== 0) {
+      setSelectedSubSubject(examEdited.subsubject_id);
+
+      const subSubject = subSubjects.find(
+        (item) => item.subsubjects_id === examEdited.subsubject_id
+      );
+
+      if (subSubject) {
+        setSelectedSubject(subSubject.subject_id);
+      }
+
+      
+    }
+    
+
+  }, [examEdited, subSubjects]);
 
   const filteredSubSubjects = selectedSubject
     ? subSubjects.filter((sub) => sub.subject_id === selectedSubject)
@@ -120,7 +138,7 @@ function MakeExam({ user, selectedContent, setHeaderTitle }) {
     setIsMakeQuestion(true);
   };
 
-  // lọc dss câu hỏi theo độ khó
+  // lọc ds câu hỏi theo độ khó
   const handleFilterQuestion = (difficulty) => {
     setFilterSelected(difficulty);
 
@@ -132,6 +150,12 @@ function MakeExam({ user, selectedContent, setHeaderTitle }) {
       );
       setFilteredQuestions({ questions: result });
     }
+  };
+
+  //xử lý thay đổi của dropdown subject
+  const handleChangeSubSUbject = (e) => {
+    setSelectedSubSubject(e.target.value);
+    setExam({ ...exam, subsubject_id: e.target.value });
   };
 
   // submit form
@@ -195,6 +219,7 @@ function MakeExam({ user, selectedContent, setHeaderTitle }) {
         <select
           className={cx("select")}
           onChange={(e) => setSelectedSubject(Number(e.target.value))}
+          value={selectedSubject}
         >
           <option value="">Chọn môn học</option>
           {subjects.map((subject) => (
@@ -207,10 +232,8 @@ function MakeExam({ user, selectedContent, setHeaderTitle }) {
         {/* Dropdown chọn subSubject */}
         <select
           className={cx("select")}
-          onChange={(e) => {
-            setSelectedSubSubject(e.target.value);
-            setExam({ ...exam, subsubject_id: e.target.value });
-          }}
+          onChange={(e) => handleChangeSubSUbject(e)}
+          value={selectedSubSubject}
         >
           <option value="">Chọn môn phân lớp</option>
           {filteredSubSubjects.map((subSubject) => (
@@ -230,14 +253,14 @@ function MakeExam({ user, selectedContent, setHeaderTitle }) {
           type="text"
           name="exam_name"
           placeholder="Tên bài thi"
-          value={exam.exam_name}
+          value={examEdited.title ? examEdited.title : exam.exam_name}
           onChange={handleExamChange}
           className={cx("input")}
         />
         <textarea
           name="description"
           placeholder="Mô tả bài thi"
-          value={exam.description}
+          value={examEdited.description ? examEdited.description :exam.description}
           onChange={handleExamChange}
           className={cx("textarea")}
         />

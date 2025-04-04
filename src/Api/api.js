@@ -39,6 +39,7 @@ const getSubSubjectsAPI = async () => {
 const getAllExamsBySubSubjectIdAPI = async (subsubject_id) => {
   try {
     const response = await axios.get(`${API_URL}/exams/${subsubject_id}`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(
@@ -49,7 +50,21 @@ const getAllExamsBySubSubjectIdAPI = async (subsubject_id) => {
   }
 };
 
-//lấy ds bài thi thuộc môn học
+//lấy ds bài thi theo user_id người tạo
+const getAllExamsByUserIdAPI = async (user_id) => {
+  try {
+    const response = await axios.get(`${API_URL}/exams/creator/${user_id}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Lỗi khi lấy danh sách bài thi của môn học có id là: ${user_id}`,
+      error
+    );
+    return [];
+  }
+};
+
+//lấy ds câu hỏi thuộc môn học
 const getQuestionBySubSubjectIdAPI = async (subsubject_id) => {
   try {
     const response = await axios.get(`${API_URL}/questions/${subsubject_id}`);   
@@ -186,6 +201,7 @@ export {
   getSubjectsAPI,
   getSubSubjectsAPI,
   getAllExamsBySubSubjectIdAPI,
+  getAllExamsByUserIdAPI,
   getQuestionBySubSubjectIdAPI,
   loginAPI,
   updateUserInfoAPI,
