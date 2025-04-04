@@ -1,5 +1,5 @@
 import classNames from "classnames/bind";
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
@@ -46,7 +46,7 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
     subsubject_id: "",
     created_id: user.user_id,
     description: "",
-    time: 20,
+    time: 0,
     questions: [],
   });
 
@@ -90,6 +90,16 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
   //xử lý khi cập nhật exam
   useEffect(() => {
     if (examEdited && Object.keys(examEdited).length !== 0) {
+      // Cập nhật state exam từ examEdited     
+      setExam((prev) => ({
+        ...prev,
+        exam_name: examEdited.title || "",
+        subsubject_id: examEdited.subsubject_id || "",
+        description: examEdited.description || "",
+        time: examEdited.time || "",
+        questions: examEdited.Questions || [],
+      }));
+
       setSelectedSubSubject(examEdited.subsubject_id);
 
       const subSubject = subSubjects.find(
@@ -99,12 +109,37 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
       if (subSubject) {
         setSelectedSubject(subSubject.subject_id);
       }
-
-      
-    }
-    
-
+    } 
+    // else {
+    //   setSelectedSubSubject(null);
+    //   setSelectedSubject(null);
+    //   setExam({
+    //     exam_name: "",
+    //     subsubject_id: "",
+    //     created_id: user.user_id,
+    //     description: "",
+    //     time: "",
+    //     questions: [],
+    //   });
+    // }
   }, [examEdited, subSubjects]);
+
+  //reset từ cập nhật sang thêm
+  useEffect(() => {
+    if (!examEdited) {
+      setSelectedSubject("");
+      setSelectedSubSubject("");
+      setExam({
+        exam_name: "",
+        subsubject_id: "",
+        created_id: user.user_id,
+        description: "",
+        time: "",
+        questions: [],
+      });
+      setFilteredQuestions([])
+    }
+  }, [examEdited]);
 
   const filteredSubSubjects = selectedSubject
     ? subSubjects.filter((sub) => sub.subject_id === selectedSubject)
@@ -112,7 +147,19 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
 
   // thực hiện khi change các thông tin trên form
   const handleExamChange = (e) => {
-    setExam({ ...exam, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setExam({ ...exam, [name]: value });
+
+    if (name === "time") {
+      let newValue = parseInt(value, 10);
+      if (isNaN(newValue) || newValue < 1) newValue = 1; // Giới hạn tối thiểu
+      if (newValue > 120) newValue = 120; // Giới hạn tối đa
+
+      setExam({ ...exam, [name]: newValue });
+    } else {
+      setExam({ ...exam, [name]: value });
+    }
   };
 
   // thêm câu hỏi vào form
@@ -253,17 +300,29 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
           type="text"
           name="exam_name"
           placeholder="Tên bài thi"
-          value={examEdited.title ? examEdited.title : exam.exam_name}
+          value={exam.exam_name}
           onChange={handleExamChange}
           className={cx("input")}
         />
         <textarea
           name="description"
           placeholder="Mô tả bài thi"
-          value={examEdited.description ? examEdited.description :exam.description}
+          value={exam.description}
           onChange={handleExamChange}
           className={cx("textarea")}
         />
+
+        {/* Thời gian làm bài */}
+        <input
+          type="number"
+          name="time"
+          placeholder="Thời gian làm bài (phút)"
+          value={exam.time}
+          onChange={handleExamChange}
+          className={cx("input")}
+          min="1" // Không cho phép nhập số nhỏ hơn 1
+        />
+
         <button type="submit" className={cx("submit-button")}>
           Tạo bài thi
         </button>

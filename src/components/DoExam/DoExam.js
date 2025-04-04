@@ -11,15 +11,13 @@ import { showConfirmDialog } from "../confirmDialog/confirmDialog";
 
 const cx = classNames.bind(styles);
 
-function DoExam({
-  selectedSubject,
+function DoExam({ 
   setSelectedContent,
   setHeaderTitle,
   idExam,
   timeExam,
+  questionsExam
 }) {
-  console.log(timeExam);
-  const [listQuestion, setListQuestion] = useState([]);
   const [answers, setAnswers] = useState({});
   const [errors, setErrors] = useState({}); // Trạng thái lỗi các câu chưa làm
   // Thời gian đếm ngược (60 phút)
@@ -30,14 +28,6 @@ function DoExam({
     reselts: {},
   });
 
-  useEffect(() => {
-    const getQuestion = async () => {
-      const data = await getQuestionBySubSubjectIdAPI(selectedSubject);
-      setListQuestion(data.questions);
-    };
-
-    getQuestion();
-  }, [selectedSubject]);
   useEffect(() => {
     if (timeLeft <= 0) {
       handleSubmit(); // Tự động nộp bài khi hết giờ
@@ -77,7 +67,7 @@ function DoExam({
       const newErrors = {};
       let firstUnansweredQuestionId = null;
 
-      listQuestion.forEach((question) => {
+      questionsExam.forEach((question) => {
         if (!answers[question.question_id]) {
           newErrors[question.question_id] = true;
           if (!firstUnansweredQuestionId) {
@@ -131,8 +121,8 @@ function DoExam({
       </div>
 
       <form onSubmit={handleSubmit} className={cx("form")}>
-        {Array.isArray(listQuestion) &&
-          listQuestion.map((question, index) => (
+        {Array.isArray(questionsExam) &&
+          questionsExam.map((question, index) => (
             <div key={question.question_id} className={cx("card")}>
               <h3
                 id={`question-${question.question_id}`}

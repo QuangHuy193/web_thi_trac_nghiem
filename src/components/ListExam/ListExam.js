@@ -22,8 +22,7 @@ function ListExam({ user, setHeaderTitle, setSelectedContent, setExamEdited }) {
     // setExams(exams.filter((exam) => exam.id !== examId));
   };
 
-  const handleEdit = (exam) => {
-    console.log("Sửa bài thi", exam);
+  const handleEdit = (exam) => { 
     setHeaderTitle("Sửa bài thi")
     setSelectedContent("makeExam")
     setExamEdited(exam);

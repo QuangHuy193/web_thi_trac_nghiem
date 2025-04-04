@@ -20,6 +20,7 @@ function Sidebar({
   setSelectedSubject,
   setHeaderTitle,
   user,
+  setExamEdited,
 }) {
   const [showSubjects, setShowSubjects] = useState(false);
   const [activeSubject, setActiveSubject] = useState(null);
@@ -60,6 +61,7 @@ function Sidebar({
   const handleSetSelectedContent = (selected, titlePage) => {
     setSelectedContent(selected);
     setHeaderTitle(titlePage);
+    setExamEdited(null)
   };
 
   //set môn dc chọn
@@ -74,6 +76,7 @@ function Sidebar({
           setSelectedContent(selected);
           setHeaderTitle(subsubject_name);
           setShowSubjects(null);
+          setExamEdited(null)
         },
         "Tiếp tục",
         "Không"
@@ -83,6 +86,7 @@ function Sidebar({
       setSelectedContent(selected);
       setHeaderTitle(subsubject_name);
       setShowSubjects(null);
+      setExamEdited(null)
     }
   };
 
@@ -97,7 +101,7 @@ function Sidebar({
   };
 
   //reser trang home
-  const resetHome = () => {
+  const resetHome = () => {    
     if (selectedContent === "doExam") {
       showConfirmDialog(
         "Bạn có muốn tiếp tục?",
@@ -107,6 +111,7 @@ function Sidebar({
           setSelectedContent(null);
           setSelectedSubject(null);
           setHeaderTitle(null);
+          setExamEdited(null)
         },
         "Tiếp tục",
         "Hủy"
@@ -115,6 +120,7 @@ function Sidebar({
       setSelectedContent(null);
       setSelectedSubject(null);
       setHeaderTitle(null);
+      setExamEdited(null)
     }
   };
 

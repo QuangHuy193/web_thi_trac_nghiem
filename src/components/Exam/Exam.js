@@ -14,6 +14,7 @@ function Exam({
   selectedSubject,
   setSelectedContent,
   setHeaderTitle,
+  setQuestionsExam,
 }) {
   const [exams, setExams] = useState([]);
 
@@ -26,7 +27,7 @@ function Exam({
     getExams();
   }, [selectedSubject]);
 
-  const handleClickDoExam = (idExam, nameExam, timeExam) => {    
+  const handleClickDoExam = (idExam, nameExam, timeExam, questionExam) => {
     if (!user) {
       showConfirmDialog(
         "Bạn chưa đăng nhập",
@@ -36,7 +37,8 @@ function Exam({
           setSelectedContent("doExam");
           setIdExam(idExam);
           setHeaderTitle(nameExam);
-          setTimeExam(timeExam)
+          setTimeExam(timeExam);
+          setQuestionsExam(questionExam);
         },
         "Đồng ý",
         "Hủy"
@@ -45,7 +47,8 @@ function Exam({
       setSelectedContent("doExam");
       setIdExam(idExam);
       setHeaderTitle(nameExam);
-      setTimeExam(timeExam)
+      setTimeExam(timeExam);
+      setQuestionsExam(questionExam);
     }
   };
 
@@ -58,7 +61,14 @@ function Exam({
             <p className={cx("exam-description")}>{exam.description}</p>
             <button
               className={cx("exam-button")}
-              onClick={() => handleClickDoExam(exam.exam_id, exam.title, exam.time)}
+              onClick={() =>
+                handleClickDoExam(
+                  exam.exam_id,
+                  exam.title,
+                  exam.time,
+                  exam.Questions
+                )
+              }
             >
               Làm bài
             </button>

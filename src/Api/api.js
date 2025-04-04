@@ -38,8 +38,10 @@ const getSubSubjectsAPI = async () => {
 //lấy ds bài thi thuộc môn học
 const getAllExamsBySubSubjectIdAPI = async (subsubject_id) => {
   try {
-    const response = await axios.get(`${API_URL}/exams/${subsubject_id}`);
-    console.log(response.data);
+    const response = await axios.get(
+      `${API_URL}/exams/quests/${subsubject_id}`
+    );
+
     return response.data;
   } catch (error) {
     console.error(
@@ -67,7 +69,7 @@ const getAllExamsByUserIdAPI = async (user_id) => {
 //lấy ds câu hỏi thuộc môn học
 const getQuestionBySubSubjectIdAPI = async (subsubject_id) => {
   try {
-    const response = await axios.get(`${API_URL}/questions/${subsubject_id}`);   
+    const response = await axios.get(`${API_URL}/questions/${subsubject_id}`);
     return response.data;
   } catch (error) {
     console.error(

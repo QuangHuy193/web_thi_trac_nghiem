@@ -30,6 +30,8 @@ function Home() {
   const [idExam, setIdExam] = useState("");
   // time của exam
   const [timeExam, setTimeExam] = useState(0);
+  // question của exam dc chọn
+  const [questionsExam, setQuestionsExam]  =useState([])
   // kiểm tra trạng thái đăng nhập
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   // bài thi dc sửa
@@ -71,6 +73,7 @@ function Home() {
             setSelectedSubject={setSelectedSubject}
             setHeaderTitle={setHeaderTitle}
             user={user}
+          setExamEdited={setExamEdited}
           />
         </div>
         <div className={cx("content")}>
@@ -82,17 +85,18 @@ function Home() {
               selectedSubject={selectedSubject}
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
+              setQuestionsExam={setQuestionsExam}
             />
           )}
           {selectedContent === "info" && <Info user={user} setUser={setUser} />}
           {selectedContent === "history" && <History />}
           {selectedContent === "doExam" && (
-            <DoExam
-              selectedSubject={selectedSubject}
+            <DoExam            
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
               idExam={idExam}
               timeExam={timeExam}
+              questionsExam={questionsExam}
             />
           )}
           {selectedContent === "makeExam" && (
