@@ -89,7 +89,7 @@ function Home() {
             />
           )}
           {selectedContent === "makeExam" && (
-            <MakeExam user={user} />
+            <MakeExam user={user} selectedContent={selectedContent} setHeaderTitle={setHeaderTitle}/>
           )}
           {showScroll && (
             <FontAwesomeIcon

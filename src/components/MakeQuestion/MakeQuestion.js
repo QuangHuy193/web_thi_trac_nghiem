@@ -1,9 +1,9 @@
 import classNames from "classnames/bind";
-
-import styles from "./MakeQuestion.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+
+import styles from "./MakeQuestion.module.scss";
 import { makeQuestionAPI } from "../../Api/api";
 import {
   showErrorToast,

@@ -123,12 +123,24 @@ const registerAPI = async (username, email, password, role) => {
 };
 
 //nộp bài
-const submitExamAPI = async (email, password) => {
+const submitExamAPI = async (
+  title,
+  description,
+  time,
+  created_by,
+  subsubject_id,
+  question_ids
+) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/login`, {
-      email,
-      password,
+    const response = await axios.post(`${API_URL}/exams`, {
+      title,
+      description,
+      time,
+      created_by,
+      subsubject_id,
+      question_ids,
     });
+
     return response.data;
   } catch (error) {
     // Kiểm tra nếu server trả về lỗi có response
@@ -178,5 +190,6 @@ export {
   loginAPI,
   updateUserInfoAPI,
   registerAPI,
-  makeQuestionAPI
+  makeQuestionAPI,
+  submitExamAPI,
 };

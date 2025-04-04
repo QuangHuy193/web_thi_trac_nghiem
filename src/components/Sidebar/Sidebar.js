@@ -1,5 +1,4 @@
 import classNames from "classnames/bind";
-import styles from "./Sidebar.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,
@@ -7,6 +6,8 @@ import {
   faCaretRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
+
+import styles from "./Sidebar.module.scss";
 import { showErrorToast } from "../../Utils/ToastNotification";
 import { getAllSubjectsAPI } from "../../Api/api";
 import { showConfirmDialog } from "../confirmDialog/confirmDialog";
@@ -182,9 +183,22 @@ function Sidebar({
       >
         Lịch sử làm bài
       </div>
+
       {user && user.role === "teacher" && (
-        <div className={cx("item")} onClick={() => setSelectedContent("makeExam")}>
+        <div
+          className={cx("item")}
+          onClick={() => handleCheckLogin("makeExam", "Tạo bài thi")}
+        >
           Tạo bài thi
+        </div>
+      )}
+
+      {user && user.role === "teacher" && (
+        <div
+          className={cx("item")}
+          onClick={() => handleCheckLogin("listExam", "Danh sách bài thi")}
+        >
+          Danh sách bài thi đã tạo
         </div>
       )}
     </aside>

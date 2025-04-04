@@ -1,38 +1,56 @@
 import classNames from "classnames/bind";
-import styles from "./MakeExam.module.scss";
 import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+
+import styles from "./MakeExam.module.scss";
 import {
   getQuestionBySubSubjectIdAPI,
   getSubjectsAPI,
   getSubSubjectsAPI,
+  submitExamAPI,
 } from "../../Api/api";
 import { getDifficultyLabel } from "../../Utils/function";
-import { showErrorToast } from "../../Utils/ToastNotification";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  showErrorToast,
+  showSuccessToast,
+} from "../../Utils/ToastNotification";
 import MakeQuestion from "../MakeQuestion/MakeQuestion";
 
 const cx = classNames.bind(styles);
 
-function MakeExam({ user }) {
+function MakeExam({ user, selectedContent, setHeaderTitle }) {
+  // ds môn chính
   const [subjects, setSubjects] = useState([]);
+  // ds môn phân lớp
   const [subSubjects, setSubSubjects] = useState([]);
+  // môn chính đang dc chọn trên select-option
   const [selectedSubject, setSelectedSubject] = useState(null);
+  // môn phân lớp đang dc chọn trên select-option
   const [selectedSubSubject, setSelectedSubSubject] = useState(null);
+  // ds câu hỏi lấy theo môn phân lớp
   const [questions, setQuestions] = useState({});
+  // mở hộp thoại thêm câu hỏi
   const [isMakeQuestion, setIsMakeQuestion] = useState(false);
+  // dùng để làm mới ds câu hỏi của môn phân lớp khi thêm mới câu hỏi
   const [refreshQuestion, setRefreshQuestion] = useState(false);
+  // bộ lọc câu hỏi theo độ khó
   const [filterSelectd, setFilterSelected] = useState("all");
+  // ds câu hỏi khi lọc, nếu không lọc hiển thị tất cả
   const [filteredQuestions, setFilteredQuestions] = useState(questions);
+  // ds các độ khó
   const difficulties = ["all", "easy", "medium", "hard"];
-
+  // thông tin để tạo bài thi mới
   const [exam, setExam] = useState({
     exam_name: "",
     subsubject_id: "",
+    created_id: user.user_id,
     description: "",
+    time: 20,
     questions: [],
   });
 
+  // lấy ds môn học từ API
   useEffect(() => {
     const getSubject = async () => {
       const subjectResult = await getSubjectsAPI();
@@ -43,6 +61,7 @@ function MakeExam({ user }) {
     getSubject();
   }, []);
 
+  // lấy môn phân lớp từ API
   useEffect(() => {
     const getSubSubject = async () => {
       const subSubjectResult = await getSubSubjectsAPI();
@@ -53,6 +72,7 @@ function MakeExam({ user }) {
     getSubSubject();
   }, []);
 
+  // lấy câu hỏi từ API theo môn phân lớp
   useEffect(() => {
     if (selectedSubSubject) {
       const fetchQuestions = async () => {
@@ -72,20 +92,22 @@ function MakeExam({ user }) {
     ? subSubjects.filter((sub) => sub.subject_id === selectedSubject)
     : [];
 
+  // thực hiện khi change các thông tin trên form
   const handleExamChange = (e) => {
     setExam({ ...exam, [e.target.name]: e.target.value });
   };
 
+  // thêm câu hỏi vào form
   const handleAddQuestion = (questionId) => {
     if (!exam.questions.includes(questionId)) {
       setExam((prev) => ({
         ...prev,
         questions: [...prev.questions, questionId],
       }));
-      console.log(exam.questions);
     }
   };
 
+  // xóa câu hỏi khỏi form
   const handleRemoveQuestion = (questionId) => {
     setExam((prev) => ({
       ...prev,
@@ -93,10 +115,12 @@ function MakeExam({ user }) {
     }));
   };
 
+  // mở component thêm câu hỏi
   const handleMakeQuestion = () => {
     setIsMakeQuestion(true);
   };
 
+  // lọc dss câu hỏi theo độ khó
   const handleFilterQuestion = (difficulty) => {
     setFilterSelected(difficulty);
     console.log(filteredQuestions);
@@ -111,7 +135,8 @@ function MakeExam({ user }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  // submit form
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     let errorMessage = "";
@@ -132,7 +157,26 @@ function MakeExam({ user }) {
       showErrorToast(errorMessage, 1200);
       return;
     }
-    console.log("Bài thi được tạo:", exam);
+    try {
+      const result = await submitExamAPI(
+        exam.exam_name,
+        exam.description,
+        exam.time,
+        exam.created_id,
+        exam.subsubject_id,
+        exam.questions
+      );
+
+      if (result.exam) {
+        showSuccessToast(result.message, 1200);
+        setHeaderTitle("Danh Dách bài thi");
+        selectedContent("listExam");
+      } else {
+        showErrorToast(result.message || "Không thể tạo bài thi!", 1200);
+      }
+    } catch (error) {
+      showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
+    }
   };
 
   return (
@@ -149,7 +193,6 @@ function MakeExam({ user }) {
       )}
       <div className={cx("subject-container")}>
         {/* Dropdown chọn Subject */}
-
         <select
           className={cx("select")}
           onChange={(e) => setSelectedSubject(Number(e.target.value))}
@@ -209,27 +252,31 @@ function MakeExam({ user }) {
         <div className={cx("question-list")}>
           <div className={cx("title-group")}>
             <h3 className={cx("title")}>Danh sách câu hỏi:</h3>
-            {selectedSubject && selectedSubSubject && (
+            {Object.keys(questions).length !== 0 && (
               <span className={cx("icon-plus")} onClick={handleMakeQuestion}>
                 <FontAwesomeIcon icon={faPlusCircle} />
               </span>
             )}
           </div>
 
-          <div className={cx("filter-difficuty")}>
-            <label className={cx("filter-difficulty-title")}>Lọc độ khó:</label>
-            {difficulties.map((difficulty) => (
-              <button
-                key={difficulty}
-                className={cx("filter-difficulty-item", {
-                  active: filterSelectd === difficulty, // Thêm class 'active' nếu được chọn
-                })}
-                onClick={() => handleFilterQuestion(difficulty)}
-              >
-                {getDifficultyLabel(difficulty)}
-              </button>
-            ))}
-          </div>
+          {Object.keys(questions).length !== 0 && (
+            <div className={cx("filter-difficuty")}>
+              <label className={cx("filter-difficulty-title")}>
+                Lọc độ khó:
+              </label>
+              {difficulties.map((difficulty) => (
+                <button
+                  key={difficulty}
+                  className={cx("filter-difficulty-item", {
+                    active: filterSelectd === difficulty, // Thêm class 'active' nếu được chọn
+                  })}
+                  onClick={() => handleFilterQuestion(difficulty)}
+                >
+                  {getDifficultyLabel(difficulty)}
+                </button>
+              ))}
+            </div>
+          )}
 
           {filteredQuestions.questions?.length > 0 && (
             <ul>
@@ -257,7 +304,10 @@ function MakeExam({ user }) {
 
         {/* Danh sách câu hỏi đã chọn */}
         <div className={cx("selected-questions")}>
-          <h3 className={cx("title")}>Câu hỏi đã chọn:</h3>
+          <h3 className={cx("title")}>
+            Câu hỏi đã chọn:{" "}
+            {exam.questions.length !== 0 && "(" + exam.questions.length + ")"}
+          </h3>
           {exam.questions.length > 0 && (
             <ul>
               {exam.questions.map((qId) => {

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import styles from "./DoExam.module.scss";
-import { getQuestionBySubSubjectIdAPI } from "../../Api/api";
-
 import classNames from "classnames/bind";
+
+import { getQuestionBySubSubjectIdAPI } from "../../Api/api";
+import styles from "./DoExam.module.scss";
 import {
   showErrorToast,
   showSuccessToast,

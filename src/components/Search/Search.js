@@ -1,12 +1,11 @@
-import styles from "./Search.module.scss";
-
 import classNames from "classnames/bind";
-import HeadlessTippy from "@tippyjs/react/headless";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleXmark,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
+
+import styles from "./Search.module.scss";
 
 const cx = classNames.bind(styles);
 
