@@ -16,12 +16,14 @@ function DoExam({
   setSelectedContent,
   setHeaderTitle,
   idExam,
+  timeExam,
 }) {
+  console.log(timeExam);
   const [listQuestion, setListQuestion] = useState([]);
   const [answers, setAnswers] = useState({});
   const [errors, setErrors] = useState({}); // Trạng thái lỗi các câu chưa làm
   // Thời gian đếm ngược (60 phút)
-  const [timeLeft, setTimeLeft] = useState(45 * 60);
+  const [timeLeft, setTimeLeft] = useState(timeExam * 60);
   //form
   const [formData, setFormData] = useState({
     exam_id: idExam,
@@ -66,52 +68,58 @@ function DoExam({
     });
   };
 
-  const handleSubmit = (e) => {  
-    e.preventDefault();
+  const handleSubmit = (e) => {
+    if (e) e.preventDefault();
 
-    // Kiểm tra câu nào chưa làm
-    const newErrors = {};
-    let firstUnansweredQuestionId = null;
+    // khi người dùng tự bấm nộp bài
+    if (e) {
+      // Kiểm tra câu nào chưa làm
+      const newErrors = {};
+      let firstUnansweredQuestionId = null;
 
-    listQuestion.forEach((question) => {
-      if (!answers[question.question_id]) {
-        newErrors[question.question_id] = true;
-        if (!firstUnansweredQuestionId) {
-          firstUnansweredQuestionId = question.question_id; // Lưu ID câu chưa làm đầu tiên
+      listQuestion.forEach((question) => {
+        if (!answers[question.question_id]) {
+          newErrors[question.question_id] = true;
+          if (!firstUnansweredQuestionId) {
+            firstUnansweredQuestionId = question.question_id; // Lưu ID câu chưa làm đầu tiên
+          }
+
+          // Cuộn lên câu chưa làm đầu tiên
+          if (firstUnansweredQuestionId) {
+            document
+              .getElementById(`question-${firstUnansweredQuestionId}`)
+              ?.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+          }
         }
+      });
 
-        // Cuộn lên câu chưa làm đầu tiên
-        if (firstUnansweredQuestionId) {
-          document
-            .getElementById(`question-${firstUnansweredQuestionId}`)
-            ?.scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-        }
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors); // Cập nhật trạng thái lỗi
+        showErrorToast("Bạn chưa trả lời hết tất cả câu hỏi!", 1500);
+        return;
+      } else {
+        showConfirmDialog(
+          "Bạn có chắc chắn?",
+          "Sau khi nộp bài, bạn sẽ không thể thay đổi câu trả lời!",
+          "info",
+          () => {
+            setSelectedContent("history");
+            setHeaderTitle("Lịch sử làm bài");
+            // ! xử lý API
+            // setFormData({ ...formData, reselts: answers });
+            // console.log(JSON.stringify(formData, null, 2));
+            showSuccessToast("Nộp bài thành công!", 1200);
+          },
+          "Đồng ý",
+          "Hủy"
+        );
       }
-    });
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors); // Cập nhật trạng thái lỗi
-      showErrorToast("Bạn chưa trả lời hết tất cả câu hỏi!", 1500);
-      return;
-    } else {
-      showConfirmDialog(
-        "Bạn có chắc chắn?",
-        "Sau khi nộp bài, bạn sẽ không thể thay đổi câu trả lời!",
-        "info",
-        () => {
-          setSelectedContent("history");
-          setHeaderTitle("Lịch sử làm bài");
-          // !
-          // setFormData({ ...formData, reselts: answers });
-          // console.log(JSON.stringify(formData, null, 2));
-          showSuccessToast("Nộp bài thành công!", 1200);
-        }, 
-        "Đồng ý",
-        "Hủy"
-      );
+    }else{
+      // khi hết giờ tự nộp bài
+      // ! xử lý API
     }
   };
 

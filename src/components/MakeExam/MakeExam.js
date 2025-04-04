@@ -123,7 +123,6 @@ function MakeExam({ user, selectedContent, setHeaderTitle }) {
   // lọc dss câu hỏi theo độ khó
   const handleFilterQuestion = (difficulty) => {
     setFilterSelected(difficulty);
-    console.log(filteredQuestions);
 
     if (difficulty === "all") {
       setFilteredQuestions(questions);

@@ -10,6 +10,7 @@ const cx = classNames.bind(styles);
 function Exam({
   user,
   setIdExam,
+  setTimeExam,
   selectedSubject,
   setSelectedContent,
   setHeaderTitle,
@@ -25,7 +26,7 @@ function Exam({
     getExams();
   }, [selectedSubject]);
 
-  const handleClickDoExam = (idExam, nameExam) => {
+  const handleClickDoExam = (idExam, nameExam, timeExam) => {    
     if (!user) {
       showConfirmDialog(
         "Bạn chưa đăng nhập",
@@ -35,6 +36,7 @@ function Exam({
           setSelectedContent("doExam");
           setIdExam(idExam);
           setHeaderTitle(nameExam);
+          setTimeExam(timeExam)
         },
         "Đồng ý",
         "Hủy"
@@ -43,6 +45,7 @@ function Exam({
       setSelectedContent("doExam");
       setIdExam(idExam);
       setHeaderTitle(nameExam);
+      setTimeExam(timeExam)
     }
   };
 
@@ -55,7 +58,7 @@ function Exam({
             <p className={cx("exam-description")}>{exam.description}</p>
             <button
               className={cx("exam-button")}
-              onClick={() => handleClickDoExam(exam.exam_id, exam.title)}
+              onClick={() => handleClickDoExam(exam.exam_id, exam.title, exam.time)}
             >
               Làm bài
             </button>

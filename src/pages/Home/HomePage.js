@@ -27,6 +27,8 @@ function Home() {
   const [showScroll, setShowScroll] = useState(false);
   // id bài thi dùng để gửi lên server lưu lịch sử
   const [idExam, setIdExam] = useState("");
+  // time của exam
+  const [timeExam, setTimeExam] = useState(0);
   // kiểm tra trạng thái đăng nhập
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
@@ -71,8 +73,9 @@ function Home() {
         <div className={cx("content")}>
           {selectedContent === "exam" && (
             <Exam
-            user={user}
+              user={user}
               setIdExam={setIdExam}
+              setTimeExam={setTimeExam}
               selectedSubject={selectedSubject}
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
@@ -86,10 +89,15 @@ function Home() {
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
               idExam={idExam}
+              timeExam={timeExam}
             />
           )}
           {selectedContent === "makeExam" && (
-            <MakeExam user={user} selectedContent={selectedContent} setHeaderTitle={setHeaderTitle}/>
+            <MakeExam
+              user={user}            
+              selectedContent={selectedContent}
+              setHeaderTitle={setHeaderTitle}
+            />
           )}
           {showScroll && (
             <FontAwesomeIcon

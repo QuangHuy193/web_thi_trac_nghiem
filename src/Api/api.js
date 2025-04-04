@@ -52,7 +52,7 @@ const getAllExamsBySubSubjectIdAPI = async (subsubject_id) => {
 //lấy ds bài thi thuộc môn học
 const getQuestionBySubSubjectIdAPI = async (subsubject_id) => {
   try {
-    const response = await axios.get(`${API_URL}/questions/${subsubject_id}`);
+    const response = await axios.get(`${API_URL}/questions/${subsubject_id}`);   
     return response.data;
   } catch (error) {
     console.error(
