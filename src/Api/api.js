@@ -66,6 +66,17 @@ const getAllExamsByUserIdAPI = async (user_id) => {
   }
 };
 
+//xóa bài thi theo exam_id
+const deleteExamsByExamIdAPI = async (exam_id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/exams/quest/${exam_id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Lỗi xóa bài thi có id là: ${exam_id}`, error);
+    return [];
+  }
+};
+
 //lấy ds câu hỏi thuộc môn học
 const getQuestionBySubSubjectIdAPI = async (subsubject_id) => {
   try {
@@ -210,4 +221,5 @@ export {
   registerAPI,
   makeQuestionAPI,
   submitExamAPI,
+  deleteExamsByExamIdAPI,
 };

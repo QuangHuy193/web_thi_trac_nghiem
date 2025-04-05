@@ -2,13 +2,19 @@ import classNames from "classnames/bind";
 
 import styles from "./ListExam.module.scss";
 import { useEffect, useState } from "react";
-import { getAllExamsByUserIdAPI } from "../../Api/api";
+import { deleteExamsByExamIdAPI, getAllExamsByUserIdAPI } from "../../Api/api";
+import {
+  showErrorToast,
+  showSuccessToast,
+} from "../../Utils/ToastNotification";
 
 const cx = classNames.bind(styles);
 
 function ListExam({ user, setHeaderTitle, setSelectedContent, setExamEdited }) {
   // State lưu danh sách đề thi của người dùng
   const [exams, setExams] = useState([]);
+  // lưu để gọi lại api lấy exam
+  const [isChangeExam, setIsChangeExam] = useState(false);
 
   // Lấy danh sách đề thi của user khi component được mount
   useEffect(() => {
@@ -18,12 +24,22 @@ function ListExam({ user, setHeaderTitle, setSelectedContent, setExamEdited }) {
     };
 
     getExamByUserId();
-  }, []); // chỉ chạy một lần khi component render
+  }, [isChangeExam]); // chỉ chạy một lần khi component render
 
   // Hàm xử lý xóa đề thi (chưa cài đặt logic xóa thực tế)
-  const handleDelete = (examId) => {
-    // TODO: Thêm logic gọi API để xóa bài thi
-    // setExams(exams.filter((exam) => exam.id !== examId));
+  const handleDelete = async (examId) => {
+    try {
+      const response = await deleteExamsByExamIdAPI(examId);
+
+      if (response.deleted) {
+        showSuccessToast(response.message, 1200);
+        setIsChangeExam(!isChangeExam);
+      } else {
+        showErrorToast(response.message, 1200);
+      }
+    } catch (error) {
+      showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
+    }
   };
 
   // Hàm xử lý sửa đề thi
@@ -58,7 +74,7 @@ function ListExam({ user, setHeaderTitle, setSelectedContent, setExamEdited }) {
                 </button>
                 {/* Nút xóa bài thi */}
                 <button
-                  onClick={() => handleDelete(exam.id)}
+                  onClick={() => handleDelete(exam.exam_id)}
                   className={cx("delete-btn")}
                 >
                   Xóa

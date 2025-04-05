@@ -1,10 +1,10 @@
 import classNames from "classnames/bind";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import styles from "./MakeQuestion.module.scss";
-import { makeQuestionAPI } from "../../Api/api";
+import { getSubSubjectsAPI, makeQuestionAPI } from "../../Api/api";
 import {
   showErrorToast,
   showSuccessToast,
@@ -18,6 +18,8 @@ function MakeQuestion({
   selectedSubSubject,
   setRefreshQuestion,
 }) {
+  // tên môn phân lớp để hiển thi
+  const [subSubjectName, setSubSubjectName] = useState("");
   // State lưu thông tin câu hỏi và danh sách đáp án
   const [formData, setFormdata] = useState({
     subject_id: selectedSubSubject, // Môn học con được chọn
@@ -26,6 +28,22 @@ function MakeQuestion({
     created_by: user.user_id, // ID người tạo (user hiện tại)
     answers: [{}, {}, {}, {}], // 4 đáp án mặc định (rỗng)
   });
+
+  // lấy tên môn phân lớp
+  useEffect(() => {
+    const getSubSubject = async () => {
+      const rs = await getSubSubjectsAPI();
+      console.log(rs);
+      for (let index = 0; index < rs.length; index++) {
+        if (rs[index].subsubjects_id == selectedSubSubject) {
+          setSubSubjectName(rs[index].subject_name);
+          return;
+        }
+      }
+    };
+
+    getSubSubject();
+  }, []);
 
   // Xử lý khi người dùng nhập nội dung câu hỏi
   const handleQuestionChange = (e) => {
@@ -123,7 +141,9 @@ function MakeQuestion({
 
         {/* Tiêu đề form */}
         <div className={cx("title-group")}>
-          <label className={cx("title")}>Thêm câu hỏi</label>
+          <label className={cx("title")}>
+            Thêm câu hỏi cho môn {" " + subSubjectName}
+          </label>
         </div>
 
         {/* Nhập nội dung câu hỏi */}

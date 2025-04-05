@@ -19,7 +19,7 @@ import MakeQuestion from "../MakeQuestion/MakeQuestion";
 
 const cx = classNames.bind(styles);
 
-function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
+function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
   // ds môn chính
   const [subjects, setSubjects] = useState([]);
   // ds môn phân lớp
@@ -99,6 +99,11 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
         time: examEdited.time || "",
         questions: examEdited.Questions || [],
       }));
+
+      //TODO kiểm tra lại ds câu hỏi khi sửa không hiển thị đúng
+      for (let index = 0; index < exam.questions.length; index++) {
+        console.log(exam.questions);
+      }
 
       setSelectedSubSubject(examEdited.subsubject_id);
 
@@ -188,7 +193,7 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
     }
   };
 
-  //xử lý thay đổi của dropdown subject
+  //xử lý thay đổi của dropdown subsubject
   const handleChangeSubSUbject = (e) => {
     setSelectedSubSubject(e.target.value);
     setExam({ ...exam, subsubject_id: e.target.value });
@@ -231,12 +236,12 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
       if (result.exam) {
         showSuccessToast(result.message, 1200);
         setHeaderTitle("Danh Dách bài thi");
-        selectedContent("listExam");
+        setSelectedContent("listExam");
       } else {
         showErrorToast(result.message || "Không thể tạo bài thi!", 1200);
       }
     } catch (error) {
-      showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
+      // showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
     }
   };
 
@@ -324,7 +329,14 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
         {/* Danh sách câu hỏi từ API */}
         <div className={cx("question-list")}>
           <div className={cx("title-group")}>
-            <h3 className={cx("title")}>Danh sách câu hỏi:</h3>
+            <h3 className={cx("title")}>
+              Danh sách câu hỏi thuộc môn:{" "}
+              {selectedSubSubject &&
+                subSubjects.find(
+                  (item) =>
+                    Number(item.subsubjects_id) === Number(selectedSubSubject)
+                )?.subject_name}
+            </h3>
             {Object.keys(questions).length !== 0 && (
               <span className={cx("icon-plus")} onClick={handleMakeQuestion}>
                 <FontAwesomeIcon icon={faPlusCircle} />
@@ -384,31 +396,66 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
           </h3>
           {exam.questions.length > 0 && (
             <ul>
-              {exam.questions.map((qId) => {
-                const question = questions.questions.find(
-                  (q) => q.question_id === qId
-                );
-                return question ? (
-                  <li key={qId} className={cx("question-item")}>
-                    <div>
-                      <strong>{question.question_text}</strong>
-                      <span>
-                        Độ khó: {getDifficultyLabel(question.difficulty)}
-                      </span>
-                    </div>
-                    <span>
-                      <button
-                        className={cx("remove-button")}
-                        onClick={() =>
-                          handleRemoveQuestion(question.question_id)
-                        }
+              {!examEdited
+                ? exam.questions.map((qId) => {
+                    {
+                      /* thêm mới */
+                    }
+                    const question = questions.questions?.find(
+                      (q) => q.question_id === qId
+                    );
+                    return question ? (
+                      <li key={qId} className={cx("question-item")}>
+                        <div>
+                          <strong>{question.question_text}</strong>
+                          <span>
+                            Độ khó: {getDifficultyLabel(question.difficulty)}
+                          </span>
+                        </div>
+                        <span>
+                          <button
+                            className={cx("remove-button")}
+                            onClick={() =>
+                              handleRemoveQuestion(question.question_id)
+                            }
+                          >
+                            Xóa
+                          </button>
+                        </span>
+                      </li>
+                    ) : null;
+                  })
+                : exam.questions.map((qId) => {
+                    {
+                      /* cập nhật*/
+                    }
+                    const question = questions.questions?.find(
+                      (q) => q.question_id === qId.question_id
+                    );
+                    return question ? (
+                      <li
+                        key={question.question_id}
+                        className={cx("question-item")}
                       >
-                        Xóa
-                      </button>
-                    </span>
-                  </li>
-                ) : null;
-              })}
+                        <div>
+                          <strong>{question.question_text}</strong>
+                          <span>
+                            Độ khó: {getDifficultyLabel(question.difficulty)}
+                          </span>
+                        </div>
+                        <span>
+                          <button
+                            className={cx("remove-button")}
+                            onClick={() =>
+                              handleRemoveQuestion(question.question_id)
+                            }
+                          >
+                            Xóa
+                          </button>
+                        </span>
+                      </li>
+                    ) : null;
+                  })}
             </ul>
           )}
         </div>
