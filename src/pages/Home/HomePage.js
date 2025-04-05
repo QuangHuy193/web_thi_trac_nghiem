@@ -18,44 +18,59 @@ import ListExam from "../../components/ListExam/ListExam";
 const cx = classNames.bind(styles);
 
 function Home() {
-  //xem menu nào dc chọn để hiển thị content tương ứng
+  // State lưu trữ nội dung được chọn (để hiển thị content tương ứng)
   const [selectedContent, setSelectedContent] = useState("");
-  // xem môn nào dc chọn để hiện bài thi của môn đó (theo id)
+
+  // State lưu trữ môn học được chọn (theo id môn học) để hiển thị bài thi của môn đó
   const [selectedSubject, setSelectedSubject] = useState("");
-  // title header
+
+  // State lưu trữ tiêu đề header
   const [headerTitle, setHeaderTitle] = useState(null);
-  //scroll up
+
+  // State quản lý việc hiển thị nút scroll lên đầu trang khi cuộn xuống
   const [showScroll, setShowScroll] = useState(false);
-  // id bài thi dùng để gửi lên server lưu lịch sử
+
+  // State lưu trữ id của bài thi (để gửi lên server lưu lịch sử làm bài)
   const [idExam, setIdExam] = useState("");
-  // time của exam
+
+  // State lưu trữ thời gian của bài thi (time limit)
   const [timeExam, setTimeExam] = useState(0);
-  // question của exam dc chọn
-  const [questionsExam, setQuestionsExam]  =useState([])
-  // kiểm tra trạng thái đăng nhập
+
+  // State lưu trữ danh sách câu hỏi của bài thi đã chọn
+  const [questionsExam, setQuestionsExam] = useState([]);
+
+  // State lưu trữ thông tin người dùng (kiểm tra trạng thái đăng nhập)
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-  // bài thi dc sửa
+
+  // State lưu trữ thông tin bài thi đang được chỉnh sửa
   const [examEdited, setExamEdited] = useState({});
 
+  // useEffect để theo dõi sự kiện cuộn trang (scroll) và hiển thị/ẩn nút scroll lên đầu trang
   useEffect(() => {
     const handleScroll = () => {
+      // Nếu cuộn xuống trên 200px, hiển thị nút scroll lên đầu trang
       if (window.scrollY > 200) {
         setShowScroll(true);
       } else {
-        setShowScroll(false);
+        setShowScroll(false); // Ẩn nút nếu không đủ điều kiện
       }
     };
 
+    // Lắng nghe sự kiện scroll trên cửa sổ
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
+    // Dọn dẹp sự kiện khi component bị hủy
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []); // Chạy 1 lần khi component được mount
+
+  // Hàm scroll lên đầu trang khi người dùng nhấn nút
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" }); // Cuộn trang lên đầu
   };
 
   return (
     <div>
+      {/* Header Component */}
       <Header
         setSelectedContent={setSelectedContent}
         headerTitle={headerTitle}
@@ -65,18 +80,22 @@ function Home() {
         user={user}
         setUser={setUser}
       />
+
       <div className={cx("container")}>
         <div className={cx("sidebar")}>
+          {/* Sidebar Component */}
           <Sidebar
             selectedContent={selectedContent}
             setSelectedContent={setSelectedContent}
             setSelectedSubject={setSelectedSubject}
             setHeaderTitle={setHeaderTitle}
             user={user}
-          setExamEdited={setExamEdited}
+            setExamEdited={setExamEdited}
           />
         </div>
+
         <div className={cx("content")}>
+          {/* Render nội dung tương ứng với selectedContent */}
           {selectedContent === "exam" && (
             <Exam
               user={user}
@@ -88,10 +107,11 @@ function Home() {
               setQuestionsExam={setQuestionsExam}
             />
           )}
+
           {selectedContent === "info" && <Info user={user} setUser={setUser} />}
           {selectedContent === "history" && <History />}
           {selectedContent === "doExam" && (
-            <DoExam            
+            <DoExam
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
               idExam={idExam}
@@ -115,11 +135,13 @@ function Home() {
               setExamEdited={setExamEdited}
             />
           )}
+
+          {/* Nút scroll lên đầu trang (Hiển thị khi cuộn trang xuống 200px) */}
           {showScroll && (
             <FontAwesomeIcon
               className={cx("icon-up")}
               icon={faChevronUp}
-              onClick={scrollToTop}
+              onClick={scrollToTop} // Scroll lên đầu trang khi nhấn
             />
           )}
         </div>

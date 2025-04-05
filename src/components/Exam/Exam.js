@@ -16,49 +16,62 @@ function Exam({
   setHeaderTitle,
   setQuestionsExam,
 }) {
+  // Lưu danh sách đề thi tương ứng với môn học đã chọn
   const [exams, setExams] = useState([]);
 
+  // useEffect: gọi API để lấy danh sách đề khi selectedSubject thay đổi
   useEffect(() => {
     const getExams = async () => {
       const data = await getAllExamsBySubSubjectIdAPI(selectedSubject);
-      setExams(data);
+      setExams(data); // Cập nhật danh sách đề thi
     };
 
     getExams();
   }, [selectedSubject]);
 
+  // Xử lý khi người dùng click "Làm bài"
   const handleClickDoExam = (idExam, nameExam, timeExam, questionExam) => {
     if (!user) {
+      // Nếu chưa đăng nhập, hiển thị cảnh báo
       showConfirmDialog(
         "Bạn chưa đăng nhập",
         "Lịch sử làm bài sẽ không được lưu",
         "info",
         () => {
-          setSelectedContent("doExam");
-          setIdExam(idExam);
-          setHeaderTitle(nameExam);
-          setTimeExam(timeExam);
-          setQuestionsExam(questionExam);
+          // Cho phép làm bài nhưng không lưu lịch sử
+          handleDoExam(idExam, nameExam, timeExam, questionExam);
         },
         "Đồng ý",
         "Hủy"
       );
     } else {
-      setSelectedContent("doExam");
-      setIdExam(idExam);
-      setHeaderTitle(nameExam);
-      setTimeExam(timeExam);
-      setQuestionsExam(questionExam);
+      // Nếu đã đăng nhập, cho làm bài như bình thường
+      handleDoExam(idExam, nameExam, timeExam, questionExam);
     }
+  };
+
+  // xử lý bấm làm bài
+  const handleDoExam = (idExam, nameExam, timeExam, questionExam) => {
+    setSelectedContent("doExam");
+    setIdExam(idExam);
+    setHeaderTitle(nameExam);
+    setTimeExam(timeExam);
+    setQuestionsExam(questionExam);
   };
 
   return (
     <div className={cx("exam-container")}>
+      {/* Hiển thị danh sách đề thi */}
       {exams.length > 0 ? (
         exams.map((exam) => (
           <div key={exam.exam_id} className={cx("exam-card")}>
+            {/* Tên đề thi */}
             <h3 className={cx("exam-title")}>{exam.title}</h3>
+
+            {/* Mô tả đề thi */}
             <p className={cx("exam-description")}>{exam.description}</p>
+
+            {/* Nút làm bài */}
             <button
               className={cx("exam-button")}
               onClick={() =>
@@ -75,6 +88,7 @@ function Exam({
           </div>
         ))
       ) : (
+        // Nếu không có đề thi
         <p className={cx("no-exam")}>Không có đề thi nào!</p>
       )}
     </div>

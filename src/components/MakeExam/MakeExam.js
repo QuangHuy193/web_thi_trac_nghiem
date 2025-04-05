@@ -1,5 +1,5 @@
 import classNames from "classnames/bind";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
@@ -90,7 +90,7 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
   //xử lý khi cập nhật exam
   useEffect(() => {
     if (examEdited && Object.keys(examEdited).length !== 0) {
-      // Cập nhật state exam từ examEdited     
+      // Cập nhật state exam từ examEdited
       setExam((prev) => ({
         ...prev,
         exam_name: examEdited.title || "",
@@ -109,19 +109,7 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
       if (subSubject) {
         setSelectedSubject(subSubject.subject_id);
       }
-    } 
-    // else {
-    //   setSelectedSubSubject(null);
-    //   setSelectedSubject(null);
-    //   setExam({
-    //     exam_name: "",
-    //     subsubject_id: "",
-    //     created_id: user.user_id,
-    //     description: "",
-    //     time: "",
-    //     questions: [],
-    //   });
-    // }
+    }
   }, [examEdited, subSubjects]);
 
   //reset từ cập nhật sang thêm
@@ -137,10 +125,11 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
         time: "",
         questions: [],
       });
-      setFilteredQuestions([])
+      setFilteredQuestions([]);
     }
   }, [examEdited]);
 
+  // dùng để lấy ds môn phân lơp theo môn học chính dc chọn
   const filteredSubSubjects = selectedSubject
     ? subSubjects.filter((sub) => sub.subject_id === selectedSubject)
     : [];
@@ -219,6 +208,8 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
       errorMessage = "Vui lòng nhập tên cho đề thi";
     } else if (!exam.description) {
       errorMessage = "Vui lòng nhập mô tả cho đề thi";
+    } else if (exam.time === 0) {
+      errorMessage = "Bạn chưa nhập thời gian làm bài cho bài thi!";
     } else if (exam.questions.length === 0) {
       errorMessage = "Bạn chưa thêm bất kỳ câu hỏi nào cho đề thi!";
     }
@@ -251,6 +242,7 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
 
   return (
     <div className={cx("container")}>
+      {/* trang thêm câu hỏi */}
       {isMakeQuestion && (
         <div style={{ position: "relative" }}>
           <MakeQuestion
@@ -339,7 +331,7 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
               </span>
             )}
           </div>
-
+          {/* lọc câu hỏi */}
           {Object.keys(questions).length !== 0 && (
             <div className={cx("filter-difficuty")}>
               <label className={cx("filter-difficulty-title")}>
@@ -359,6 +351,7 @@ function MakeExam({ user, selectedContent, setHeaderTitle, examEdited }) {
             </div>
           )}
 
+          {/* ds câu hỏi */}
           {filteredQuestions.questions?.length > 0 && (
             <ul>
               {filteredQuestions.questions.map((question) => (

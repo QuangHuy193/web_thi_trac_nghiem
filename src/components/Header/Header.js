@@ -29,39 +29,46 @@ function Header({
   user,
   setUser,
 }) {
+  // Trạng thái hiển thị menu mobile
   const [showMenu, setShowMenu] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleLogin = () => {
+  // Xử lý khi nhấn nút "Đăng nhập"
+  const handleClickLogin = () => {
     if (selectedContent === "doExam") {
+      // Nếu đang làm bài thì cảnh báo sẽ mất kết quả
       showConfirmDialog(
         "Bạn muốn tiếp tục?",
         "Bạn đang làm bài, đến trang đăng nhập sẽ hủy kết quả làm bài của bạn!",
         "warning",
         () => {
-          navigate("/login");
+          navigate("/login"); // Chuyển hướng đến trang đăng nhập
         },
         "Tiếp tục",
         "Không"
       );
     } else {
-      navigate("/login");
+      navigate("/login"); // Chuyển đến trang đăng nhập bình thường
     }
   };
 
-  const handleLogout = () => {
+  // Xử lý khi nhấn "Đăng xuất"
+  const handleClickLogout = () => {
     showConfirmDialog(
       "",
       "Bạn chắc chắn muốn đăng xuất?",
       "question",
       () => {
         if (selectedContent !== "doExam") {
-          localStorage.removeItem("user");
-          setHeaderTitle("");
-          setSelectedContent("");
-          setUser(JSON.parse(localStorage.getItem("user")));
+          // Nếu không đang làm bài thì cho phép đăng xuất
+          localStorage.removeItem("user"); // Xóa user khỏi localStorage
+          setHeaderTitle(""); // Reset tiêu đề
+          setSelectedContent(""); // Quay về giao diện chính
+          setUser(JSON.parse(localStorage.getItem("user"))); // Reset user
           showSuccessToast("Đăng xuất thành công!", 1200);
         } else {
+          // Không cho đăng xuất khi đang làm bài
           showErrorToast("Bạn không thể đăng xuất khi đang làm bài!", 1200);
         }
       },
@@ -72,22 +79,24 @@ function Header({
 
   return (
     <header className={cx("container")}>
+      {/* Hiển thị tiêu đề: nếu không có thì hiện "Trang chủ" */}
       <div className={cx("title")}>
         {headerTitle ? headerTitle : "Trang chủ"}
       </div>
 
-      {/* tạm ẩn ở mobile */}
+      {/* Ô tìm kiếm (chỉ hiện khi đang ở giao diện chọn đề thi) */}
       {selectedContent === "exam" && (
         <div className={cx("search-wrapper")}>
           <Search />
         </div>
       )}
 
-      {/* Icon menu chỉ hiển thị trên mobile */}
+      {/* Icon menu dành cho mobile */}
       <div className={cx("menu-toggle")} onClick={() => setShowMenu(!showMenu)}>
         <FontAwesomeIcon icon={faBars} />
       </div>
 
+      {/* Menu mobile khi được bật */}
       {showMenu && (
         <MenuMobile
           showMenu={showMenu}
@@ -99,19 +108,23 @@ function Header({
         />
       )}
 
-      {/* thêm xử lý mobile */}
+      {/* Giao diện hiển thị tài khoản hoặc nút đăng nhập */}
       {user ? (
         <div className={cx("username")}>
+          {/* Tên người dùng */}
           <FontAwesomeIcon className={cx("username-icon")} icon={faUser} />{" "}
           <span className={cx("username-name")}>{user.username}</span>
+
+          {/* Nút đăng xuất */}
           <FontAwesomeIcon
             className={cx("logout")}
             icon={faRightFromBracket}
-            onClick={handleLogout}
+            onClick={handleClickLogout}
           />
         </div>
       ) : (
-        <div className={cx("btn-login")} onClick={handleLogin}>
+        // Nút đăng nhập nếu chưa có user
+        <div className={cx("btn-login")} onClick={handleClickLogin}>
           <Button>Đăng nhập</Button>
         </div>
       )}
