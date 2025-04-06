@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import MakeExam from "../../components/MakeExam/MakeExam";
 import ListExam from "../../components/ListExam/ListExam";
+import HistoryExam from "../../components/HistoryExam/HistoryExam";
 
 const cx = classNames.bind(styles);
 
@@ -44,6 +45,9 @@ function Home() {
 
   // State lưu trữ thông tin bài thi đang được chỉnh sửa
   const [examEdited, setExamEdited] = useState({});
+
+  //state lưu kết quả làm bài - để hiển thị kết quả khi nộp bài nhưng không đăng nhập
+  const [resultExam, setResultExam] = useState("");
 
   // useEffect để theo dõi sự kiện cuộn trang (scroll) và hiển thị/ẩn nút scroll lên đầu trang
   useEffect(() => {
@@ -109,7 +113,13 @@ function Home() {
           )}
 
           {selectedContent === "info" && <Info user={user} setUser={setUser} />}
-          {selectedContent === "history" && <History />}
+          {selectedContent === "history" && (
+            <History
+              setSelectedContent={setSelectedContent}
+              setHeaderTitle={setHeaderTitle}
+              user={user}
+            />
+          )}
           {selectedContent === "doExam" && (
             <DoExam
               setSelectedContent={setSelectedContent}
@@ -117,6 +127,8 @@ function Home() {
               idExam={idExam}
               timeExam={timeExam}
               questionsExam={questionsExam}
+              user={user}
+              setResultExam={setResultExam}
             />
           )}
           {selectedContent === "makeExam" && (
@@ -133,6 +145,15 @@ function Home() {
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
               setExamEdited={setExamEdited}
+            />
+          )}
+
+          {selectedContent === "historyExam" && (
+            <HistoryExam
+              setSelectedContent={setSelectedContent}
+              setHeaderTitle={setHeaderTitle}
+              resultExam={resultExam}
+              questionsExam={questionsExam}
             />
           )}
 

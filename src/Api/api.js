@@ -81,6 +81,7 @@ const deleteExamsByExamIdAPI = async (exam_id) => {
 const getQuestionBySubSubjectIdAPI = async (subsubject_id) => {
   try {
     const response = await axios.get(`${API_URL}/questions/${subsubject_id}`);
+
     return response.data;
   } catch (error) {
     console.error(

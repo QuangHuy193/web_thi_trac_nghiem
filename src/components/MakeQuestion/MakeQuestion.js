@@ -33,7 +33,6 @@ function MakeQuestion({
   useEffect(() => {
     const getSubSubject = async () => {
       const rs = await getSubSubjectsAPI();
-      console.log(rs);
       for (let index = 0; index < rs.length; index++) {
         if (rs[index].subsubjects_id == selectedSubSubject) {
           setSubSubjectName(rs[index].subject_name);

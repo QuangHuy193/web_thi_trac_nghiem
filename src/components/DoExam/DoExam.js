@@ -11,29 +11,31 @@ import { showConfirmDialog } from "../confirmDialog/confirmDialog";
 
 const cx = classNames.bind(styles);
 
-function DoExam({ 
+function DoExam({
   setSelectedContent,
   setHeaderTitle,
   idExam,
   timeExam,
-  questionsExam
+  questionsExam,
+  user,
+  setResultExam,
 }) {
   // Lưu đáp án người dùng chọn
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState([]);
   // Lưu lỗi nếu người dùng chưa trả lời câu hỏi nào đó
-  const [errors, setErrors] = useState({}); 
+  const [errors, setErrors] = useState({});
   // Đếm ngược thời gian làm bài (đơn vị: phút)
   const [timeLeft, setTimeLeft] = useState(timeExam * 60);
   // Dữ liệu gửi lên khi nộp bài
   const [formData, setFormData] = useState({
     exam_id: idExam,
-    reselts: {},
+    results: [],
   });
 
   // useEffect để cập nhật thời gian đếm ngược mỗi giây
   useEffect(() => {
     if (timeLeft <= 0) {
-      handleSubmit(); // Tự động nộp bài khi hết giờ
+      handleClickSubmit(); // Tự động nộp bài khi hết giờ
       return;
     }
 
@@ -44,6 +46,14 @@ function DoExam({
     return () => clearInterval(timer); // Xóa interval khi component unmount
   }, [timeLeft]);
 
+  // Cập nhật formData khi người dùng chọn câu trả lời
+  useEffect(() => {
+    setFormData({
+      exam_id: idExam,
+      results: answers,
+    });
+  }, [answers]);
+
   // Định dạng lại thời gian sang phút:giây
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -53,7 +63,22 @@ function DoExam({
 
   // Xử lý chọn đáp án cho từng câu hỏi
   const handleSelectAnswer = (questionId, answerId) => {
-    setAnswers({ ...answers, [questionId]: answerId });
+    const newAnswer = {
+      question_id: questionId,
+      answer_id: answerId,
+    };
+
+    // Cập nhật hoặc thêm mới
+    setAnswers((prev) => {
+      const existingIndex = prev.findIndex((a) => a.question_id === questionId);
+      if (existingIndex !== -1) {
+        const updated = [...prev];
+        updated[existingIndex] = newAnswer;
+        return updated;
+      } else {
+        return [...prev, newAnswer];
+      }
+    });
 
     // Nếu đã chọn thì xóa lỗi (nếu có)
     setErrors((prevErrors) => {
@@ -63,8 +88,21 @@ function DoExam({
     });
   };
 
+  const handleSubmitHasLogin = () => {
+    // TODO: gọi API để nộp bài tại đây
+    setSelectedContent("history");
+    setHeaderTitle("Lịch sử làm bài");
+    showSuccessToast("Nộp bài thành công!", 1200);
+  };
+
+  const handleSubmitNoLogin = () => {
+    setResultExam(formData);
+    setHeaderTitle("Kết quả làm bài");
+    setSelectedContent("historyExam");
+  };
+
   // Xử lý khi người dùng bấm nút "Nộp bài" hoặc khi hết giờ
-  const handleSubmit = (e) => {
+  const handleClickSubmit = (e) => {
     if (e) e.preventDefault();
 
     // Trường hợp người dùng bấm nút nộp bài
@@ -74,23 +112,28 @@ function DoExam({
 
       // Kiểm tra các câu chưa trả lời
       questionsExam.forEach((question) => {
-        if (!answers[question.question_id]) {
+        const answered = answers.find(
+          (a) => a.question_id === question.question_id
+        );
+
+        if (!answered) {
           newErrors[question.question_id] = true;
+
           if (!firstUnansweredQuestionId) {
             firstUnansweredQuestionId = question.question_id;
           }
-
-          // Cuộn đến câu hỏi chưa trả lời đầu tiên
-          if (firstUnansweredQuestionId) {
-            document
-              .getElementById(`question-${firstUnansweredQuestionId}`)
-              ?.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-              });
-          }
         }
       });
+
+      // Cuộn đến câu hỏi chưa trả lời đầu tiên (nếu có)
+      if (firstUnansweredQuestionId) {
+        document
+          .getElementById(`question-${firstUnansweredQuestionId}`)
+          ?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+      }
 
       if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors); // Hiển thị lỗi
@@ -103,14 +146,11 @@ function DoExam({
           "Sau khi nộp bài, bạn sẽ không thể thay đổi câu trả lời!",
           "info",
           () => {
-            setSelectedContent("history");
-            setHeaderTitle("Lịch sử làm bài");
-
-            // TODO: gọi API để nộp bài tại đây
-            // setFormData({ ...formData, reselts: answers });
-            // console.log(JSON.stringify(formData, null, 2));
-
-            showSuccessToast("Nộp bài thành công!", 1200);
+            if (user) {
+              handleSubmitHasLogin();
+            } else {
+              handleSubmitNoLogin();
+            }
           },
           "Đồng ý",
           "Hủy"
@@ -118,7 +158,11 @@ function DoExam({
       }
     } else {
       // Trường hợp hết giờ tự động nộp bài
-      // TODO: gọi API tại đây nếu cần
+      if (user) {
+        handleSubmitHasLogin();
+      } else {
+        handleSubmitNoLogin();
+      }
     }
   };
 
@@ -130,7 +174,7 @@ function DoExam({
       </div>
 
       {/* Form câu hỏi trắc nghiệm */}
-      <form onSubmit={handleSubmit} className={cx("form")}>
+      <form onSubmit={handleClickSubmit} className={cx("form")}>
         {Array.isArray(questionsExam) &&
           questionsExam.map((question, index) => (
             <div key={question.question_id} className={cx("card")}>
@@ -155,7 +199,9 @@ function DoExam({
                         name={`question-${question.question_id}`}
                         value={answer.answer_id}
                         checked={
-                          answers[question.question_id] === answer.answer_id
+                          answers.find(
+                            (a) => a.question_id === question.question_id
+                          )?.answer_id === answer.answer_id
                         }
                         onChange={() =>
                           handleSelectAnswer(
@@ -179,6 +225,5 @@ function DoExam({
     </div>
   );
 }
-
 
 export default DoExam;
