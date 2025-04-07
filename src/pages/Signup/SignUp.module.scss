@@ -5,14 +5,14 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #028aec, #764ba2);
 }
+
 .homeLink {
-  position: absolute;
+  position: fixed;
   top: 20px;
   left: 20px;
   color: white !important;
-  font-size: 18px;
+  font-size: 1.8rem;
   font-weight: bold;
-  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -32,6 +32,7 @@
   width: 550px;
   border: 2px solid #0170cb; /* Thêm viền xanh dương */
 }
+
 h2 {
   margin: 0;
   padding-bottom: 30px;
@@ -130,4 +131,31 @@ p {
 .inputIcon {
   margin-right: 8px;
   font-size: 16px;
+}
+
+@media (max-width: 600px) {
+  .signupBox {
+    width: 100%;
+    border-radius: 0;
+    padding: 5.5rem 1.5rem 2rem 1.5rem;
+    box-sizing: border-box;
+    border: none;
+  }
+
+  h2 {
+    padding-bottom: 10px;
+  }
+
+  .signupBtn {
+    width: 100%;
+  }
+
+  .homeLink {
+    color: black !important;
+
+    &:hover {
+      color: white !important;
+      transition: border-color 1s ease-in-out !important;
+    }
+  }
 }

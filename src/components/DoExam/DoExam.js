@@ -99,6 +99,7 @@ function DoExam({
     setResultExam(formData);
     setHeaderTitle("Kết quả làm bài");
     setSelectedContent("historyExam");
+    showSuccessToast("Nộp bài thành công!", 1200);
   };
 
   // Xử lý khi người dùng bấm nút "Nộp bài" hoặc khi hết giờ

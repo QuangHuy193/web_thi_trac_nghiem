@@ -107,12 +107,7 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
         examEdited.Questions
           ? examEdited.Questions.map((q) => q.question_id)
           : []
-      );
-
-      //TODO kiểm tra lại ds câu hỏi khi sửa không hiển thị đúng
-      // for (let index = 0; index < exam.questions.length; index++) {
-      //   console.log(exam.questions);
-      // }
+      );  
 
       setSelectedSubSubject(examEdited.subsubject_id);
 
