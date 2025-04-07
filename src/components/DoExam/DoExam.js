@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import classNames from "classnames/bind";
 
-import { getQuestionBySubSubjectIdAPI } from "../../Api/api";
 import styles from "./DoExam.module.scss";
 import {
   showErrorToast,
