@@ -118,6 +118,7 @@ function Home() {
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
               user={user}
+              setIdExam={setIdExam}
             />
           )}
           {selectedContent === "doExam" && (
@@ -129,6 +130,7 @@ function Home() {
               questionsExam={questionsExam}
               user={user}
               setResultExam={setResultExam}
+              setIdExam={setIdExam}
             />
           )}
           {selectedContent === "makeExam" && (
@@ -149,11 +151,10 @@ function Home() {
           )}
 
           {selectedContent === "historyExam" && (
-            <HistoryExam
-              setSelectedContent={setSelectedContent}
-              setHeaderTitle={setHeaderTitle}
+            <HistoryExam    
               resultExam={resultExam}
               questionsExam={questionsExam}
+              idExam={idExam}
             />
           )}
 

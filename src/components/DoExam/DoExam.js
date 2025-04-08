@@ -18,6 +18,7 @@ function DoExam({
   questionsExam,
   user,
   setResultExam,
+  setIdExam
 }) {
   // Lưu đáp án người dùng chọn
   const [answers, setAnswers] = useState([]);
@@ -90,12 +91,14 @@ function DoExam({
   const handleSubmitHasLogin = () => {
     // TODO: gọi API để nộp bài tại đây
     setSelectedContent("history");
+    setIdExam("")
     setHeaderTitle("Lịch sử làm bài");
     showSuccessToast("Nộp bài thành công!", 1200);
   };
 
   const handleSubmitNoLogin = () => {
     setResultExam(formData);
+    setIdExam("")
     setHeaderTitle("Kết quả làm bài");
     setSelectedContent("historyExam");
     showSuccessToast("Nộp bài thành công!", 1200);

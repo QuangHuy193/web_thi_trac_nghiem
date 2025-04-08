@@ -11,13 +11,14 @@ import { useState } from "react";
 const cx = classNames.bind(styles);
 
 function Search() {
-  // lưu giá trị tạm của search 
+  // lưu giá trị tạm của search
   const [tempValue, setTempValue] = useState("");
   // dùng giá trị này để xác định có tiềm kiếm hay không
   const [searchValue, setSearchValue] = useState("");
 
   const handleSearch = () => {
     setSearchValue(tempValue);
+    handleClear();
     console.log(tempValue);
   };
 
@@ -35,10 +36,10 @@ function Search() {
           placeholder="Bạn đang tìm gì?"
           spellCheck="false"
           onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            handleSearch();
-          }
-        }}
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
         />
 
         <button className={cx("clear")} onClick={handleClear}>

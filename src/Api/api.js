@@ -210,6 +210,36 @@ const makeQuestionAPI = async (
   }
 };
 
+// lấy lịch sử làm bài theo user_id
+const getHistoryByUserIdAPI = async (user_id) => {
+  try {
+    const response = await axios.get(`${API_URL}/history/${user_id}`);
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Lỗi khi lấy lịch sử làm bài của người dùng có id là: ${user_id}`,
+      error
+    );
+    return [];
+  }
+};
+
+// lấy lịch sử bài thi theo exam__id
+const getHistoryByExamIdAPI = async (exam_id) => {
+  try {
+    const response = await axios.get(`${API_URL}/history/ans/${exam_id}`);
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Lỗi khi lấy bài thi có id là: ${exam_id}`,
+      error
+    );
+    return [];
+  }
+};
+
 export {
   getAllSubjectsAPI,
   getSubjectsAPI,
@@ -223,4 +253,6 @@ export {
   makeQuestionAPI,
   submitExamAPI,
   deleteExamsByExamIdAPI,
+  getHistoryByUserIdAPI,
+  getHistoryByExamIdAPI
 };

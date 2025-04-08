@@ -79,7 +79,7 @@ function Exam({
                   exam.exam_id,
                   exam.title,
                   exam.time,
-                  exam.Questions
+                  exam.question
                 )
               }
             >

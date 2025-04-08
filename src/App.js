@@ -6,9 +6,9 @@ import ToastNotification from "./Utils/ToastNotification";
 function App() {
   return (
     <>
-      <ToastNotification />
       <Router>
         <div className="App">
+          <ToastNotification />
           <Routes>
             {publicRoutes.map((route, index) => {
               const Page = route.page;
