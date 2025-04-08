@@ -2,13 +2,23 @@ import classNames from "classnames/bind";
 
 import styles from "./HistoryExam.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faVolumeHigh, faX } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeftLong,
+  faCheck,
+  faX,
+} from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { getHistoryByExamIdAPI } from "../../Api/api";
 
 const cs = classNames.bind(styles);
 
-function HistoryExam({ resultExam, questionsExam, idExam }) {
+function HistoryExam({
+  resultExam,
+  questionsExam,
+  idExam,
+  setHeaderTitle,
+  setSelectedContent,
+}) {
   let correctCount = 0;
   let totalQuestions = 0;
   const { exam_id, results } = resultExam;
@@ -65,8 +75,21 @@ function HistoryExam({ resultExam, questionsExam, idExam }) {
 
   const score = ((correctCount / totalQuestions) * 10).toFixed(2); // Giữ 2 chữ số thập phân
 
+  const handleBack = () => {
+    setSelectedContent("history");
+    setHeaderTitle("Lịch sử làm bài");
+  };
+
   return (
     <div className={cs("history-container")}>
+      {idExam && (
+        <FontAwesomeIcon
+          className={cs("icon-back")}
+          icon={faArrowLeftLong}
+          onClick={handleBack}
+        />
+      )}
+
       {/* trường hợp xem kết quả vừa làm khi không đăng nhập */}
       {!idExam ? (
         <>

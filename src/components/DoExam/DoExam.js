@@ -7,6 +7,8 @@ import {
   showSuccessToast,
 } from "../../Utils/ToastNotification";
 import { showConfirmDialog } from "../confirmDialog/confirmDialog";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeftLong } from "@fortawesome/free-solid-svg-icons";
 
 const cx = classNames.bind(styles);
 
@@ -18,7 +20,9 @@ function DoExam({
   questionsExam,
   user,
   setResultExam,
-  setIdExam
+  setIdExam,
+  selectedSubject,
+  selectedSubjectName,
 }) {
   // Lưu đáp án người dùng chọn
   const [answers, setAnswers] = useState([]);
@@ -26,6 +30,7 @@ function DoExam({
   const [errors, setErrors] = useState({});
   // Đếm ngược thời gian làm bài (đơn vị: phút)
   const [timeLeft, setTimeLeft] = useState(timeExam * 60);
+  // lưu tên
   // Dữ liệu gửi lên khi nộp bài
   const [formData, setFormData] = useState({
     exam_id: idExam,
@@ -91,17 +96,31 @@ function DoExam({
   const handleSubmitHasLogin = () => {
     // TODO: gọi API để nộp bài tại đây
     setSelectedContent("history");
-    setIdExam("")
+    setIdExam("");
     setHeaderTitle("Lịch sử làm bài");
     showSuccessToast("Nộp bài thành công!", 1200);
   };
 
   const handleSubmitNoLogin = () => {
     setResultExam(formData);
-    setIdExam("")
+    setIdExam("");
     setHeaderTitle("Kết quả làm bài");
     setSelectedContent("historyExam");
     showSuccessToast("Nộp bài thành công!", 1200);
+  };
+
+  const handleBack = () => {
+    showConfirmDialog(
+      "Bạn có muốn tiếp tục?",
+      "Bạn đang làm bài, hành động này sẽ hủy kết quả làm bài của bạn, bạn vẫn muốn tiếp tục",
+      "warning",
+      () => {
+        setSelectedContent("exam");
+        setHeaderTitle(selectedSubjectName);
+      },
+      "Tiếp tục",
+      "Không"
+    );
   };
 
   // Xử lý khi người dùng bấm nút "Nộp bài" hoặc khi hết giờ
@@ -171,6 +190,12 @@ function DoExam({
 
   return (
     <div className={cx("container")}>
+      <FontAwesomeIcon
+        className={cx("icon-back")}
+        icon={faArrowLeftLong}
+        onClick={handleBack}
+      />
+
       {/* Hiển thị thời gian còn lại */}
       <div className={cx("timer")}>
         Thời gian còn lại: {formatTime(timeLeft)}

@@ -1,4 +1,4 @@
-import { toast, ToastContainer } from "react-toastify";
+import { Flip, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const ToastNotification = () => {
@@ -10,6 +10,8 @@ const ToastNotification = () => {
       newestOnTop={true}
       closeOnClick
       draggable
+      limit={3}
+      transition={Flip}
     />
   );
 };
@@ -22,6 +24,11 @@ export const showErrorToast = (message, duration = 2000) => {
 // Hàm hiển thị toast thành công với thời gian tùy chỉnh
 export const showSuccessToast = (message, duration = 2000) => {
   toast.success(message, { autoClose: duration });
+};
+
+// Hàm hiển thị toast thông tin với thời gian tùy chỉnh
+export const showInfoToast = (message, duration = 2000) => {
+  toast.info(message, { autoClose: duration });  
 };
 
 export default ToastNotification;

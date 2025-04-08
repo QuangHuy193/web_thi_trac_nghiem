@@ -25,6 +25,9 @@ function Home() {
   // State lưu trữ môn học được chọn (theo id môn học) để hiển thị bài thi của môn đó
   const [selectedSubject, setSelectedSubject] = useState("");
 
+  // State lưu trữ tên môn đang chọn dùng cho nút back khi đang trang làm bài
+  const [selectedSubjectName, setSelectedSubjectName] = useState("");
+
   // State lưu trữ tiêu đề header
   const [headerTitle, setHeaderTitle] = useState(null);
 
@@ -89,6 +92,7 @@ function Home() {
         <div className={cx("sidebar")}>
           {/* Sidebar Component */}
           <Sidebar
+            setSelectedSubjectName={setSelectedSubjectName}
             selectedContent={selectedContent}
             setSelectedContent={setSelectedContent}
             setSelectedSubject={setSelectedSubject}
@@ -131,6 +135,8 @@ function Home() {
               user={user}
               setResultExam={setResultExam}
               setIdExam={setIdExam}
+              selectedSubject={selectedSubject}
+              selectedSubjectName={selectedSubjectName}
             />
           )}
           {selectedContent === "makeExam" && (
@@ -151,10 +157,12 @@ function Home() {
           )}
 
           {selectedContent === "historyExam" && (
-            <HistoryExam    
+            <HistoryExam
               resultExam={resultExam}
               questionsExam={questionsExam}
               idExam={idExam}
+              setSelectedContent={setSelectedContent}
+              setHeaderTitle={setHeaderTitle}
             />
           )}
 
