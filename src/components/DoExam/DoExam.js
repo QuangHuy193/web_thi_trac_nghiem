@@ -9,6 +9,7 @@ import {
 import { showConfirmDialog } from "../confirmDialog/confirmDialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeftLong } from "@fortawesome/free-solid-svg-icons";
+import { submitExamAPI } from "../../Api/api";
 
 const cx = classNames.bind(styles);
 
@@ -30,12 +31,22 @@ function DoExam({
   const [errors, setErrors] = useState({});
   // Đếm ngược thời gian làm bài (đơn vị: phút)
   const [timeLeft, setTimeLeft] = useState(timeExam * 60);
-  // lưu tên
   // Dữ liệu gửi lên khi nộp bài
   const [formData, setFormData] = useState({
     exam_id: idExam,
-    results: [],
+    user_id: user ? user.user_id : "",
+    started_at: "",
+    finished_at: "",
+    answers: [],
   });
+
+  // gán thời gian bắt đầu - chạy 1 lần duy nhất
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      started_at: new Date().toISOString(), // thời gian bắt đầu chuẩn ISO
+    }));
+  }, []);
 
   // useEffect để cập nhật thời gian đếm ngược mỗi giây
   useEffect(() => {
@@ -53,10 +64,10 @@ function DoExam({
 
   // Cập nhật formData khi người dùng chọn câu trả lời
   useEffect(() => {
-    setFormData({
-      exam_id: idExam,
-      results: answers,
-    });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      answers: answers,
+    }));
   }, [answers]);
 
   // Định dạng lại thời gian sang phút:giây
@@ -70,7 +81,7 @@ function DoExam({
   const handleSelectAnswer = (questionId, answerId) => {
     const newAnswer = {
       question_id: questionId,
-      answer_id: answerId,
+      selected_answer_id: answerId,
     };
 
     // Cập nhật hoặc thêm mới
@@ -93,12 +104,28 @@ function DoExam({
     });
   };
 
-  const handleSubmitHasLogin = () => {
-    // TODO: gọi API để nộp bài tại đây
-    setSelectedContent("history");
-    setIdExam("");
-    setHeaderTitle("Lịch sử làm bài");
-    showSuccessToast("Nộp bài thành công!", 1200);
+  const handleSubmitHasLogin = async () => {
+    const now = new Date().toISOString();
+    try {
+      const rs = await submitExamAPI(
+        formData.user_id,
+        formData.exam_id,
+        formData.started_at,
+        now,
+        formData.answers
+      );
+
+      if (rs.history_id) {
+        setSelectedContent("history");
+        setIdExam("");
+        setHeaderTitle("Lịch sử làm bài");
+        showSuccessToast("Nộp bài thành công!", 1200);
+      } else {
+        showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
+      }
+    } catch (error) {
+      console.log("Có lỗi xảy ra, vui lòng thử lại...");
+    }
   };
 
   const handleSubmitNoLogin = () => {
@@ -225,11 +252,11 @@ function DoExam({
                       <input
                         type="radio"
                         name={`question-${question.question_id}`}
-                        value={answer.answer_id}
+                        value={answer.selected_answer_id}
                         checked={
                           answers.find(
                             (a) => a.question_id === question.question_id
-                          )?.answer_id === answer.answer_id
+                          )?.selected_answer_id === answer.answer_id
                         }
                         onChange={() =>
                           handleSelectAnswer(

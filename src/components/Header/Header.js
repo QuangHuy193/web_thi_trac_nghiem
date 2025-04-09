@@ -28,6 +28,7 @@ function Header({
   selectedContent,
   user,
   setUser,
+  setSearchValue
 }) {
   // Trạng thái hiển thị menu mobile
   const [showMenu, setShowMenu] = useState(false);
@@ -87,7 +88,7 @@ function Header({
       {/* Ô tìm kiếm (chỉ hiện khi đang ở giao diện chọn đề thi) */}
       {selectedContent === "exam" && (
         <div className={cx("search-wrapper")}>
-          <Search />
+        <Search setSearchValue={setSearchValue}/>
         </div>
       )}
 

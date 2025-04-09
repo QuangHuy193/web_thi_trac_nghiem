@@ -15,32 +15,30 @@ const cs = classNames.bind(styles);
 function HistoryExam({
   resultExam,
   questionsExam,
-  idExam,
   setHeaderTitle,
   setSelectedContent,
+  idHistory
 }) {
   let correctCount = 0;
   let totalQuestions = 0;
-  const { exam_id, results } = resultExam;
+  const { exam_id, answers } = resultExam;
 
   const [exam, setExam] = useState({});
 
   useEffect(() => {
     const getExam = async () => {
-      if (idExam) {
-        //!! sửa thành exam_id
-        const rs = await getHistoryByExamIdAPI(1);
-
+      if (idHistory) {        
+        const rs = await getHistoryByExamIdAPI(idHistory);        
         setExam(rs);
       }
     };
 
-    getExam(idExam);
+    getExam();
   }, []);
 
   if (resultExam) {
     // Đếm số câu đúng
-    correctCount = results.reduce((count, item) => {
+    correctCount = answers.reduce((count, item) => {
       const question = questionsExam.find(
         (q) => q.question_id === item.question_id
       );
@@ -57,7 +55,7 @@ function HistoryExam({
 
       return count;
     }, 0);
-  } else if (idExam) {
+  } else if (idHistory) {
     correctCount = exam.question?.reduce((count, item) => {
       // Tìm đáp án đúng và được chọn
       const isCorrectlyAnswered = item.answers.some(
@@ -67,9 +65,9 @@ function HistoryExam({
     }, 0);
   }
 
-  if (results) {
+  if (answers) {
     totalQuestions = questionsExam.length;
-  } else if (idExam) {
+  } else if (idHistory) {
     totalQuestions = exam.question?.length;
   }
 
@@ -82,7 +80,7 @@ function HistoryExam({
 
   return (
     <div className={cs("history-container")}>
-      {idExam && (
+      {idHistory && (
         <FontAwesomeIcon
           className={cs("icon-back")}
           icon={faArrowLeftLong}
@@ -91,7 +89,7 @@ function HistoryExam({
       )}
 
       {/* trường hợp xem kết quả vừa làm khi không đăng nhập */}
-      {!idExam ? (
+      {!idHistory ? (
         <>
           <h2 className={cs("title")}>Kết quả bài thi vừa làm</h2>
 
@@ -100,7 +98,7 @@ function HistoryExam({
             /10
           </p>
 
-          {results.map((item, index) => {
+          {answers.map((item, index) => {
             const question = questionsExam.find(
               (q) => q.question_id === item.question_id
             );

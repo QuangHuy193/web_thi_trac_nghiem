@@ -153,21 +153,19 @@ const registerAPI = async (username, email, password, role) => {
 
 //nộp bài
 const submitExamAPI = async (
-  title,
-  description,
-  time,
-  created_by,
-  subsubject_id,
-  question_ids
+  user_id,
+  exam_id,
+  started_at,
+  finished_at,
+  answers
 ) => {
   try {
-    const response = await axios.post(`${API_URL}/exams`, {
-      title,
-      description,
-      time,
-      created_by,
-      subsubject_id,
-      question_ids,
+    const response = await axios.post(`${API_URL}/history/submit`, {
+      user_id,
+      exam_id,
+      started_at,
+      finished_at,
+      answers,
     });
 
     return response.data;
@@ -225,17 +223,14 @@ const getHistoryByUserIdAPI = async (user_id) => {
   }
 };
 
-// lấy lịch sử bài thi theo exam__id
+// lấy lịch sử bài thi theo exam_id
 const getHistoryByExamIdAPI = async (exam_id) => {
   try {
     const response = await axios.get(`${API_URL}/history/ans/${exam_id}`);
 
     return response.data;
   } catch (error) {
-    console.error(
-      `Lỗi khi lấy bài thi có id là: ${exam_id}`,
-      error
-    );
+    console.error(`Lỗi khi lấy bài thi có id là: ${exam_id}`, error);
     return [];
   }
 };
@@ -254,5 +249,5 @@ export {
   submitExamAPI,
   deleteExamsByExamIdAPI,
   getHistoryByUserIdAPI,
-  getHistoryByExamIdAPI
+  getHistoryByExamIdAPI,
 };

@@ -7,29 +7,34 @@ import { getHistoryByUserIdAPI } from "../../Api/api";
 
 const cx = classNames.bind(styles);
 
-function History({ setSelectedContent, setHeaderTitle, setIdExam, user }) {
-  const [history, setHistory] = useState({});
+function History({
+  setSelectedContent,
+  setHeaderTitle,
+  setIdExam,
+  user,
+  setIdHistory,
+}) {
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
-    const getHistoryByUserId = async (user_id) => {
-      const rs = await getHistoryByUserIdAPI(user_id);
-      setHistory(rs);  
+    const getHistoryByUserId = async () => {
+      const rs = await getHistoryByUserIdAPI(user.user_id);
+      setHistory(rs);
     };
 
-    //!! cập nhật lại id đúng
-    getHistoryByUserId(6);
+    getHistoryByUserId();
   }, []);
 
-  const handleClickReviewExam = (exam_id) => {
+  const handleClickReviewExam = (history_id) => {
     setSelectedContent("historyExam");
     setHeaderTitle("Kết quả làm bài");
-    setIdExam(exam_id);
+    setIdHistory(history_id);
   };
 
   return (
     <div className={cx("container")}>
       {/* Danh sách các bài thi đã làm */}
-      {history ? (
+      {history.length !== 0 ? (
         history.histories?.map((item, index) => (
           <div key={index} className={cx("history-item")}>
             <div className={cx("history-row")}>
@@ -55,7 +60,7 @@ function History({ setSelectedContent, setHeaderTitle, setIdExam, user }) {
             <div
               className={cx("history-btn")}
               onClick={() => {
-                handleClickReviewExam(item.exam_id);
+                handleClickReviewExam(item.history_id);
               }}
             >
               <button>Xem lại bài thi</button>
@@ -63,7 +68,7 @@ function History({ setSelectedContent, setHeaderTitle, setIdExam, user }) {
           </div>
         ))
       ) : (
-        <div className={cx("no-history")}>Bạn chưa làm bài thi nào</div>
+        <div className={cx("no-history")}>Bạn chưa làm bài thi nào!</div>
       )}
     </div>
   );

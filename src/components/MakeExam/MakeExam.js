@@ -93,7 +93,6 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
 
   //xử lý khi cập nhật exam
   useEffect(() => {
-    console.log(examEdited);
     if (examEdited && Object.keys(examEdited).length !== 0) {
       // Cập nhật state exam từ examEdited
       setExam((prev) => ({
@@ -186,15 +185,11 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
     setFilterSelected(difficulty);
 
     if (difficulty === "all") {
-      console.log("độ khó: ", difficulty);
-      console.log("filter ", questions);
       setFilteredQuestions(questions);
     } else {
       const result = questions.questions.filter(
         (q) => q.difficulty === difficulty
       );
-      console.log("độ khó: ", difficulty);
-      console.log("filter ", result);
       setFilteredQuestions({ questions: result });
     }
   };

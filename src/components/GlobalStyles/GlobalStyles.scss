@@ -61,3 +61,18 @@ a[href] {
     transform: scale(1.1) translateY(-50%);
   }
 }
+
+@media (max-width: 600px) {
+  .icon-back {
+    left: 5px;
+    bottom: 5px;
+    top: auto;
+    transform: none;
+
+    &:hover {
+      background-color: #007bff; /* Nền xanh */
+      color: white; /* Màu icon đổi trắng */
+      transform: none;
+    }
+  }
+}

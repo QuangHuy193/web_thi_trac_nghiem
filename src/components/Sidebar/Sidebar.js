@@ -24,6 +24,7 @@ function Sidebar({
   user,
   setExamEdited,
   setSelectedSubjectName,
+
 }) {
   // State lưu trữ trạng thái hiển thị danh sách môn học (Hiện/Ẩn)
   const [showSubjects, setShowSubjects] = useState(false);

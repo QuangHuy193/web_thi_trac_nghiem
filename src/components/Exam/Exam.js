@@ -4,6 +4,7 @@ import classNames from "classnames/bind";
 import styles from "./Exam.module.scss";
 import { getAllExamsBySubSubjectIdAPI } from "../../Api/api";
 import { showConfirmDialog } from "../confirmDialog/confirmDialog";
+import { removeVietnameseTones } from "../../Utils/function";
 
 const cx = classNames.bind(styles);
 
@@ -15,6 +16,7 @@ function Exam({
   setSelectedContent,
   setHeaderTitle,
   setQuestionsExam,
+  searchValue,
 }) {
   // Lưu danh sách đề thi tương ứng với môn học đã chọn
   const [exams, setExams] = useState([]);
@@ -23,11 +25,23 @@ function Exam({
   useEffect(() => {
     const getExams = async () => {
       const data = await getAllExamsBySubSubjectIdAPI(selectedSubject);
-      setExams(data); // Cập nhật danh sách đề thi
-    };
 
+      // Cập nhật danh sách đề thi
+      if (!searchValue) {
+        setExams(data);
+      } else {
+        const keyword = removeVietnameseTones(searchValue);
+
+        const filtered = data.filter((exam) => {
+          const examName = removeVietnameseTones(exam.title);
+          return examName.includes(keyword);
+        });
+
+        setExams(filtered);
+      }
+    };
     getExams();
-  }, [selectedSubject]);
+  }, [selectedSubject, searchValue]);
 
   // Xử lý khi người dùng click "Làm bài"
   const handleClickDoExam = (idExam, nameExam, timeExam, questionExam) => {

@@ -10,20 +10,24 @@ import { useState } from "react";
 
 const cx = classNames.bind(styles);
 
-function Search() {
+function Search({ setSearchValue }) {
   // lưu giá trị tạm của search
   const [tempValue, setTempValue] = useState("");
-  // dùng giá trị này để xác định có tiềm kiếm hay không
-  const [searchValue, setSearchValue] = useState("");
 
   const handleSearch = () => {
     setSearchValue(tempValue);
-    handleClear();
-    console.log(tempValue);
   };
 
   const handleClear = () => {
     setTempValue("");
+    setSearchValue("");
+  };
+
+  const handleChange = (value) => {
+    setTempValue(value);
+    if (!value) {
+      setSearchValue("");
+    }
   };
 
   return (
@@ -32,7 +36,7 @@ function Search() {
       <div className={cx("search")}>
         <input
           value={tempValue}
-          onChange={(e) => setTempValue(e.target.value)}
+          onChange={(e) => handleChange(e.target.value)}
           placeholder="Bạn đang tìm gì?"
           spellCheck="false"
           onKeyDown={(e) => {

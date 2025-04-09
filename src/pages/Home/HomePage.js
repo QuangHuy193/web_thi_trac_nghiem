@@ -52,6 +52,12 @@ function Home() {
   //state lưu kết quả làm bài - để hiển thị kết quả khi nộp bài nhưng không đăng nhập
   const [resultExam, setResultExam] = useState("");
 
+  // Stat lưu id lịch sử
+  const [idHistory, setIdHistory] = useState("");
+
+  // dùng giá trị này để xác định có tiềm kiếm bài thi hay không
+  const [searchValue, setSearchValue] = useState("");
+
   // useEffect để theo dõi sự kiện cuộn trang (scroll) và hiển thị/ẩn nút scroll lên đầu trang
   useEffect(() => {
     const handleScroll = () => {
@@ -70,6 +76,13 @@ function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []); // Chạy 1 lần khi component được mount
 
+  // reset giá trị của search
+  useEffect(() => {
+    if (selectedContent !== "exam") {
+      setSearchValue("");
+    }
+  }, [selectedContent]);
+
   // Hàm scroll lên đầu trang khi người dùng nhấn nút
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" }); // Cuộn trang lên đầu
@@ -86,6 +99,7 @@ function Home() {
         selectedContent={selectedContent}
         user={user}
         setUser={setUser}
+        setSearchValue={setSearchValue}
       />
 
       <div className={cx("container")}>
@@ -113,6 +127,7 @@ function Home() {
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
               setQuestionsExam={setQuestionsExam}
+              searchValue={searchValue}
             />
           )}
 
@@ -123,6 +138,7 @@ function Home() {
               setHeaderTitle={setHeaderTitle}
               user={user}
               setIdExam={setIdExam}
+              setIdHistory={setIdHistory}
             />
           )}
           {selectedContent === "doExam" && (
@@ -158,6 +174,7 @@ function Home() {
 
           {selectedContent === "historyExam" && (
             <HistoryExam
+              idHistory={idHistory}
               resultExam={resultExam}
               questionsExam={questionsExam}
               idExam={idExam}
