@@ -131,6 +131,36 @@ const loginAPI = async (email, password) => {
   }
 };
 
+// Tạo bài thi
+const makeExamAPI = async (
+  title,
+  description,
+  time,
+  created_by,
+  subsubject_id,
+  question_ids
+) => {
+  try {
+    const response = await axios.post(`${API_URL}/exams`, {
+      title,
+      description,
+      time,
+      created_by,
+      subsubject_id,
+      question_ids,
+    });
+    return response.data;
+  } catch (error) {
+    // Kiểm tra nếu server trả về lỗi có response
+    if (error.response && error.response.data) {
+      return error.response.data; // Trả về thông báo lỗi từ API
+    }
+
+    // Nếu lỗi không có response từ server (lỗi mạng, timeout, ...)
+    return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
+  }
+};
+
 //sửa thông tin người dùng (trừ pass)
 const updateUserInfoAPI = async (user_id, username, email) => {
   try {
@@ -271,4 +301,5 @@ export {
   getHistoryByUserIdAPI,
   getHistoryByExamIdAPI,
   updateExamByExamIdAPI,
+  makeExamAPI
 };

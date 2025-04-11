@@ -11,7 +11,7 @@ import {
   getQuestionBySubSubjectIdAPI,
   getSubjectsAPI,
   getSubSubjectsAPI,
-  submitExamAPI,
+  makeExamAPI,
   updateExamByExamIdAPI,
 } from "../../Api/api";
 import { getDifficultyLabel } from "../../Utils/function";
@@ -234,7 +234,7 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
     }
     try {
       if (!examEdited) {
-        const result = await submitExamAPI(
+        const result = await makeExamAPI(
           exam.exam_name,
           exam.description,
           exam.time,
@@ -257,17 +257,18 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
           exam.description,
           exam.questions
         );
+        console.log(examEdited);
 
-        if (result) {
+        if (result.status) {
           showSuccessToast(result.message, 1200);
-          setSelectedContent("listExam")
-          setHeaderTitle("Danh sách bài thi")
+          setSelectedContent("listExam");
+          setHeaderTitle("Danh sách bài thi");
         } else {
           showErrorToast(result.message, 1200);
         }
       }
     } catch (error) {
-      // showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
+      showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
     }
   };
 
