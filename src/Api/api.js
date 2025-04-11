@@ -66,6 +66,26 @@ const getAllExamsByUserIdAPI = async (user_id) => {
   }
 };
 
+//lấy ds bài thi theo user_id người tạo
+const updateExamByExamIdAPI = async (
+  exam_id,
+  title,
+  description,
+  questions
+) => {
+  try {
+    const response = await axios.put(`${API_URL}/exams/update/${exam_id}`, {
+      title,
+      description,
+      questions,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Lỗi khi sửa bài thi có id là: ${exam_id}`, error);
+    return [];
+  }
+};
+
 //xóa bài thi theo exam_id
 const deleteExamsByExamIdAPI = async (exam_id) => {
   try {
@@ -250,4 +270,5 @@ export {
   deleteExamsByExamIdAPI,
   getHistoryByUserIdAPI,
   getHistoryByExamIdAPI,
+  updateExamByExamIdAPI,
 };

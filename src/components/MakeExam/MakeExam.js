@@ -12,6 +12,7 @@ import {
   getSubjectsAPI,
   getSubSubjectsAPI,
   submitExamAPI,
+  updateExamByExamIdAPI,
 } from "../../Api/api";
 import { getDifficultyLabel } from "../../Utils/function";
 import {
@@ -100,6 +101,7 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
         exam_name: examEdited.title || "",
         subsubject_id: examEdited.subsubject_id || "",
         description: examEdited.description || "",
+        created_id: user.user_id,
         time: examEdited.time || "",
         questions: examEdited.question
           ? examEdited.question.map((q) => q.question_id)
@@ -231,21 +233,38 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
       return;
     }
     try {
-      const result = await submitExamAPI(
-        exam.exam_name,
-        exam.description,
-        exam.time,
-        exam.created_id,
-        exam.subsubject_id,
-        exam.questions
-      );
+      if (!examEdited) {
+        const result = await submitExamAPI(
+          exam.exam_name,
+          exam.description,
+          exam.time,
+          exam.created_id,
+          exam.subsubject_id,
+          exam.questions
+        );
 
-      if (result.exam) {
-        showSuccessToast(result.message, 1200);
-        setHeaderTitle("Danh Dách bài thi");
-        setSelectedContent("listExam");
+        if (result.exam) {
+          showSuccessToast(result.message, 1200);
+          setHeaderTitle("Danh Dách bài thi");
+          setSelectedContent("listExam");
+        } else {
+          showErrorToast(result.message || "Không thể tạo bài thi!", 1200);
+        }
       } else {
-        showErrorToast(result.message || "Không thể tạo bài thi!", 1200);
+        const result = await updateExamByExamIdAPI(
+          examEdited.exam_id,
+          exam.exam_name,
+          exam.description,
+          exam.questions
+        );
+
+        if (result) {
+          showSuccessToast(result.message, 1200);
+          setSelectedContent("listExam")
+          setHeaderTitle("Danh sách bài thi")
+        } else {
+          showErrorToast(result.message, 1200);
+        }
       }
     } catch (error) {
       // showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
@@ -336,7 +355,7 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
           />
 
           <button type="submit" className={cx("submit-button")}>
-            Tạo bài thi
+            {!examEdited ? "Tạo bài thi" : "Cập nhật bài thi"}
           </button>
         </form>
 
