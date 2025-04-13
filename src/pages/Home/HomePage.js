@@ -25,6 +25,9 @@ function Home() {
   // State lưu trữ môn học được chọn (theo id môn học) để hiển thị bài thi của môn đó
   const [selectedSubject, setSelectedSubject] = useState("");
 
+  // State lưu trữ tên môn đang chọn dùng cho nút back khi đang trang làm bài
+  const [selectedSubjectName, setSelectedSubjectName] = useState("");
+
   // State lưu trữ tiêu đề header
   const [headerTitle, setHeaderTitle] = useState(null);
 
@@ -49,6 +52,12 @@ function Home() {
   //state lưu kết quả làm bài - để hiển thị kết quả khi nộp bài nhưng không đăng nhập
   const [resultExam, setResultExam] = useState("");
 
+  // Stat lưu id lịch sử
+  const [idHistory, setIdHistory] = useState("");
+
+  // dùng giá trị này để xác định có tiềm kiếm bài thi hay không
+  const [searchValue, setSearchValue] = useState("");
+
   // useEffect để theo dõi sự kiện cuộn trang (scroll) và hiển thị/ẩn nút scroll lên đầu trang
   useEffect(() => {
     const handleScroll = () => {
@@ -67,6 +76,13 @@ function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []); // Chạy 1 lần khi component được mount
 
+  // reset giá trị của search
+  useEffect(() => {
+    if (selectedContent !== "exam") {
+      setSearchValue("");
+    }
+  }, [selectedContent]);
+
   // Hàm scroll lên đầu trang khi người dùng nhấn nút
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" }); // Cuộn trang lên đầu
@@ -83,12 +99,14 @@ function Home() {
         selectedContent={selectedContent}
         user={user}
         setUser={setUser}
+        setSearchValue={setSearchValue}
       />
 
       <div className={cx("container")}>
         <div className={cx("sidebar")}>
           {/* Sidebar Component */}
           <Sidebar
+            setSelectedSubjectName={setSelectedSubjectName}
             selectedContent={selectedContent}
             setSelectedContent={setSelectedContent}
             setSelectedSubject={setSelectedSubject}
@@ -109,6 +127,7 @@ function Home() {
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
               setQuestionsExam={setQuestionsExam}
+              searchValue={searchValue}
             />
           )}
 
@@ -118,6 +137,8 @@ function Home() {
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
               user={user}
+              setIdExam={setIdExam}
+              setIdHistory={setIdHistory}
             />
           )}
           {selectedContent === "doExam" && (
@@ -129,6 +150,9 @@ function Home() {
               questionsExam={questionsExam}
               user={user}
               setResultExam={setResultExam}
+              setIdExam={setIdExam}
+              selectedSubject={selectedSubject}
+              selectedSubjectName={selectedSubjectName}
             />
           )}
           {selectedContent === "makeExam" && (
@@ -150,10 +174,12 @@ function Home() {
 
           {selectedContent === "historyExam" && (
             <HistoryExam
-              setSelectedContent={setSelectedContent}
-              setHeaderTitle={setHeaderTitle}
+              idHistory={idHistory}
               resultExam={resultExam}
               questionsExam={questionsExam}
+              idExam={idExam}
+              setSelectedContent={setSelectedContent}
+              setHeaderTitle={setHeaderTitle}
             />
           )}
 

@@ -1,4 +1,5 @@
 .exam-list {
+  width: 100%;
   padding: 20px;
   background-color: #f8f9fa;
   border-radius: 8px;
@@ -14,7 +15,7 @@
   display: grid;
   grid-template-columns: repeat(
     auto-fit,
-    minmax(300px, 1fr)
+    minmax(200px, 1fr)
   ); // Tự co giãn thành 1 hoặc 2 cột
   gap: 15px;
   padding: 0;

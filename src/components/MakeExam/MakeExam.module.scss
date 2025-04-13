@@ -7,13 +7,8 @@
 
 .subject-container {
   display: flex;
-  .container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-  }
-
+  flex-wrap: wrap; /* Cho phép xuống dòng khi không đủ chỗ */
+  gap: 5px;
   .select {
     padding: 10px;
     font-size: 16px;
@@ -143,16 +138,6 @@
   }
 }
 
-.selected-questions {
-  flex: 1;
-  max-height: 400px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-}
-
 .title-group {
   position: relative;
 
@@ -184,13 +169,16 @@
 
 .question-container {
   display: flex;
-  gap: 30px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.question-list {
-  flex: 1;
-  max-height: 400px; /* Độ cao cố định cho danh sách câu hỏi */
-  overflow-y: auto; /* Cuộn dọc */
+/* Áp dụng chung cho cả 2 phần */
+.question-list,
+.selected-questions {
+  flex: 1 1 400px; /* 👈 Cho phép co giãn nhưng ít nhất là 400px */
+  max-height: 400px;
+  overflow-y: auto;
   border: 1px solid #ddd;
   padding: 10px;
   border-radius: 5px;

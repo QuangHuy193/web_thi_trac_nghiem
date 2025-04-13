@@ -7,6 +7,7 @@ import {
   showErrorToast,
   showSuccessToast,
 } from "../../Utils/ToastNotification";
+import { showConfirmDialog } from "../confirmDialog/confirmDialog";
 
 const cx = classNames.bind(styles);
 
@@ -28,18 +29,27 @@ function ListExam({ user, setHeaderTitle, setSelectedContent, setExamEdited }) {
 
   // Hàm xử lý xóa đề thi (chưa cài đặt logic xóa thực tế)
   const handleDelete = async (examId) => {
-    try {
-      const response = await deleteExamsByExamIdAPI(examId);
+    showConfirmDialog(
+      "Bạn chắc chắn chứ?",
+      "Bạn đang thực hiện xóa bài thi, việc này không thể hoàn tác!",
+      "warning",
+      async () => {
+        try {
+          const response = await deleteExamsByExamIdAPI(examId);
 
-      if (response.deleted) {
-        showSuccessToast(response.message, 1200);
-        setIsChangeExam(!isChangeExam);
-      } else {
-        showErrorToast(response.message, 1200);
-      }
-    } catch (error) {
-      showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
-    }
+          if (response.deleted) {
+            showSuccessToast(response.message, 1200);
+            setIsChangeExam(!isChangeExam);
+          } else {
+            showErrorToast(response.message, 1200);
+          }
+        } catch (error) {
+          showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
+        }
+      },
+      "Có",
+      "Không"
+    );
   };
 
   // Hàm xử lý sửa đề thi

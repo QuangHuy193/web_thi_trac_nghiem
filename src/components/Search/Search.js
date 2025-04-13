@@ -6,21 +6,51 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./Search.module.scss";
+import { useState } from "react";
 
 const cx = classNames.bind(styles);
 
-function Search() {
+function Search({ setSearchValue }) {
+  // lưu giá trị tạm của search
+  const [tempValue, setTempValue] = useState("");
+
+  const handleSearch = () => {
+    setSearchValue(tempValue);
+  };
+
+  const handleClear = () => {
+    setTempValue("");
+    setSearchValue("");
+  };
+
+  const handleChange = (value) => {
+    setTempValue(value);
+    if (!value) {
+      setSearchValue("");
+    }
+  };
+
   return (
     <div>
       {/* search */}
       <div className={cx("search")}>
-        <input placeholder="Bạn đang tìm gì?" spellCheck="false" />
+        <input
+          value={tempValue}
+          onChange={(e) => handleChange(e.target.value)}
+          placeholder="Bạn đang tìm gì?"
+          spellCheck="false"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
+        />
 
-        <button className={cx("clear")}>
+        <button className={cx("clear")} onClick={handleClear}>
           <FontAwesomeIcon icon={faCircleXmark} />
         </button>
 
-        <button className={cx("search-btn")}>
+        <button className={cx("search-btn")} onClick={handleSearch}>
           <FontAwesomeIcon icon={faMagnifyingGlass} />
         </button>
       </div>

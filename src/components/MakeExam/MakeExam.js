@@ -1,14 +1,18 @@
 import classNames from "classnames/bind";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeftLong,
+  faPlusCircle,
+} from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./MakeExam.module.scss";
 import {
   getQuestionBySubSubjectIdAPI,
   getSubjectsAPI,
   getSubSubjectsAPI,
-  submitExamAPI,
+  makeExamAPI,
+  updateExamByExamIdAPI,
 } from "../../Api/api";
 import { getDifficultyLabel } from "../../Utils/function";
 import {
@@ -79,7 +83,7 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
           selectedSubSubject
         );
         setQuestions(questionResult);
-        setFilteredQuestions(questionResult);    
+        setFilteredQuestions(questionResult);
       };
 
       fetchQuestions();
@@ -97,22 +101,12 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
         exam_name: examEdited.title || "",
         subsubject_id: examEdited.subsubject_id || "",
         description: examEdited.description || "",
+        created_id: user.user_id,
         time: examEdited.time || "",
-        questions: examEdited.Questions
-          ? examEdited.Questions.map((q) => q.question_id)
+        questions: examEdited.question
+          ? examEdited.question.map((q) => q.question_id)
           : [],
       }));
-      console.log(
-        "edit ",
-        examEdited.Questions
-          ? examEdited.Questions.map((q) => q.question_id)
-          : []
-      );
-
-      //TODO kiểm tra lại ds câu hỏi khi sửa không hiển thị đúng
-      // for (let index = 0; index < exam.questions.length; index++) {
-      //   console.log(exam.questions);
-      // }
 
       setSelectedSubSubject(examEdited.subsubject_id);
 
@@ -193,15 +187,11 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
     setFilterSelected(difficulty);
 
     if (difficulty === "all") {
-      console.log("độ khó: ", difficulty);
-      console.log("filter ", questions);
       setFilteredQuestions(questions);
     } else {
       const result = questions.questions.filter(
         (q) => q.difficulty === difficulty
       );
-      console.log("độ khó: ", difficulty);
-      console.log("filter ", result);
       setFilteredQuestions({ questions: result });
     }
   };
@@ -210,6 +200,12 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
   const handleChangeSubSUbject = (e) => {
     setSelectedSubSubject(e.target.value);
     setExam({ ...exam, subsubject_id: e.target.value });
+  };
+
+  // xử lý back từ trang sửa sang trang danh sách đề thi đã tạo
+  const handleBack = () => {
+    setSelectedContent("listExam");
+    setHeaderTitle("Danh sách bài thi");
   };
 
   // submit form
@@ -237,184 +233,179 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
       return;
     }
     try {
-      const result = await submitExamAPI(
-        exam.exam_name,
-        exam.description,
-        exam.time,
-        exam.created_id,
-        exam.subsubject_id,
-        exam.questions
-      );
+      if (!examEdited) {
+        const result = await makeExamAPI(
+          exam.exam_name,
+          exam.description,
+          exam.time,
+          exam.created_id,
+          exam.subsubject_id,
+          exam.questions
+        );
 
-      if (result.exam) {
-        showSuccessToast(result.message, 1200);
-        setHeaderTitle("Danh Dách bài thi");
-        setSelectedContent("listExam");
+        if (result.exam) {
+          showSuccessToast(result.message, 1200);
+          setHeaderTitle("Danh Dách bài thi");
+          setSelectedContent("listExam");
+        } else {
+          showErrorToast(result.message || "Không thể tạo bài thi!", 1200);
+        }
       } else {
-        showErrorToast(result.message || "Không thể tạo bài thi!", 1200);
+        const result = await updateExamByExamIdAPI(
+          examEdited.exam_id,
+          exam.exam_name,
+          exam.description,
+          exam.questions
+        );
+        console.log(examEdited);
+
+        if (result.status) {
+          showSuccessToast(result.message, 1200);
+          setSelectedContent("listExam");
+          setHeaderTitle("Danh sách bài thi");
+        } else {
+          showErrorToast(result.message, 1200);
+        }
       }
     } catch (error) {
-      // showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
+      showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
     }
   };
 
   return (
-    <div className={cx("container")}>
-      {/* trang thêm câu hỏi */}
-      {isMakeQuestion && (
-        <div style={{ position: "relative" }}>
-          <MakeQuestion
-            setIsMakeQuestion={setIsMakeQuestion}
-            user={user}
-            selectedSubSubject={selectedSubSubject}
-            setRefreshQuestion={setRefreshQuestion}
+    <>
+      <div className={cx("container")}>
+        {examEdited && (
+          <FontAwesomeIcon
+            className={cx("icon-back")}
+            icon={faArrowLeftLong}
+            onClick={handleBack}
           />
-        </div>
-      )}
-      <div className={cx("subject-container")}>
-        {/* Dropdown chọn Subject */}
-        <select
-          className={cx("select")}
-          onChange={(e) => setSelectedSubject(Number(e.target.value))}
-          value={selectedSubject}
-        >
-          <option value="">Chọn môn học</option>
-          {subjects.map((subject) => (
-            <option key={subject.subject_id} value={subject.subject_id}>
-              {subject.name}
-            </option>
-          ))}
-        </select>
-
-        {/* Dropdown chọn subSubject */}
-        <select
-          className={cx("select")}
-          onChange={(e) => handleChangeSubSUbject(e)}
-          value={selectedSubSubject}
-        >
-          <option value="">Chọn môn phân lớp</option>
-          {filteredSubSubjects.map((subSubject) => (
-            <option
-              key={subSubject.subsubjects_id}
-              value={subSubject.subsubjects_id}
-            >
-              {subSubject.subject_name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Form tạo bài thi */}
-      <form className={cx("form-group")} onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="exam_name"
-          placeholder="Tên bài thi"
-          value={exam.exam_name}
-          onChange={handleExamChange}
-          className={cx("input")}
-        />
-        <textarea
-          name="description"
-          placeholder="Mô tả bài thi"
-          value={exam.description}
-          onChange={handleExamChange}
-          className={cx("textarea")}
-        />
-
-        {/* Thời gian làm bài */}
-        <input
-          type="number"
-          name="time"
-          placeholder="Thời gian làm bài (phút)"
-          value={exam.time}
-          onChange={handleExamChange}
-          className={cx("input")}
-          min="1" // Không cho phép nhập số nhỏ hơn 1
-        />
-
-        <button type="submit" className={cx("submit-button")}>
-          Tạo bài thi
-        </button>
-      </form>
-
-      <div className={cx("question-container")}>
-        {/* Danh sách câu hỏi từ API */}
-        <div className={cx("question-list")}>
-          <div className={cx("title-group")}>
-            <h3 className={cx("title")}>
-              Danh sách câu hỏi thuộc môn:{" "}
-              {selectedSubSubject &&
-                subSubjects.find(
-                  (item) =>
-                    Number(item.subsubjects_id) === Number(selectedSubSubject)
-                )?.subject_name}
-            </h3>
-            {Object.keys(questions).length !== 0 && (
-              <span className={cx("icon-plus")} onClick={handleMakeQuestion}>
-                <FontAwesomeIcon icon={faPlusCircle} />
-              </span>
-            )}
+        )}
+        {/* trang thêm câu hỏi */}
+        {isMakeQuestion && (
+          <div style={{ position: "relative" }}>
+            <MakeQuestion
+              setIsMakeQuestion={setIsMakeQuestion}
+              user={user}
+              selectedSubSubject={selectedSubSubject}
+              setRefreshQuestion={setRefreshQuestion}
+            />
           </div>
-          {/* lọc câu hỏi */}
-          {Object.keys(questions).length !== 0 && (
-            <div className={cx("filter-difficuty")}>
-              <label className={cx("filter-difficulty-title")}>
-                Lọc độ khó:
-              </label>
-              {difficulties.map((difficulty) => (
-                <button
-                  key={difficulty}
-                  className={cx("filter-difficulty-item", {
-                    active: filterSelectd === difficulty, // Thêm class 'active' nếu được chọn
-                  })}
-                  onClick={() => handleFilterQuestion(difficulty)}
-                >
-                  {getDifficultyLabel(difficulty)}
-                </button>
-              ))}
-            </div>
-          )}
+        )}
+        <div className={cx("subject-container")}>
+          {/* Dropdown chọn Subject */}
+          <select
+            className={cx("select")}
+            onChange={(e) => setSelectedSubject(Number(e.target.value))}
+            value={selectedSubject}
+          >
+            <option value="">Chọn môn học</option>
+            {subjects.map((subject) => (
+              <option key={subject.subject_id} value={subject.subject_id}>
+                {subject.name}
+              </option>
+            ))}
+          </select>
 
-          {/* ds câu hỏi */}
-          {filteredQuestions.questions?.length > 0 && (
-            <ul>
-              {filteredQuestions.questions.map((question) => (
-                <li key={question.question_id} className={cx("question-item")}>
-                  <div>
-                    <strong>{question.question_text}</strong>
-                    <span>
-                      Độ khó: {getDifficultyLabel(question.difficulty)}
-                    </span>
-                  </div>
-                  <span>
-                    <button
-                      className={cx("add-button")}
-                      onClick={() => handleAddQuestion(question.question_id)}
-                    >
-                      Thêm
-                    </button>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
+          {/* Dropdown chọn subSubject */}
+          <select
+            className={cx("select")}
+            onChange={(e) => handleChangeSubSUbject(e)}
+            value={selectedSubSubject}
+          >
+            <option value="">Chọn môn phân lớp</option>
+            {filteredSubSubjects.map((subSubject) => (
+              <option
+                key={subSubject.subsubjects_id}
+                value={subSubject.subsubjects_id}
+              >
+                {subSubject.subject_name}
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Danh sách câu hỏi đã chọn */}
-        <div className={cx("selected-questions")}>
-          <h3 className={cx("title")}>
-            Câu hỏi đã chọn:{" "}
-            {exam.questions.length !== 0 && "(" + exam.questions.length + ")"}
-          </h3>
-          {exam.questions.length > 0 && (
-            <ul>
-              {exam.questions.map((qId) => {
-                const question = questions.questions?.find(
-                  (q) => q.question_id === qId
-                );
-                return question ? (
-                  <li key={qId} className={cx("question-item")}>
+        {/* Form tạo bài thi */}
+        <form className={cx("form-group")} onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="exam_name"
+            placeholder="Tên bài thi"
+            value={exam.exam_name}
+            onChange={handleExamChange}
+            className={cx("input")}
+          />
+          <textarea
+            name="description"
+            placeholder="Mô tả bài thi"
+            value={exam.description}
+            onChange={handleExamChange}
+            className={cx("textarea")}
+          />
+
+          {/* Thời gian làm bài */}
+          <input
+            type="number"
+            name="time"
+            placeholder="Thời gian làm bài (phút)"
+            value={exam.time}
+            onChange={handleExamChange}
+            className={cx("input")}
+            min="1" // Không cho phép nhập số nhỏ hơn 1
+          />
+
+          <button type="submit" className={cx("submit-button")}>
+            {!examEdited ? "Tạo bài thi" : "Cập nhật bài thi"}
+          </button>
+        </form>
+
+        <div className={cx("question-container")}>
+          {/* Danh sách câu hỏi từ API */}
+          <div className={cx("question-list")}>
+            <div className={cx("title-group")}>
+              <h3 className={cx("title")}>
+                Danh sách câu hỏi thuộc môn:{" "}
+                {selectedSubSubject &&
+                  subSubjects.find(
+                    (item) =>
+                      Number(item.subsubjects_id) === Number(selectedSubSubject)
+                  )?.subject_name}
+              </h3>
+              {Object.keys(questions).length !== 0 && (
+                <span className={cx("icon-plus")} onClick={handleMakeQuestion}>
+                  <FontAwesomeIcon icon={faPlusCircle} />
+                </span>
+              )}
+            </div>
+            {/* lọc câu hỏi */}
+            {Object.keys(questions).length !== 0 && (
+              <div className={cx("filter-difficuty")}>
+                <label className={cx("filter-difficulty-title")}>
+                  Lọc độ khó:
+                </label>
+                {difficulties.map((difficulty) => (
+                  <button
+                    key={difficulty}
+                    className={cx("filter-difficulty-item", {
+                      active: filterSelectd === difficulty, // Thêm class 'active' nếu được chọn
+                    })}
+                    onClick={() => handleFilterQuestion(difficulty)}
+                  >
+                    {getDifficultyLabel(difficulty)}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* ds câu hỏi */}
+            {filteredQuestions.questions?.length > 0 && (
+              <ul>
+                {filteredQuestions.questions.map((question) => (
+                  <li
+                    key={question.question_id}
+                    className={cx("question-item")}
+                  >
                     <div>
                       <strong>{question.question_text}</strong>
                       <span>
@@ -423,22 +414,57 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
                     </div>
                     <span>
                       <button
-                        className={cx("remove-button")}
-                        onClick={() =>
-                          handleRemoveQuestion(question.question_id)
-                        }
+                        className={cx("add-button")}
+                        onClick={() => handleAddQuestion(question.question_id)}
                       >
-                        Xóa
+                        Thêm
                       </button>
                     </span>
                   </li>
-                ) : null;
-              })}
-            </ul>
-          )}
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Danh sách câu hỏi đã chọn */}
+          <div className={cx("selected-questions")}>
+            <h3 className={cx("title")}>
+              Câu hỏi đã chọn:{" "}
+              {exam.questions.length !== 0 && "(" + exam.questions.length + ")"}
+            </h3>
+            {exam.questions.length > 0 && (
+              <ul>
+                {exam.questions.map((qId) => {
+                  const question = questions.questions?.find(
+                    (q) => q.question_id === qId
+                  );
+                  return question ? (
+                    <li key={qId} className={cx("question-item")}>
+                      <div>
+                        <strong>{question.question_text}</strong>
+                        <span>
+                          Độ khó: {getDifficultyLabel(question.difficulty)}
+                        </span>
+                      </div>
+                      <span>
+                        <button
+                          className={cx("remove-button")}
+                          onClick={() =>
+                            handleRemoveQuestion(question.question_id)
+                          }
+                        >
+                          Xóa
+                        </button>
+                      </span>
+                    </li>
+                  ) : null;
+                })}
+              </ul>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

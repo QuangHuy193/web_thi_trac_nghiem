@@ -7,7 +7,7 @@ import {
 import classNames from "classnames/bind";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";//tạo hiệu ứng dropdown mượt hơn
+import { motion, AnimatePresence } from "framer-motion"; //tạo hiệu ứng dropdown mượt hơn
 
 import styles from "./MenuMobile.module.scss";
 import { getAllSubjectsAPI } from "../../Api/api";
@@ -108,10 +108,7 @@ function MenuMobile({
           {/* Danh sách môn học chính và phụ (nếu có) */}
           <AnimatePresence>
             {showSubjects && (
-              <motion.ul
-                className={cx("menu-list")}
-                {...expandCollapseMotion}
-              >
+              <motion.ul className={cx("menu-list")} {...expandCollapseMotion}>
                 {subjects.map((subject) => (
                   <li key={subject.subject_id} className={cx("menu-item")}>
                     <div
@@ -146,7 +143,7 @@ function MenuMobile({
                                     sub.subsubjects_id,
                                     sub.subject_name
                                   );
-                                }}                            
+                                }}
                               >
                                 {sub.subject_name}
                               </li>
@@ -180,6 +177,25 @@ function MenuMobile({
           >
             Lịch sử làm bài
           </div>
+
+          {/* Mục dành cho giáo viên */}
+          {user && user.role === "teacher" && (
+            <div
+              className={cx("menu-item-parent")}
+              onClick={() => handleCheckLogin("makeExam", "Tạo bài thi")}
+            >
+              Tạo bài thi
+            </div>
+          )}
+
+          {user && user.role === "teacher" && (
+            <div
+              className={cx("menu-item-parent")}
+              onClick={() => handleCheckLogin("listExam", "Danh sách bài thi")}
+            >
+              Danh sách bài thi đã tạo
+            </div>
+          )}
         </div>
       </div>
     </div>

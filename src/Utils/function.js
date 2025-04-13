@@ -48,4 +48,20 @@ const getDifficultyLabel = (difficulty) => {
   }
 };
 
-export { handleChangePass, togglePasswordVisibility, getDifficultyLabel };
+const removeVietnameseTones = (str) => {
+  if (!str || typeof str !== "string") return "";
+  
+  return str
+    .normalize("NFD") // tách dấu
+    .replace(/[\u0300-\u036f]/g, "") // xóa dấu
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .toLowerCase(); // về chữ thường
+};
+
+export {
+  handleChangePass,
+  togglePasswordVisibility,
+  getDifficultyLabel,
+  removeVietnameseTones,
+};

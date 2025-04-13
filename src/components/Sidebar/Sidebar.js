@@ -1,10 +1,6 @@
 import classNames from "classnames/bind";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBook,
-  faCaretDown,
-  faCaretRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBook, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 
 import styles from "./Sidebar.module.scss";
@@ -27,6 +23,8 @@ function Sidebar({
   setHeaderTitle,
   user,
   setExamEdited,
+  setSelectedSubjectName,
+
 }) {
   // State lưu trữ trạng thái hiển thị danh sách môn học (Hiện/Ẩn)
   const [showSubjects, setShowSubjects] = useState(false);
@@ -87,6 +85,7 @@ function Sidebar({
         "warning",
         () => {
           setSelectedSubject(subject_id);
+          setSelectedSubjectName(subsubject_name);
           setSelectedContent(selected);
           setHeaderTitle(subsubject_name);
           setShowSubjects(null); // Ẩn danh sách môn học sau khi chọn
@@ -98,6 +97,7 @@ function Sidebar({
     } else {
       // Nếu không đang làm bài thi, trực tiếp chọn môn học và chuyển trang
       setSelectedSubject(subject_id);
+      setSelectedSubjectName(subsubject_name);
       setSelectedContent(selected);
       setHeaderTitle(subsubject_name);
       setShowSubjects(null); // Ẩn danh sách môn học sau khi chọn

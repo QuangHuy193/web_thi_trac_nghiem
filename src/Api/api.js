@@ -66,6 +66,26 @@ const getAllExamsByUserIdAPI = async (user_id) => {
   }
 };
 
+//lấy ds bài thi theo user_id người tạo
+const updateExamByExamIdAPI = async (
+  exam_id,
+  title,
+  description,
+  questions
+) => {
+  try {
+    const response = await axios.put(`${API_URL}/exams/update/${exam_id}`, {
+      title,
+      description,
+      questions,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Lỗi khi sửa bài thi có id là: ${exam_id}`, error);
+    return [];
+  }
+};
+
 //xóa bài thi theo exam_id
 const deleteExamsByExamIdAPI = async (exam_id) => {
   try {
@@ -98,6 +118,36 @@ const loginAPI = async (email, password) => {
     const response = await axios.post(`${API_URL}/auth/login`, {
       email,
       password,
+    });
+    return response.data;
+  } catch (error) {
+    // Kiểm tra nếu server trả về lỗi có response
+    if (error.response && error.response.data) {
+      return error.response.data; // Trả về thông báo lỗi từ API
+    }
+
+    // Nếu lỗi không có response từ server (lỗi mạng, timeout, ...)
+    return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
+  }
+};
+
+// Tạo bài thi
+const makeExamAPI = async (
+  title,
+  description,
+  time,
+  created_by,
+  subsubject_id,
+  question_ids
+) => {
+  try {
+    const response = await axios.post(`${API_URL}/exams`, {
+      title,
+      description,
+      time,
+      created_by,
+      subsubject_id,
+      question_ids,
     });
     return response.data;
   } catch (error) {
@@ -153,21 +203,19 @@ const registerAPI = async (username, email, password, role) => {
 
 //nộp bài
 const submitExamAPI = async (
-  title,
-  description,
-  time,
-  created_by,
-  subsubject_id,
-  question_ids
+  user_id,
+  exam_id,
+  started_at,
+  finished_at,
+  answers
 ) => {
   try {
-    const response = await axios.post(`${API_URL}/exams`, {
-      title,
-      description,
-      time,
-      created_by,
-      subsubject_id,
-      question_ids,
+    const response = await axios.post(`${API_URL}/history/submit`, {
+      user_id,
+      exam_id,
+      started_at,
+      finished_at,
+      answers,
     });
 
     return response.data;
@@ -210,6 +258,33 @@ const makeQuestionAPI = async (
   }
 };
 
+// lấy lịch sử làm bài theo user_id
+const getHistoryByUserIdAPI = async (user_id) => {
+  try {
+    const response = await axios.get(`${API_URL}/history/${user_id}`);
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Lỗi khi lấy lịch sử làm bài của người dùng có id là: ${user_id}`,
+      error
+    );
+    return [];
+  }
+};
+
+// lấy lịch sử bài thi theo exam_id
+const getHistoryByExamIdAPI = async (exam_id) => {
+  try {
+    const response = await axios.get(`${API_URL}/history/ans/${exam_id}`);
+
+    return response.data;
+  } catch (error) {
+    console.error(`Lỗi khi lấy bài thi có id là: ${exam_id}`, error);
+    return [];
+  }
+};
+
 export {
   getAllSubjectsAPI,
   getSubjectsAPI,
@@ -223,4 +298,8 @@ export {
   makeQuestionAPI,
   submitExamAPI,
   deleteExamsByExamIdAPI,
+  getHistoryByUserIdAPI,
+  getHistoryByExamIdAPI,
+  updateExamByExamIdAPI,
+  makeExamAPI
 };
