@@ -6,7 +6,7 @@ import { faCaretRight, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-s
 import classNames from 'classnames/bind';
 import Swal from 'sweetalert2';
 import styles from './AdminPage.module.scss';
-import { getAllSubjectsAPI, deleteSubjectAPI } from '../../Api/api';
+import { getSubSubjectsAPI, deleteSubjectAPI } from '../../Api/api';
 
 const cx = classNames.bind(styles);
 
@@ -15,7 +15,7 @@ const rotateArrow = (isOpen) => ({
   transition: { duration: 0.3 },
 });
 
-function AdminPage() {
+function SubSubjectPage() {
   const [isSubjectDropdownOpen, setIsSubjectDropdownOpen] = useState(false);
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +29,7 @@ function AdminPage() {
   const fetchSubjects = async () => {
     try {
       setLoading(true);
-      const data = await getAllSubjectsAPI();
+      const data = await getSubSubjectsAPI();
       setSubjects(data);
     } catch (error) {
       console.error('Lỗi khi lấy danh sách môn học:', error);
@@ -124,10 +124,10 @@ function AdminPage() {
                   className={cx('dropdown-menu')}
                 >
                   <div className={cx('dropdown-item')}>
-                    <Link to="/admin">Danh sách môn học</Link>
+                    <Link to="/admin">Danh sách môn học </Link>
                   </div>
                   <div className={cx('dropdown-item')}>
-                    <Link to="/admin/add-subject">Thêm môn học</Link>
+                    <Link to="/admin/add-subject">Thêm môn học </Link>
                   </div>
                   <div className={cx('dropdown-item')}>
                     <Link to="/admin/subsubject">Danh sách môn học phân lớp</Link>
@@ -149,11 +149,11 @@ function AdminPage() {
       </aside>
 
       <main className={cx('main')}>
-        <h1 className={cx('title')}>Danh sách môn học</h1>
+        <h1 className={cx('title')}>Danh sách môn học phân lớp</h1>
         <div className={cx('action-bar')}>
           <Link to="/admin/add-subject">
             <button className={cx('add-btn')}>
-              <FontAwesomeIcon icon={faPlus} /> Thêm môn học
+              <FontAwesomeIcon icon={faPlus} /> Thêm môn học phân lớp
             </button>
           </Link>
         </div>
@@ -172,10 +172,10 @@ function AdminPage() {
               <tbody>
                 {subjects.map((subject) => (
                   <tr key={subject.id}>
-                    <td className={cx('table-cell')}>{subject.subject_id}</td>
-                    <td className={cx('table-cell')}>{subject.name}</td>
+                    <td className={cx('table-cell')}>{subject.subsubjects_id}</td>
+                    <td className={cx('table-cell')}>{subject.subject_name}</td>
                     <td className={cx('table-cell')}>
-                    <Link to={`/admin/edit-subject/${subject.subject_id}`}>
+                    <Link to={`/admin/edit-subject/${subject.subsubject_id}`}>
                         <button
                           className={cx('edit-btn')}
                           title="Sửa môn học"
@@ -207,4 +207,4 @@ function AdminPage() {
   );
 }
 
-export default AdminPage;
+export default SubSubjectPage;

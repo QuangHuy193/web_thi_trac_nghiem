@@ -4,7 +4,7 @@ import Signup from "../pages/Signup/SignUpPage";
 import Admin from "../pages/Admin/AdminPage";
 import AddSubjectPage from "../pages/Admin/AddSubjectPage";
 import EditSubjectPage from "../pages/Admin/EditSubjectPage";
-
+import SubSubjectPage from "../pages/Admin/SubSubjectPage";
 const publicRoutes = [
   {
     path: "/",
@@ -27,9 +27,14 @@ const publicRoutes = [
     page: AddSubjectPage, 
   },
   {
+    path: "/admin/subsubject",
+    page: SubSubjectPage, 
+  },
+  {
     path: "/admin/edit-subject/:subject_id",
     page: EditSubjectPage, 
   },
+
 ];
 
 const privateRoutes = [
