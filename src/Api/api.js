@@ -13,6 +13,7 @@ const getAllSubjectsAPI = async () => {
   }
 };
 
+
 //lấy ds môn học tổng
 const getSubjectsAPI = async () => {
   try {
@@ -284,6 +285,50 @@ const getHistoryByExamIdAPI = async (exam_id) => {
     return [];
   }
 };
+//them mon hoc moi 
+
+const addSubjectAPI = async (name) => {
+  try {
+    const response = await axios.post(`${API_URL}/subjects`, {
+      name,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return error.response.data; // Trả về thông báo lỗi từ API
+    }
+    return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
+  }
+};
+
+//xoa mon hoc 
+const deleteSubjectAPI = async (subject_id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/subjects/${subject_id}`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return error.response.data; 
+    }
+    return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
+  }
+};
+
+//sua mon hoc 
+
+const updateSubjectAPI = async (subject_id, name) => {
+  try {
+    const response = await axios.put(`${API_URL}/subjects/${subject_id}`, {
+      name,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return { message: "Có lỗi xảy ra khi cập nhật môn học, vui lòng thử lại!" };
+  }
+};
 
 export {
   getAllSubjectsAPI,
@@ -301,5 +346,8 @@ export {
   getHistoryByUserIdAPI,
   getHistoryByExamIdAPI,
   updateExamByExamIdAPI,
+  addSubjectAPI,
+  deleteSubjectAPI,
+  updateSubjectAPI,
   makeExamAPI
 };

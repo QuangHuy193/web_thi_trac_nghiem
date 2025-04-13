@@ -3,6 +3,8 @@ import Login from "../pages/Login/LoginPage";
 import Signup from "../pages/Signup/SignUpPage";
 import Admin from "../pages/Admin/AdminPage";
 import AddSubjectPage from "../pages/Admin/AddSubjectPage";
+import EditSubjectPage from "../pages/Admin/EditSubjectPage";
+
 const publicRoutes = [
   {
     path: "/",
@@ -23,6 +25,10 @@ const publicRoutes = [
   {
     path: "/admin/add-subject",
     page: AddSubjectPage, 
+  },
+  {
+    path: "/admin/edit-subject/:subject_id",
+    page: EditSubjectPage, 
   },
 ];
 
