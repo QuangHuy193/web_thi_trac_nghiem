@@ -89,7 +89,7 @@ const Signup = () => {
       } else {
         setIsValid({ ...isValid, email: true });
       }
-    }, 800); // Thực hiện sau 800ms để giảm số lần kiểm tra khi người dùng nhập email
+    }, 1500); // Thực hiện sau để giảm số lần kiểm tra khi người dùng nhập email
   };
 
   // Hàm xử lý thay đổi tên người dùng, kiểm tra hợp lệ sau một khoảng thời gian (debounce)

@@ -20,34 +20,33 @@ const publicRoutes = [
     path: "/signup",
     page: Signup,
   },
+];
+
+const privateRoutes = [
   {
     path: "/admin",
     page: Admin,
   },
   {
     path: "/admin/add-subject",
-    page: AddSubjectPage, 
+    page: AddSubjectPage,
   },
   {
     path: "/admin/add-subsubject",
-    page: AddSubSubjectPage, 
+    page: AddSubSubjectPage,
   },
   {
     path: "/admin/subsubject",
-    page: SubSubjectPage, 
+    page: SubSubjectPage,
   },
   {
     path: "/admin/edit-subject/:subject_id",
-    page: EditSubjectPage, 
+    page: EditSubjectPage,
   },
   {
     path: "/admin/edit-subsubject/:subsubject_id",
-    page: EditSubSubjectPage, 
+    page: EditSubSubjectPage,
   },
-];
-
-const privateRoutes = [
-  
 ];
 
 export { publicRoutes, privateRoutes };

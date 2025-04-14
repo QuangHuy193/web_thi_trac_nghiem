@@ -23,7 +23,7 @@ const handleChangePass = (
     if (value.length < 8) {
       showErrorToast("Mật khẩu phải có ít nhất 8 ký tự!", 1200);
     }
-  }, 800);
+  }, 1200);
 };
 
 const togglePasswordVisibility = (setShowPassword, fieldName) => {

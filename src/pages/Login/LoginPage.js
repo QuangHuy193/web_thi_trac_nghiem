@@ -28,8 +28,8 @@ const cx = classNames.bind(styles);
 
 function Login() {
   // dùng để chuyển trang
-  const navigative = useNavigate()
-  
+  const navigative = useNavigate();
+
   // State lưu trữ thông tin về việc hiển thị mật khẩu (show/hide password)
   const [showPassword, setShowPassword] = useState({
     password: false,
@@ -73,12 +73,15 @@ function Login() {
         showErrorToast("Vui lòng nhập email!", 1200);
         setIsValid({ ...isValid, email: false });
       } else if (!EMAILREGEX.test(value)) {
-        showErrorToast("Email không hợp lệ! Vui lòng nhập đúng định dạng.", 1200);
+        showErrorToast(
+          "Email không hợp lệ! Vui lòng nhập đúng định dạng.",
+          1200
+        );
         setIsValid({ ...isValid, email: false });
       } else {
         setIsValid({ ...isValid, email: true });
       }
-    }, 800); // Thực hiện sau 800ms để giảm số lần kiểm tra khi người dùng nhập email
+    }, 1500); // Thực hiện sau để giảm số lần kiểm tra khi người dùng nhập email
   };
 
   // Hàm xử lý khi submit form đăng nhập
@@ -98,7 +101,14 @@ function Login() {
         if (result.user) {
           showSuccessToast(result.message || "Đăng nhập thành công!", 1000);
           localStorage.setItem("user", JSON.stringify(result.user)); // Lưu thông tin user vào localStorage
-          navigative("/"); // Điều hướng về trang chính sau khi đăng nhập thành công
+
+          if (result.user.role === "admin") {
+            // Điều hướng về admin
+            navigative("/admin");
+          } else {
+            // Điều hướng về trang chính
+            navigative("/");
+          }
         } else {
           showErrorToast(result.message || "Đăng nhập thất bại!", 1500);
         }
@@ -120,7 +130,7 @@ function Login() {
         <form onSubmit={handleSubmit}>
           {/* Logo trang */}
           <img src="/logoW.png" alt="Owl Logo" className={cx("logo")} />
-          
+
           {/* Tiêu đề form */}
           <h2>ĐĂNG NHẬP</h2>
 
