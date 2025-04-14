@@ -105,8 +105,7 @@ function AddSubSubjectPage() {
         <ul className={cx('menu')}>
           <li className={cx('menu-item')}>Dashboard</li>
           <li className={cx('menu-item', 'active')}>Quản lý môn học</li>
-          <li className={cx('menu-item')}>Quản lý bài thi</li>
-          <li className={cx('menu-item')}>Quản lý người dùng</li>
+        
         </ul>
       </aside>
 

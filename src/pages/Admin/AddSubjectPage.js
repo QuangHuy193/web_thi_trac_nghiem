@@ -14,7 +14,7 @@ function AddSubjectPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Lấy danh sách môn học khi component mount
+  // lấy danh sách môn học khi component mount
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
@@ -31,7 +31,7 @@ function AddSubjectPage() {
     fetchSubjects();
   }, []);
 
-  // Xử lý submit form
+  // xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!subjectName.trim()) {
@@ -39,7 +39,7 @@ function AddSubjectPage() {
       return;
     }
 
-    // Kiểm tra tên môn học trùng lặp
+    // kiểm tra tên môn học trùng lặp
     const isDuplicate = subjects.some(
       (subject) => subject.name.toLowerCase() === subjectName.trim().toLowerCase()
     );
@@ -72,8 +72,7 @@ function AddSubjectPage() {
         <ul className={cx('menu')}>
           <li className={cx('menu-item')}>Dashboard</li>
           <li className={cx('menu-item', 'active')}>Quản lý môn học</li>
-          <li className={cx('menu-item')}>Quản lý bài thi</li>
-          <li className={cx('menu-item')}>Quản lý người dùng</li>
+
         </ul>
       </aside>
 
@@ -109,7 +108,9 @@ function AddSubjectPage() {
                 <div
                   className={cx('message', {
                     'message-error': message.type === 'error',
-                    'message-success': message.type === 'success',
+                    'message-success': message.type ===   'success',
+                    'message': message.type ===   'success',
+
                   })}
                 >
                   {message.text}

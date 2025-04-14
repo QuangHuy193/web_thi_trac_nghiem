@@ -136,12 +136,7 @@ function SubSubjectPage() {
               )}
             </AnimatePresence>
           </li>
-          <li className={cx('menu-item')}>
-            <Link to="/admin/exam-management">Quản lý bài thi</Link>
-          </li>
-          <li className={cx('menu-item')}>
-            <Link to="/admin/user-management">Quản lý người dùng</Link>
-          </li>
+         
         </ul>
       </aside>
 
