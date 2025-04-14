@@ -17,18 +17,19 @@ function HistoryExam({
   questionsExam,
   setHeaderTitle,
   setSelectedContent,
-  idHistory
+  idHistory,
 }) {
   let correctCount = 0;
   let totalQuestions = 0;
-  const { exam_id, answers } = resultExam;
+  const answers = resultExam.answers;
+  console.log("resultExam.answers: ", JSON.stringify(resultExam.answers));
 
   const [exam, setExam] = useState({});
 
   useEffect(() => {
     const getExam = async () => {
-      if (idHistory) {        
-        const rs = await getHistoryByExamIdAPI(idHistory);        
+      if (idHistory) {
+        const rs = await getHistoryByExamIdAPI(idHistory);
         setExam(rs);
       }
     };
@@ -42,14 +43,16 @@ function HistoryExam({
       const question = questionsExam.find(
         (q) => q.question_id === item.question_id
       );
+
       if (!question) return count;
 
       const correctAnswer = question.answers.find(
         (ans) => ans.is_correct === 1
       );
+
       if (!correctAnswer) return count;
 
-      if (item.answer_id === correctAnswer.answer_id) {
+      if (item.selected_answer_id === correctAnswer.answer_id) {
         return count + 1;
       }
 
@@ -113,7 +116,7 @@ function HistoryExam({
 
                 <div className={cs("options")}>
                   {question.answers.map((answer) => {
-                    const isSelected = answer.answer_id === item.answer_id;
+                    const isSelected = answer.answer_id === item.selected_answer_id;
                     const isCorrect = answer.is_correct === 1;
 
                     return (

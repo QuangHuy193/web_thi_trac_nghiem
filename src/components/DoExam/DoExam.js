@@ -137,7 +137,7 @@ function DoExam({
   };
 
   const handleSubmitNoLogin = () => {
-    setResultExam(formData);
+    setResultExam(formData);    
     setIdExam("");
     setHeaderTitle("Kết quả làm bài");
     setSelectedContent("historyExam");

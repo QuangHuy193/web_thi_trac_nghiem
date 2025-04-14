@@ -43,7 +43,7 @@ function History({
             </div>
             <div className={cx("history-row")}>
               <span className={cx("label")}>Điểm số:</span>
-              <span className={cx("value")}>{item.score / 10}</span>
+              <span className={cx("value")}>{item.score}</span>
             </div>
             <div className={cx("history-row")}>
               <span className={cx("label")}>Bắt đầu lúc:</span>
