@@ -133,18 +133,13 @@ function AdminPage() {
                     <Link to="/admin/subsubject">Danh sách môn học phân lớp</Link>
                   </div>
                   <div className={cx('dropdown-item')}>
-                    <Link to="/admin/add-subject">Thêm môn học phân lớp</Link>
+                    <Link to="/admin/add-subsubject">Thêm môn học phân lớp</Link>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </li>
-          <li className={cx('menu-item')}>
-            <Link to="/admin/exam-management">Quản lý bài thi</Link>
-          </li>
-          <li className={cx('menu-item')}>
-            <Link to="/admin/user-management">Quản lý người dùng</Link>
-          </li>
+         
         </ul>
       </aside>
 

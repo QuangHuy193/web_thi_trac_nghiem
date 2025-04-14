@@ -330,6 +330,53 @@ const updateSubjectAPI = async (subject_id, name) => {
   }
 };
 
+//them mon hoc phan lop moi 
+
+const addSubSubjectAPI = async (name, subjectId) => {
+  try {
+    console.log('Gọi API thêm môn học phân lớp:', { subject_name: name, subject_id: subjectId });
+    const response = await axios.post(`${API_URL}/subsubjects`, {
+      subject_name: name,
+      subject_id: subjectId
+    });
+    console.log('Phản hồi từ API:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Lỗi khi thêm môn học phân lớp:', error);
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
+  }
+};
+//xoa mon hoc phan lop
+const deleteSubSubjectAPI = async (subsubject_id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/subsubjects/${subsubject_id}`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
+  }
+};
+
+
+//sua mon hoc phan lop
+const updateSubSubjectAPI = async (subsubject_id, subject_name) => {
+  try {
+    const response = await axios.put(`${API_URL}/subsubjects/${subsubject_id}`, {
+      subject_name,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return { message: "Có lỗi xảy ra khi cập nhật môn học, vui lòng thử lại!" };
+  }
+};
 export {
   getAllSubjectsAPI,
   getSubjectsAPI,
@@ -349,5 +396,8 @@ export {
   addSubjectAPI,
   deleteSubjectAPI,
   updateSubjectAPI,
-  makeExamAPI
+  addSubSubjectAPI,
+  deleteSubSubjectAPI,
+  makeExamAPI,
+  updateSubSubjectAPI
 };

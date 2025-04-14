@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { addSubjectAPI, getAllSubjectsAPI } from '../../Api/api';
+import { useParams, useNavigate } from 'react-router-dom';
 import styles from './AddSubjectPage.module.scss';
 import classNames from 'classnames/bind';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 const cx = classNames.bind(styles);
 
 function AddSubjectPage() {
@@ -10,6 +12,7 @@ function AddSubjectPage() {
   const [message, setMessage] = useState(null);
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Lấy danh sách môn học khi component mount
   useEffect(() => {
@@ -63,6 +66,7 @@ function AddSubjectPage() {
 
   return (
     <div className={cx('add-subject-container')}>
+
       <aside className={cx('sidebar')}>
         <h2 className={cx('logo')}>Trang quản trị</h2>
         <ul className={cx('menu')}>
@@ -74,9 +78,16 @@ function AddSubjectPage() {
       </aside>
 
       <main className={cx('main')}>
+       
         <h1 className={cx('title')}>Thêm môn học</h1>
 
         <div className={cx('section')}>
+        <button
+                className={cx('back-btn')}
+                onClick={() => navigate('/admin')}
+              >
+                <FontAwesomeIcon icon={faArrowLeft} /> Quay lại
+              </button>
           <h2 className={cx('section-title')}>Thông tin môn học</h2>
           {loading ? (
             <p className={cx('loading')}>Đang tải dữ liệu...</p>

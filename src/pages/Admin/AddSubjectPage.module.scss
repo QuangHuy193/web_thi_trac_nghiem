@@ -32,6 +32,20 @@
   }
 }
 
+.back-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  &:hover {
+    color: #0056b3;
+  }
+}
 .main {
   flex: 1;
   padding: 20px;

@@ -5,6 +5,8 @@ import Admin from "../pages/Admin/AdminPage";
 import AddSubjectPage from "../pages/Admin/AddSubjectPage";
 import EditSubjectPage from "../pages/Admin/EditSubjectPage";
 import SubSubjectPage from "../pages/Admin/SubSubjectPage";
+import AddSubSubjectPage from "../pages/Admin/AddSubSubjectPage";
+import EditSubSubjectPage from "../pages/Admin/EditSubSubjectPage";
 const publicRoutes = [
   {
     path: "/",
@@ -27,6 +29,10 @@ const publicRoutes = [
     page: AddSubjectPage, 
   },
   {
+    path: "/admin/add-subsubject",
+    page: AddSubSubjectPage, 
+  },
+  {
     path: "/admin/subsubject",
     page: SubSubjectPage, 
   },
@@ -34,7 +40,10 @@ const publicRoutes = [
     path: "/admin/edit-subject/:subject_id",
     page: EditSubjectPage, 
   },
-
+  {
+    path: "/admin/edit-subsubject/:subsubject_id",
+    page: EditSubSubjectPage, 
+  },
 ];
 
 const privateRoutes = [

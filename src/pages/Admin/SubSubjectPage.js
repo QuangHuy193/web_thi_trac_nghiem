@@ -6,7 +6,7 @@ import { faCaretRight, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-s
 import classNames from 'classnames/bind';
 import Swal from 'sweetalert2';
 import styles from './AdminPage.module.scss';
-import { getSubSubjectsAPI, deleteSubjectAPI } from '../../Api/api';
+import { getSubSubjectsAPI, deleteSubSubjectAPI } from '../../Api/api';
 
 const cx = classNames.bind(styles);
 
@@ -25,17 +25,20 @@ function SubSubjectPage() {
     setIsSubjectDropdownOpen(!isSubjectDropdownOpen);
   };
 
-  // Hàm lấy danh sách môn học
   const fetchSubjects = async () => {
     try {
       setLoading(true);
       const data = await getSubSubjectsAPI();
-      setSubjects(data);
+      console.log('Danh sách môn học phân lớp:', data);
+      const validSubjects = Array.isArray(data)
+        ? data.filter((subject) => subject && typeof subject.subject_name === 'string')
+        : [];
+      setSubjects(validSubjects);
     } catch (error) {
-      console.error('Lỗi khi lấy danh sách môn học:', error);
+      console.error('Lỗi khi lấy danh sách môn học phân lớp:', error);
       Swal.fire({
         title: 'Lỗi!',
-        text: 'Không thể tải danh sách môn học. Vui lòng thử lại.',
+        text: 'Không thể tải danh sách môn học phân lớp. Vui lòng thử lại.',
         icon: 'error',
       });
       setSubjects([]);
@@ -44,16 +47,14 @@ function SubSubjectPage() {
     }
   };
 
-  // Gọi API lấy danh sách môn học khi component mount
   useEffect(() => {
     fetchSubjects();
   }, []);
 
-  // Hàm xử lý xóa môn học
-  const handleDelete = async (subject_id) => {
+  const handleDelete = async (subsubject_id) => {
     const result = await Swal.fire({
       title: 'Xác nhận xóa',
-      text: 'Bạn có chắc muốn xóa môn học này? Hành động này không thể hoàn tác!',
+      text: 'Bạn có chắc muốn xóa môn học phân lớp này? Hành động này không thể hoàn tác!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -64,30 +65,28 @@ function SubSubjectPage() {
 
     if (result.isConfirmed) {
       try {
-        setDeletingId(subject_id);
-        const response = await deleteSubjectAPI(subject_id);
-        // Kiểm tra phản hồi từ API
+        setDeletingId(subsubject_id);
+        const response = await deleteSubSubjectAPI(subsubject_id);
         if (response && !response.message?.toLowerCase().includes('lỗi')) {
-          // Cập nhật danh sách từ server
           await fetchSubjects();
           Swal.fire({
             title: 'Đã xóa!',
-            text: 'Môn học đã được xóa thành công.',
+            text: 'Môn học phân lớp đã được xóa thành công.',
             icon: 'success',
             timer: 1500,
           });
         } else {
           Swal.fire({
             title: 'Lỗi!',
-            text: response.message || 'Không thể xóa môn học. Vui lòng thử lại.',
+            text: response.message || 'Không thể xóa môn học phân lớp. Vui lòng thử lại.',
             icon: 'error',
           });
         }
       } catch (error) {
-        console.error('Lỗi khi xóa môn học:', error);
+        console.error('Lỗi khi xóa môn học phân lớp:', error);
         Swal.fire({
           title: 'Lỗi!',
-          text: 'Không thể xóa môn học. Vui lòng thử lại.',
+          text: 'Không thể xóa môn học phân lớp. Vui lòng thử lại.',
           icon: 'error',
         });
       } finally {
@@ -95,8 +94,6 @@ function SubSubjectPage() {
       }
     }
   };
-
-  
 
   return (
     <div className={cx('admin-container')}>
@@ -124,16 +121,16 @@ function SubSubjectPage() {
                   className={cx('dropdown-menu')}
                 >
                   <div className={cx('dropdown-item')}>
-                    <Link to="/admin">Danh sách môn học </Link>
+                    <Link to="/admin">Danh sách môn học</Link>
                   </div>
                   <div className={cx('dropdown-item')}>
-                    <Link to="/admin/add-subject">Thêm môn học </Link>
+                    <Link to="/admin/add-subject">Thêm môn học</Link>
                   </div>
                   <div className={cx('dropdown-item')}>
                     <Link to="/admin/subsubject">Danh sách môn học phân lớp</Link>
                   </div>
                   <div className={cx('dropdown-item')}>
-                    <Link to="/admin/add-subject">Thêm môn học phân lớp</Link>
+                    <Link to="/admin/add-subsubject">Thêm môn học phân lớp</Link>
                   </div>
                 </motion.div>
               )}
@@ -151,7 +148,7 @@ function SubSubjectPage() {
       <main className={cx('main')}>
         <h1 className={cx('title')}>Danh sách môn học phân lớp</h1>
         <div className={cx('action-bar')}>
-          <Link to="/admin/add-subject">
+          <Link to="/admin/add-subsubject">
             <button className={cx('add-btn')}>
               <FontAwesomeIcon icon={faPlus} /> Thêm môn học phân lớp
             </button>
@@ -165,33 +162,33 @@ function SubSubjectPage() {
               <thead>
                 <tr>
                   <th className={cx('table-header')}>ID</th>
-                  <th className={cx('table-header')}>Tên môn học</th>
+                  <th className={cx('table-header')}>Tên môn học phân lớp</th>
                   <th className={cx('table-header')}>Hành động</th>
                 </tr>
               </thead>
               <tbody>
                 {subjects.map((subject) => (
-                  <tr key={subject.id}>
+                  <tr key={subject.subsubjects_id}>
                     <td className={cx('table-cell')}>{subject.subsubjects_id}</td>
                     <td className={cx('table-cell')}>{subject.subject_name}</td>
                     <td className={cx('table-cell')}>
-                    <Link to={`/admin/edit-subject/${subject.subsubject_id}`}>
+                      <Link to={`/admin/edit-subsubject/${subject.subsubjects_id}`}>
                         <button
                           className={cx('edit-btn')}
-                          title="Sửa môn học"
-                          disabled={deletingId === subject.subject_id}
+                          title="Sửa môn học phân lớp"
+                          disabled={deletingId === subject.subsubjects_id}
                         >
-                        <FontAwesomeIcon icon={faEdit} />
-                      </button>
+                          <FontAwesomeIcon icon={faEdit} />
+                        </button>
                       </Link>
                       <button
                         className={cx('delete-btn')}
-                        onClick={() => handleDelete(subject.subject_id)}
-                        title="Xóa môn học"
-                        disabled={deletingId === subject.subject_id}
+                        onClick={() => handleDelete(subject.subsubjects_id)}
+                        title="Xóa môn học phân lớp"
+                        disabled={deletingId === subject.subsubjects_id}
                       >
                         <FontAwesomeIcon icon={faTrash} />
-                        {deletingId === subject.subject_id && <span>Đang xóa...</span>}
+                        {deletingId === subject.subsubjects_id && <span>Đang xóa...</span>}
                       </button>
                     </td>
                   </tr>
@@ -199,7 +196,7 @@ function SubSubjectPage() {
               </tbody>
             </table>
           ) : (
-            <p className={cx('no-data')}>Không có môn học nào để hiển thị.</p>
+            <p className={cx('no-data')}>Không có môn học phân lớp nào để hiển thị.</p>
           )}
         </div>
       </main>
