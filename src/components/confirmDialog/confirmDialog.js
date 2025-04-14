@@ -20,13 +20,15 @@ const showConfirmDialog = (title, text, icon, onConfirm, btnYes, btnNo) => {
     cancelButtonText: btnNo || "",
     customClass: {
       popup: "custom-swal-popup",
-      title: "custom-swal-title",     
+      title: "custom-swal-title",
       confirmButton: "custom-swal-confirm",
       cancelButton: "custom-swal-cancel",
     },
     didOpen: () => {
-      document.querySelector(".swal2-html-container").classList.add("custom-swal-text");
-  }
+      document
+        .querySelector(".swal2-html-container")
+        .classList.add("custom-swal-text");
+    },
   }).then((result) => {
     if (result.isConfirmed && typeof onConfirm === "function") {
       onConfirm();
@@ -34,4 +36,29 @@ const showConfirmDialog = (title, text, icon, onConfirm, btnYes, btnNo) => {
   });
 };
 
-export { showConfirmDialog };
+const showOkDialog = (title, text, icon, onConfirm, btnYes) => {
+  Swal.fire({
+    title: title || "",
+    text: text || "",
+    icon: icon || "",
+    showCancelButton: false,
+    confirmButtonText: btnYes || "",
+    customClass: {
+      popup: "custom-swal-popup",
+      title: "custom-swal-title",
+      confirmButton: "custom-swal-confirm",
+      cancelButton: "custom-swal-cancel",
+    },
+    didOpen: () => {
+      document
+        .querySelector(".swal2-html-container")
+        .classList.add("custom-swal-text");
+    },
+  }).then((result) => {
+    if (result.isConfirmed && typeof onConfirm === "function") {
+      onConfirm();
+    }
+  });
+};
+
+export { showConfirmDialog, showOkDialog };

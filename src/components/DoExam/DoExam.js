@@ -5,8 +5,12 @@ import styles from "./DoExam.module.scss";
 import {
   showErrorToast,
   showSuccessToast,
+  showWarningToast,
 } from "../../Utils/ToastNotification";
-import { showConfirmDialog } from "../confirmDialog/confirmDialog";
+import {
+  showConfirmDialog,
+  showOkDialog,
+} from "../confirmDialog/confirmDialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeftLong } from "@fortawesome/free-solid-svg-icons";
 import { submitExamAPI } from "../../Api/api";
@@ -50,6 +54,10 @@ function DoExam({
 
   // useEffect để cập nhật thời gian đếm ngược mỗi giây
   useEffect(() => {
+    if (timeLeft === 300) {
+      showWarningToast("Thời gian làm bài còn 5 phút", 1200);
+    }
+
     if (timeLeft <= 0) {
       handleClickSubmit(); // Tự động nộp bài khi hết giờ
       return;
@@ -207,11 +215,19 @@ function DoExam({
       }
     } else {
       // Trường hợp hết giờ tự động nộp bài
-      if (user) {
-        handleSubmitHasLogin();
-      } else {
-        handleSubmitNoLogin();
-      }
+      showOkDialog(
+        "Đã hết giờ làm bài!",
+        "Hệ thống sẽ tự động nộp bài",
+        "info",
+        () => {
+          if (user) {
+            handleSubmitHasLogin();
+          } else {
+            handleSubmitNoLogin();
+          }
+        },
+        "Đã rõ"
+      );
     }
   };
 

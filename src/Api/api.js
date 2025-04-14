@@ -67,7 +67,7 @@ const getAllExamsByUserIdAPI = async (user_id) => {
   }
 };
 
-//lấy ds bài thi theo user_id người tạo
+// sửa thông tin bài thi
 const updateExamByExamIdAPI = async (
   exam_id,
   title,

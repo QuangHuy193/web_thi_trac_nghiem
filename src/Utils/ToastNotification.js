@@ -31,4 +31,9 @@ export const showInfoToast = (message, duration = 2000) => {
   toast.info(message, { autoClose: duration });  
 };
 
+// Hàm hiển thị toast cảnh báo với thời gian tùy chỉnh
+export const showWarningToast = (message, duration = 2000) => {
+  toast.warn(message, { autoClose: duration });  
+};
+
 export default ToastNotification;
