@@ -9,7 +9,7 @@ function App() {
     const handleBeforeUnload = () => {
       const user = JSON.parse(localStorage.getItem("user"));
 
-      if (user.role === "admin") {
+      if (user?.role === "admin") {
         localStorage.removeItem("user"); // Xóa user khỏi localStorage khi tắt trình duyệt
       }
     };
