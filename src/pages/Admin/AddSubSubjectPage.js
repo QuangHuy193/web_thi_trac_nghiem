@@ -71,8 +71,7 @@ function AddSubSubjectPage() {
       return;
     }
 
-    try {
-      console.log('Thêm môn học phân lớp:', { subject_name: subjectName, subject_id: subjectId });
+    try {     
       const parsedSubjectId = parseInt(subjectId);
       if (isNaN(parsedSubjectId)) {
         setMessage({ type: 'error', text: 'Môn học tổng quát không hợp lệ!' });
@@ -129,8 +128,7 @@ function AddSubSubjectPage() {
                 <select
                   className={cx('input')}
                   value={subjectId}
-                  onChange={(e) => {
-                    console.log('Giá trị subjectId đã chọn:', e.target.value);
+                  onChange={(e) => {                 
                     setSubjectId(e.target.value);
                   }}
                 >

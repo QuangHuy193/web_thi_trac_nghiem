@@ -19,10 +19,12 @@ import {
 } from "../../Utils/ToastNotification";
 import {
   handleChangePass,
+  loginGoogle,
   togglePasswordVisibility,
 } from "../../Utils/function";
 import { EMAILREGEX } from "../../Utils/const";
-import { loginAPI } from "../../Api/api";
+import { loginAPI, loginGoogleAPI } from "../../Api/api";
+import Loading from "../../components/Loading/Loading";
 
 const cx = classNames.bind(styles);
 
@@ -53,6 +55,9 @@ function Login() {
 
   // useRef lưu trữ tham chiếu đến timeout (để xử lý việc debounce khi kiểm tra email)
   const timeoutRef = useRef(null);
+
+  // dùng để hiện hiệu ứng loading
+  const [isLoading, setIsLoading] = useState(false);
 
   // Hàm xử lý thay đổi email, kiểm tra hợp lệ sau một khoảng thời gian (debounce)
   const handleChangeEmail = (e) => {
@@ -85,43 +90,61 @@ function Login() {
   };
 
   // Hàm xử lý khi submit form đăng nhập
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, method = "form") => {
     e.preventDefault(); // Ngăn việc submit mặc định của form
-
-    // Kiểm tra tính hợp lệ của các trường email và password
-    if (
-      isTouched.email &&
-      isTouched.password &&
-      isValid.password &&
-      isValid.email
-    ) {
-      try {
-        // Gọi API đăng nhập
-        const result = await loginAPI(formData.email, formData.password);
-        if (result.user) {
-          showSuccessToast(result.message || "Đăng nhập thành công!", 1000);
-          localStorage.setItem("user", JSON.stringify(result.user)); // Lưu thông tin user vào localStorage
-
-          if (result.user.role === "admin") {
-            // Điều hướng về admin
-            navigative("/admin");
-          } else {
-            // Điều hướng về trang chính
-            navigative("/");
-          }
+    if (method === "google") {
+      const result = await loginGoogle();
+      if (result?.token) {
+        console.log(result.token);
+        setIsLoading(true)
+        const rs = await loginGoogleAPI(result.token);
+        console.log(rs);
+        setIsLoading(false)
+        if (rs.user) {
+          showSuccessToast(rs.message, 1200);
         } else {
-          showErrorToast(result.message || "Đăng nhập thất bại!", 1500);
+          showErrorToast(rs.message, 1200);
         }
-      } catch (error) {
-        showErrorToast("Có lỗi xảy ra, vui lòng thử lại!", 1500);
+      } else {
+        showErrorToast("Đăng nhập Google thất bại!", 1200);
       }
     } else {
-      showErrorToast("Vui lòng nhập thông tin hợp lệ!", 1500);
+      // Kiểm tra tính hợp lệ của các trường email và password
+      if (
+        isTouched.email &&
+        isTouched.password &&
+        isValid.password &&
+        isValid.email
+      ) {
+        try {
+          // Gọi API đăng nhập
+          const result = await loginAPI(formData.email, formData.password);
+          if (result.user) {
+            showSuccessToast(result.message || "Đăng nhập thành công!", 1000);
+            localStorage.setItem("user", JSON.stringify(result.user)); // Lưu thông tin user vào localStorage
+
+            if (result.user.role === "admin") {
+              // Điều hướng về admin
+              navigative("/admin");
+            } else {
+              // Điều hướng về trang chính
+              navigative("/");
+            }
+          } else {
+            showErrorToast(result.message || "Đăng nhập thất bại!", 1500);
+          }
+        } catch (error) {
+          showErrorToast("Có lỗi xảy ra, vui lòng thử lại!", 1500);
+        }
+      } else {
+        showErrorToast("Vui lòng nhập thông tin hợp lệ!", 1500);
+      }
     }
   };
 
   return (
     <div className={cx("wrapper")}>
+      {isLoading && <Loading setIsLoading={setIsLoading} title="Đang đăng nhập..." />}
       {/* Link về trang chủ */}
       <Link to={"/"} className={cx("home")}>
         <FontAwesomeIcon icon={faBook} /> Edu Quiz
@@ -190,6 +213,15 @@ function Login() {
           <div className={cx("login")}>
             <Button>Đăng nhập</Button>
           </div>
+
+          {/* Đăng nhập với google */}
+          <button
+            className={cx("btn-google")}
+            onClick={(e) => handleSubmit(e, "google")}
+          >
+            <img src="/google.svg" alt="Google icon" />
+            <span>Đăng nhập với Google</span>
+          </button>
 
           {/* Liên kết đăng ký */}
           <div className={cx("signup")}>

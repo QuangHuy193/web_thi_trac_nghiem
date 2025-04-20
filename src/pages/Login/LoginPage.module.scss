@@ -108,6 +108,39 @@ h2 {
   }
 }
 
+.btn-google {
+  width: 100%;
+  margin-top: 15px;
+  display: flex;
+  padding: 12px 16px;
+  height: 48px;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #f7f7f7;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  }
+
+  img {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+  }
+
+  span {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+  }
+}
+
 .signup {
   margin-top: 15px;
   font-size: 14px;

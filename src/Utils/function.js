@@ -1,4 +1,5 @@
 import { showErrorToast } from "./ToastNotification";
+import { auth, provider, signInWithPopup } from "../configs/firebase.js";
 
 const handleChangePass = (
   e,
@@ -50,7 +51,7 @@ const getDifficultyLabel = (difficulty) => {
 
 const removeVietnameseTones = (str) => {
   if (!str || typeof str !== "string") return "";
-  
+
   return str
     .normalize("NFD") // tách dấu
     .replace(/[\u0300-\u036f]/g, "") // xóa dấu
@@ -59,9 +60,33 @@ const removeVietnameseTones = (str) => {
     .toLowerCase(); // về chữ thường
 };
 
+const loginGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    // Lấy ID Token (JWT) để gửi về backend xác thực
+    const idToken = await user.getIdToken();
+
+    return {
+      user: {
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
+        uid: user.uid,
+      },
+      token: idToken,
+    };
+  } catch (error) {
+    console.error("Lỗi đăng nhập với Google:", error);
+    return null;
+  }
+};
+
 export {
   handleChangePass,
   togglePasswordVisibility,
   getDifficultyLabel,
   removeVietnameseTones,
+  loginGoogle,
 };

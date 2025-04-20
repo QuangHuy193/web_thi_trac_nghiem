@@ -132,6 +132,24 @@ const loginAPI = async (email, password) => {
   }
 };
 
+// Đăng nhập vưới google
+const loginGoogleAPI = async (id_token) => { 
+  try {
+    const response = await axios.post(`${API_URL}/auth/google`, {
+      id_token
+    });
+    return response.data;
+  } catch (error) {
+    // Kiểm tra nếu server trả về lỗi có response
+    if (error.response && error.response.data) {
+      return error.response.data; // Trả về thông báo lỗi từ API
+    }
+
+    // Nếu lỗi không có response từ server (lỗi mạng, timeout, ...)
+    return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
+  }
+};
+
 // Tạo bài thi
 const makeExamAPI = async (
   title,
@@ -285,8 +303,8 @@ const getHistoryByExamIdAPI = async (exam_id) => {
     return [];
   }
 };
-//them mon hoc moi 
 
+//them mon hoc moi 
 const addSubjectAPI = async (name) => {
   try {
     const response = await axios.post(`${API_URL}/subjects`, {
@@ -315,7 +333,6 @@ const deleteSubjectAPI = async (subject_id) => {
 };
 
 //sua mon hoc 
-
 const updateSubjectAPI = async (subject_id, name) => {
   try {
     const response = await axios.put(`${API_URL}/subjects/${subject_id}`, {
@@ -331,15 +348,13 @@ const updateSubjectAPI = async (subject_id, name) => {
 };
 
 //them mon hoc phan lop moi 
-
 const addSubSubjectAPI = async (name, subjectId) => {
-  try {
-    console.log('Gọi API thêm môn học phân lớp:', { subject_name: name, subject_id: subjectId });
+  try {   
     const response = await axios.post(`${API_URL}/subsubjects`, {
       subject_name: name,
       subject_id: subjectId
     });
-    console.log('Phản hồi từ API:', response.data);
+    
     return response.data;
   } catch (error) {
     console.error('Lỗi khi thêm môn học phân lớp:', error);
@@ -349,6 +364,7 @@ const addSubSubjectAPI = async (name, subjectId) => {
     return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
   }
 };
+
 //xoa mon hoc phan lop
 const deleteSubSubjectAPI = async (subsubject_id) => {
   try {
@@ -361,7 +377,6 @@ const deleteSubSubjectAPI = async (subsubject_id) => {
     return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
   }
 };
-
 
 //sua mon hoc phan lop
 const updateSubSubjectAPI = async (subsubject_id, subject_name) => {
@@ -399,5 +414,6 @@ export {
   addSubSubjectAPI,
   deleteSubSubjectAPI,
   makeExamAPI,
-  updateSubSubjectAPI
+  updateSubSubjectAPI,
+  loginGoogleAPI
 };

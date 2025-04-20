@@ -118,6 +118,7 @@ function Home() {
 
         <div className={cx("content")}>
           {/* Render nội dung tương ứng với selectedContent */}
+
           {selectedContent === "exam" && (
             <Exam
               user={user}
