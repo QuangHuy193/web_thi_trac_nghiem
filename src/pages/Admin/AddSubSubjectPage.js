@@ -78,9 +78,18 @@ function AddSubSubjectPage() {
         return;
       }
       const response = await addSubSubjectAPI(subjectName.trim(), parsedSubjectId);
-      console.log('Phản hồi từ API:', response);
-      if (response.message === 'Môn học phân lớp đã được tạo') {
-        setMessage({ type: 'success', text: 'Thêm môn học phân lớp thành công!' });
+      console.log('Phản hồi từ API (chi tiết):', JSON.stringify(response, null, 2));
+      console.log('Giá trị response.message:', response.message);
+
+      // Kiểm tra trạng thái thành công
+      const isSuccess =
+        (response.message && response.message === 'Môn học phân lớp đã được tạo') ||
+        (response.subsubject); // Thành công nếu API trả về subsubject
+
+      console.log('Giá trị isSuccess:', isSuccess);
+
+      if (isSuccess) {
+        setMessage({ type: 'success', text: 'Môn học phân lớp đã được tạo !' });
         setSubjectName('');
         setSubjectId(mainSubjects[0]?.subject_id.toString() || '');
         const updatedSubjects = await getSubSubjectsAPI();
@@ -89,13 +98,20 @@ function AddSubSubjectPage() {
           : [];
         setSubjects(validUpdatedSubjects);
       } else {
-        setMessage({ type: 'error', text: response.message || 'Có lỗi xảy ra!' });
+        setMessage({ type: 'error', text: 'Không thể tạo môn học phân lớp, vui lòng thử lại!' });
       }
     } catch (error) {
       console.error('Lỗi khi thêm môn học phân lớp:', error);
       setMessage({ type: 'error', text: 'Có lỗi xảy ra, vui lòng thử lại!' });
     }
   };
+
+  // Log khi message thay đổi để kiểm tra trạng thái cuối cùng
+  useEffect(() => {
+    if (message) {
+      console.log('Message state đã cập nhật (chi tiết):', JSON.stringify(message, null, 2));
+    }
+  }, [message]);
 
   return (
     <div className={cx('add-subject-container')}>
@@ -104,7 +120,6 @@ function AddSubSubjectPage() {
         <ul className={cx('menu')}>
           <li className={cx('menu-item')}>Dashboard</li>
           <li className={cx('menu-item', 'active')}>Quản lý môn học</li>
-        
         </ul>
       </aside>
 
@@ -113,12 +128,12 @@ function AddSubSubjectPage() {
 
         <div className={cx('section')}>
           <h2 className={cx('section-title')}>Thông tin môn học phân lớp</h2>
-            <button
-                          className={cx('back-btn')}
-                          onClick={() => navigate('/admin/subsubject')}
-                        >
-                          <FontAwesomeIcon icon={faArrowLeft} /> Quay lại
-                        </button>
+          <button
+            className={cx('back-btn')}
+            onClick={() => navigate('/admin/subsubject')}
+          >
+            <FontAwesomeIcon icon={faArrowLeft} /> Quay lại
+          </button>
           {loading ? (
             <p className={cx('loading')}>Đang tải dữ liệu...</p>
           ) : (
@@ -155,13 +170,16 @@ function AddSubSubjectPage() {
               </div>
 
               {message && (
-                <div
-                  className={cx('message', {
-                    'message-error': message.type === 'error',
-                    'message-success': message.type === 'success',
-                  })}
-                >
-                  {message.text}
+                <div>
+                  {console.log('Message trước khi render (chi tiết):', JSON.stringify(message, null, 2))}
+                  <div
+                    className={cx('message', {
+                      'message-error': message.type !== 'success',
+                      'message-success': message.type === 'success',
+                    })}
+                  >
+                    {message.text}
+                  </div>
                 </div>
               )}
 
