@@ -93,16 +93,15 @@ function Login() {
   const handleSubmit = async (e, method = "form") => {
     e.preventDefault(); // Ngăn việc submit mặc định của form
     if (method === "google") {
-      const result = await loginGoogle();
+      const result = await loginGoogle();     
       if (result?.token) {
-        console.log(result.token);
+      
         setIsLoading(true)
-        const rs = await loginGoogleAPI(result.token);
-        console.log(rs);
+        const rs = await loginGoogleAPI(result.token);       
         setIsLoading(false)
 
         if (rs.user) {
-          showSuccessToast(rs.message, 1200);
+          showSuccessToast("Đăng nhập thành công", 1200);
           localStorage.setItem("user", JSON.stringify(rs.user));
           navigative("/");
         } else {
