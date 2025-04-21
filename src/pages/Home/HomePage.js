@@ -15,6 +15,7 @@ import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import MakeExam from "../../components/MakeExam/MakeExam";
 import ListExam from "../../components/ListExam/ListExam";
 import HistoryExam from "../../components/HistoryExam/HistoryExam";
+import Loading from "../../components/Loading/Loading";
 
 const cx = classNames.bind(styles);
 
@@ -58,6 +59,9 @@ function Home() {
   // dùng giá trị này để xác định có tiềm kiếm bài thi hay không
   const [searchValue, setSearchValue] = useState("");
 
+  // dùng để hiện hiệu ứng loading
+  const [isLoading, setIsLoading] = useState(false);
+
   // useEffect để theo dõi sự kiện cuộn trang (scroll) và hiển thị/ẩn nút scroll lên đầu trang
   useEffect(() => {
     const handleScroll = () => {
@@ -90,6 +94,9 @@ function Home() {
 
   return (
     <div>
+      {isLoading && (
+        <Loading setIsLoading={setIsLoading} title="Đang xử lý..." />
+      )}
       {/* Header Component */}
       <Header
         setSelectedContent={setSelectedContent}
@@ -154,6 +161,7 @@ function Home() {
               setIdExam={setIdExam}
               selectedSubject={selectedSubject}
               selectedSubjectName={selectedSubjectName}
+              setIsLoading={setIsLoading}
             />
           )}
           {selectedContent === "makeExam" && (
@@ -162,6 +170,7 @@ function Home() {
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
               examEdited={examEdited}
+              setIsLoading={setIsLoading}
             />
           )}
           {selectedContent === "listExam" && (
@@ -170,6 +179,7 @@ function Home() {
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
               setExamEdited={setExamEdited}
+              setIsLoading={setIsLoading}
             />
           )}
 

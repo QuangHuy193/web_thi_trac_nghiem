@@ -23,7 +23,7 @@ import MakeQuestion from "../MakeQuestion/MakeQuestion";
 
 const cx = classNames.bind(styles);
 
-function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
+function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited,setIsLoading }) {
   // ds môn chính
   const [subjects, setSubjects] = useState([]);
   // ds môn phân lớp
@@ -234,6 +234,7 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
     }
     try {
       if (!examEdited) {
+        setIsLoading(true)
         const result = await makeExamAPI(
           exam.exam_name,
           exam.description,
@@ -242,6 +243,7 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
           exam.subsubject_id,
           exam.questions
         );
+        setIsLoading(false)
 
         if (result.exam) {
           showSuccessToast(result.message, 1200);
@@ -251,13 +253,14 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
           showErrorToast(result.message || "Không thể tạo bài thi!", 1200);
         }
       } else {
+        setIsLoading(true)
         const result = await updateExamByExamIdAPI(
           examEdited.exam_id,
           exam.exam_name,
           exam.description,
           exam.questions
         );
-        console.log(examEdited);
+        setIsLoading(false)       
 
         if (result.status) {
           showSuccessToast(result.message, 1200);
@@ -290,6 +293,7 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited }) {
               user={user}
               selectedSubSubject={selectedSubSubject}
               setRefreshQuestion={setRefreshQuestion}
+              setIsLoading={setIsLoading}
             />
           </div>
         )}

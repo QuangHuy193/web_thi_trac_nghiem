@@ -26,8 +26,8 @@ function DoExam({
   user,
   setResultExam,
   setIdExam,
-  selectedSubject,
   selectedSubjectName,
+  setIsLoading
 }) {
   // Lưu đáp án người dùng chọn
   const [answers, setAnswers] = useState([]);
@@ -115,6 +115,7 @@ function DoExam({
   const handleSubmitHasLogin = async () => {
     const now = new Date().toISOString();
     try {
+      setIsLoading(true)
       const rs = await submitExamAPI(
         formData.user_id,
         formData.exam_id,
@@ -122,6 +123,7 @@ function DoExam({
         now,
         formData.answers
       );
+      setIsLoading(false)
 
       if (rs.history_id) {
         setSelectedContent("history");

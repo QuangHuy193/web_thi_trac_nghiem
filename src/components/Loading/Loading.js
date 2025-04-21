@@ -17,8 +17,8 @@ function Loading({ title, setIsLoading }) {
           }}
         />
       </div>
-      <div className={cx("title")}>{title}</div>
       <div className={cx("spinner")}></div>
+      <div className={cx("title")}>{title}</div>
     </div>
   );
 }

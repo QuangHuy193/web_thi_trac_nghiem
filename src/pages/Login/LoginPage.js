@@ -100,8 +100,11 @@ function Login() {
         const rs = await loginGoogleAPI(result.token);
         console.log(rs);
         setIsLoading(false)
+
         if (rs.user) {
           showSuccessToast(rs.message, 1200);
+          localStorage.setItem("user", JSON.stringify(rs.user));
+          navigative("/");
         } else {
           showErrorToast(rs.message, 1200);
         }
@@ -120,7 +123,7 @@ function Login() {
           // Gọi API đăng nhập
           const result = await loginAPI(formData.email, formData.password);
           if (result.user) {
-            showSuccessToast(result.message || "Đăng nhập thành công!", 1000);
+            showSuccessToast(result.message || "Đăng nhập thành công!", 1200);
             localStorage.setItem("user", JSON.stringify(result.user)); // Lưu thông tin user vào localStorage
 
             if (result.user.role === "admin") {
@@ -225,7 +228,7 @@ function Login() {
 
           {/* Liên kết đăng ký */}
           <div className={cx("signup")}>
-            <a href="/signup">Đăng ký</a>
+            <a href="/signup">Đăng ký?</a>
           </div>
         </form>
       </div>

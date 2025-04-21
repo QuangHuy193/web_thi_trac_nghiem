@@ -17,6 +17,7 @@ function MakeQuestion({
   user,
   selectedSubSubject,
   setRefreshQuestion,
+  setIsLoading
 }) {
   // tên môn phân lớp để hiển thi
   const [subSubjectName, setSubSubjectName] = useState("");
@@ -109,6 +110,7 @@ function MakeQuestion({
       showErrorToast(errMessage, 1200);
     } else {
       try {
+        setIsLoading(true)
         const result = await makeQuestionAPI(
           formData.subject_id,
           formData.question_text,
@@ -116,6 +118,7 @@ function MakeQuestion({
           formData.created_by,
           formData.answers
         );
+        setIsLoading(false)
 
         if (result.question) {
           showSuccessToast("Tạo câu hỏi thành công!", 1200);
