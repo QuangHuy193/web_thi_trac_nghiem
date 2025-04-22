@@ -152,7 +152,7 @@ function Home() {
               <Slider
                 dots={true}
                 infinite={true}
-                speed={500}
+                speed={600}
                 slidesToShow={1}
                 slidesToScroll={1}
                 autoplay={true}
@@ -162,13 +162,13 @@ function Home() {
                   <img src="/bannertoan.jpg" alt="Banner 1" className={cx("banner")} />
                 </div>
                 <div>
-                  <img src="/banner2.jpg" alt="Banner 2" className={cx("banner")} />
+                  <img src="/bannerls.jpg" alt="Banner 2" className={cx("banner")} />
                 </div>
                 <div>
-                  <img src="/banner3.jpg" alt="Banner 3" className={cx("banner")} />
+                  <img src="/bannedl.jpg" alt="Banner 3" className={cx("banner")} />
                 </div>
                 <div>
-                  <img src="/banner4.jpg" alt="Banner 4" className={cx("banner")} />
+                  <img src="/bannervl.jpg" alt="Banner 4" className={cx("banner")} />
                 </div>
               </Slider>
               <div className={cx("card-container")}>
