@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import styles from "./MakeQuestion.module.scss";
 import { getSubSubjectsAPI, makeQuestionAPI } from "../../Api/api";
@@ -17,20 +17,19 @@ function MakeQuestion({
   user,
   selectedSubSubject,
   setRefreshQuestion,
-  setIsLoading
+  setIsLoading,
 }) {
-  // tên môn phân lớp để hiển thi
   const [subSubjectName, setSubSubjectName] = useState("");
-  // State lưu thông tin câu hỏi và danh sách đáp án
   const [formData, setFormdata] = useState({
-    subject_id: selectedSubSubject, // Môn học con được chọn
-    question_text: "", // Nội dung câu hỏi
-    difficulty: "", // Độ khó
-    created_by: user.user_id, // ID người tạo (user hiện tại)
-    answers: [{}, {}, {}, {}], // 4 đáp án mặc định (rỗng)
+    subject_id: selectedSubSubject,
+    question_text: "",
+    difficulty: "",
+    created_by: user.user_id,
+    answers: [{}, {}, {}, {}],
   });
 
-  // lấy tên môn phân lớp
+  const textareaRef = useRef(null); // ref lưu textarea đang focus
+
   useEffect(() => {
     const getSubSubject = async () => {
       const rs = await getSubSubjectsAPI();
@@ -41,21 +40,17 @@ function MakeQuestion({
         }
       }
     };
-
     getSubSubject();
   }, []);
 
-  // Xử lý khi người dùng nhập nội dung câu hỏi
   const handleQuestionChange = (e) => {
     setFormdata({ ...formData, question_text: e.target.value });
   };
 
-  // Xử lý khi người dùng chọn độ khó
   const handleDifficultyicultyChange = (e) => {
     setFormdata({ ...formData, difficulty: e.target.value });
   };
 
-  // Xử lý khi người dùng thay đổi nội dung đáp án
   const handleAnswerChange = (e, index) => {
     const { value } = e.target;
     const newAnswers = [...formData.answers];
@@ -69,11 +64,10 @@ function MakeQuestion({
     }));
   };
 
-  // Xử lý chọn đáp án đúng (chỉ 1 đáp án đúng duy nhất)
   const handleIsCorrectSelected = (index) => {
     const newAnswers = formData.answers.map((answer, i) => ({
       ...answer,
-      is_correct: i === index, // chỉ 1 đáp án là đúng
+      is_correct: i === index,
     }));
     setFormdata((prevData) => ({
       ...prevData,
@@ -81,17 +75,14 @@ function MakeQuestion({
     }));
   };
 
-  // Đóng form tạo câu hỏi
   const handleCloseForm = () => {
     setIsMakeQuestion(false);
   };
 
-  // Gửi dữ liệu tạo câu hỏi
   const handleSubmit = async (e) => {
     e.preventDefault();
     let errMessage = "";
 
-    // kiểm tra lỗi trước khi gửi lên server
     if (!formData.question_text) {
       errMessage = "Bạn chưa nhập câu hỏi!";
     } else if (!formData.difficulty) {
@@ -110,7 +101,7 @@ function MakeQuestion({
       showErrorToast(errMessage, 1200);
     } else {
       try {
-        setIsLoading(true)
+        setIsLoading(true);
         const result = await makeQuestionAPI(
           formData.subject_id,
           formData.question_text,
@@ -118,12 +109,12 @@ function MakeQuestion({
           formData.created_by,
           formData.answers
         );
-        setIsLoading(false)
+        setIsLoading(false);
 
         if (result.question) {
           showSuccessToast("Tạo câu hỏi thành công!", 1200);
-          setIsMakeQuestion(false); // đóng form
-          setRefreshQuestion((prev) => !prev); // làm mới danh sách câu hỏi
+          setIsMakeQuestion(false);
+          setRefreshQuestion((prev) => !prev);
         } else {
           showErrorToast(result.message, 1200);
         }
@@ -133,31 +124,79 @@ function MakeQuestion({
     }
   };
 
+  // 📌 Hàm chèn ký tự đặc biệt vào textarea đang focus
+  const handleInsertSpecialChar = (char) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const value = textarea.value;
+    textarea.value = value.slice(0, start) + char + value.slice(end);
+    textarea.focus();
+    textarea.selectionStart = textarea.selectionEnd = start + char.length;
+    textarea.dispatchEvent(new Event("input", { bubbles: true }));
+  };
+
   return (
     <div className={cx("container")}>
       <form className={cx("form")}>
-        {/* Icon đóng form */}
         <div className={cx("icon-close")}>
           <FontAwesomeIcon icon={faClose} onClick={handleCloseForm} />
         </div>
 
-        {/* Tiêu đề form */}
         <div className={cx("title-group")}>
           <label className={cx("title")}>
             Thêm câu hỏi cho môn {" " + subSubjectName}
           </label>
         </div>
 
-        {/* Nhập nội dung câu hỏi */}
         <div className={cx("question-group")}>
           <label>Nhập nội dung câu hỏi:</label>
           <textarea
             className={cx("question")}
             onChange={handleQuestionChange}
+            onFocus={(e) => (textareaRef.current = e.target)}
           />
         </div>
 
-        {/* Chọn độ khó */}
+        {/* Bàn phím ký tự đặc biệt */}
+        <div className={cx("special-keyboard")}>
+          {[
+            "∞",
+            "π",
+            "√",
+            "∑",
+            "±",
+            "≠",
+            "≈",
+            "∆",
+            "∫",
+            "λ",
+            "α",
+            "β",
+            "γ",
+            "δ",
+            "ε",
+            "φ",
+            "θ",
+            "ξ",
+            "σ",
+            "τ",
+            "χ",
+            "ψ",
+            "Ω",
+          ].map((char) => (
+            <button
+              key={char}
+              type="button"
+              className={cx("special-key")}
+              onClick={() => handleInsertSpecialChar(char)}
+            >
+              {char}
+            </button>
+          ))}
+        </div>
+
         <div className={cx("difficulty-group")}>
           <label>Độ khó của câu hỏi:</label>
           <select onChange={handleDifficultyicultyChange}>
@@ -168,15 +207,12 @@ function MakeQuestion({
           </select>
         </div>
 
-        {/* Nhập 4 đáp án */}
         <div className={cx("answer-group")}>
-          {/* Nhãn đáp án */}
           <div className={cx("answer-item")}>
             <label className={cx("is-correct-lable")}>Đáp án đúng</label>
             <label className={cx("answer-lable")}>Nội dung câu trả lời</label>
           </div>
 
-          {/* Lặp 4 đáp án */}
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className={cx("answer-item")}>
               <div className={cx("is-correct")}>
@@ -192,12 +228,12 @@ function MakeQuestion({
               <textarea
                 className={cx("answer")}
                 onChange={(e) => handleAnswerChange(e, i)}
+                onFocus={(e) => (textareaRef.current = e.target)}
               />
             </div>
           ))}
         </div>
 
-        {/* Nút thêm câu hỏi */}
         <div className={cx("btn-add")}>
           <button onClick={handleSubmit}>Thêm</button>
         </div>

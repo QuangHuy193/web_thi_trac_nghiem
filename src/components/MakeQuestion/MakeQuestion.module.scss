@@ -6,7 +6,6 @@
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.5);
-  display: flex;
   justify-content: center;
   align-items: center;
   transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -22,16 +21,20 @@
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
   position: relative;
   color: var(--color-text-sidebar);
+  max-height: calc(100vh - 50px); /* Đảm bảo form không che hết màn hình */
+  overflow-y: auto; /* Thêm cuộn khi form vượt quá chiều cao */
+  margin-top: 20px; /* Khoảng cách giữa form và đỉnh màn hình */
+  margin-bottom: 20px; /* Khoảng cách giữa form và đáy màn hình */
+}
 
-  .icon-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 2rem;
-    cursor: pointer;
-    padding: 5px;
-    color: red;
-  }
+.icon-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 5px;
+  color: red;
 }
 
 .title-group {
@@ -137,5 +140,24 @@
     &:hover {
       background-color: #0056b3;
     }
+  }
+}
+
+.special-keyboard {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.special-key {
+  padding: 4px 10px;
+  border: 1px solid #ccc;
+  background: #f4f4f4;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  &:hover {
+    background: #e0e0e0;
   }
 }

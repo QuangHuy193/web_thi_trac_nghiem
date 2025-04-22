@@ -199,7 +199,7 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited,setIsLo
   //xử lý thay đổi của dropdown subsubject
   const handleChangeSubSUbject = (e) => {
     setSelectedSubSubject(e.target.value);
-    setExam({ ...exam, subsubject_id: e.target.value });
+    setExam({ ...exam, subsubject_id: e.target.value });  
   };
 
   // xử lý back từ trang sửa sang trang danh sách đề thi đã tạo
