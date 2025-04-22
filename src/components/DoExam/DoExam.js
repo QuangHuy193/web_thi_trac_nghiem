@@ -27,7 +27,8 @@ function DoExam({
   setResultExam,
   setIdExam,
   selectedSubjectName,
-  setIsLoading
+  setIsLoading,
+  setTitleLoading
 }) {
   // Lưu đáp án người dùng chọn
   const [answers, setAnswers] = useState([]);
@@ -115,6 +116,7 @@ function DoExam({
   const handleSubmitHasLogin = async () => {
     const now = new Date().toISOString();
     try {
+      setTitleLoading("Đang nộp bài...")
       setIsLoading(true)
       const rs = await submitExamAPI(
         formData.user_id,

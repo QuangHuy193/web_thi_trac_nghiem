@@ -62,6 +62,9 @@ function Home() {
   // dùng để hiện hiệu ứng loading
   const [isLoading, setIsLoading] = useState(false);
 
+  // lưu title loading
+  const [titleLoading, setTitleLoading] = useState("Đang xử lý...");
+
   // useEffect để theo dõi sự kiện cuộn trang (scroll) và hiển thị/ẩn nút scroll lên đầu trang
   useEffect(() => {
     const handleScroll = () => {
@@ -95,7 +98,7 @@ function Home() {
   return (
     <div>
       {isLoading && (
-        <Loading setIsLoading={setIsLoading} title="Đang xử lý..." />
+        <Loading setIsLoading={setIsLoading} title={titleLoading} />
       )}
       {/* Header Component */}
       <Header
@@ -162,6 +165,7 @@ function Home() {
               selectedSubject={selectedSubject}
               selectedSubjectName={selectedSubjectName}
               setIsLoading={setIsLoading}
+              setTitleLoading={setTitleLoading}
             />
           )}
           {selectedContent === "makeExam" && (
@@ -171,6 +175,7 @@ function Home() {
               setHeaderTitle={setHeaderTitle}
               examEdited={examEdited}
               setIsLoading={setIsLoading}
+              setTitleLoading={setTitleLoading}
             />
           )}
           {selectedContent === "listExam" && (
@@ -180,6 +185,7 @@ function Home() {
               setHeaderTitle={setHeaderTitle}
               setExamEdited={setExamEdited}
               setIsLoading={setIsLoading}
+              setTitleLoading={setTitleLoading}
             />
           )}
 

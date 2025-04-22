@@ -11,7 +11,14 @@ import { showConfirmDialog } from "../confirmDialog/confirmDialog";
 
 const cx = classNames.bind(styles);
 
-function ListExam({ user, setHeaderTitle, setSelectedContent, setExamEdited,setIsLoading }) {
+function ListExam({
+  user,
+  setHeaderTitle,
+  setSelectedContent,
+  setExamEdited,
+  setIsLoading,
+  setTitleLoading,
+}) {
   // State lưu danh sách đề thi của người dùng
   const [exams, setExams] = useState([]);
   // lưu để gọi lại api lấy exam
@@ -35,10 +42,11 @@ function ListExam({ user, setHeaderTitle, setSelectedContent, setExamEdited,setI
       "warning",
       async () => {
         try {
-          setIsLoading(true)
+          setTitleLoading("Đang xóa bài thi...");
+          setIsLoading(true);
           const response = await deleteExamsByExamIdAPI(examId);
-          setIsLoading(false)
-          
+          setIsLoading(false);
+
           if (response.deleted) {
             showSuccessToast(response.message, 1200);
             setIsChangeExam(!isChangeExam);

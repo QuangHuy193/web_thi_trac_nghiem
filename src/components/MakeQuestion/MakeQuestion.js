@@ -18,6 +18,7 @@ function MakeQuestion({
   selectedSubSubject,
   setRefreshQuestion,
   setIsLoading,
+  setTitleLoading
 }) {
   const [subSubjectName, setSubSubjectName] = useState("");
   const [formData, setFormdata] = useState({
@@ -101,6 +102,7 @@ function MakeQuestion({
       showErrorToast(errMessage, 1200);
     } else {
       try {
+        setTitleLoading("Đang tạo câu hỏi...")
         setIsLoading(true);
         const result = await makeQuestionAPI(
           formData.subject_id,
@@ -148,7 +150,7 @@ function MakeQuestion({
           <label className={cx("title")}>
             Thêm câu hỏi cho môn {" " + subSubjectName}
           </label>
-        </div>
+        </div>        
 
         <div className={cx("question-group")}>
           <label>Nhập nội dung câu hỏi:</label>

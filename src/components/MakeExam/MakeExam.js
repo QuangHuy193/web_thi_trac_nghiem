@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeftLong,
+  faClose,
   faPlusCircle,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./MakeExam.module.scss";
@@ -23,7 +25,14 @@ import MakeQuestion from "../MakeQuestion/MakeQuestion";
 
 const cx = classNames.bind(styles);
 
-function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited,setIsLoading }) {
+function MakeExam({
+  user,
+  setSelectedContent,
+  setHeaderTitle,
+  examEdited,
+  setIsLoading,
+  setTitleLoading
+}) {
   // ds môn chính
   const [subjects, setSubjects] = useState([]);
   // ds môn phân lớp
@@ -53,6 +62,11 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited,setIsLo
     time: 0,
     questions: [],
   });
+  // hiện search
+  const [isSearch, setIsSearch] = useState(false);
+  //lưu nội dung search
+  const [contentSearch, setContentSearch] = useState("");
+
 
   // lấy ds môn học từ API
   useEffect(() => {
@@ -186,20 +200,42 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited,setIsLo
   const handleFilterQuestion = (difficulty) => {
     setFilterSelected(difficulty);
 
+    // Lọc theo độ khó
+    let filteredByDifficulty = [];
     if (difficulty === "all") {
-      setFilteredQuestions(questions);
+      filteredByDifficulty = questions.questions;
     } else {
-      const result = questions.questions.filter(
+      filteredByDifficulty = questions.questions.filter(
         (q) => q.difficulty === difficulty
       );
-      setFilteredQuestions({ questions: result });
     }
+
+    // Lọc tiếp theo nội dung tìm kiếm (nếu có)
+    let finalFiltered = filteredByDifficulty;
+    if (contentSearch.trim() !== "") {
+      const searchLower = contentSearch.toLowerCase();
+      finalFiltered = filteredByDifficulty.filter((q) =>
+        q.question_text.toLowerCase().includes(searchLower)
+      );
+    }
+
+    setFilteredQuestions({ questions: finalFiltered });
   };
+
+  useEffect(() => {
+    handleFilterQuestion(filterSelectd);
+  }, [contentSearch]);
+
+  useEffect(() => {
+    if (!isSearch) {
+      setContentSearch("");
+    }
+  }, [isSearch]);
 
   //xử lý thay đổi của dropdown subsubject
   const handleChangeSubSUbject = (e) => {
     setSelectedSubSubject(e.target.value);
-    setExam({ ...exam, subsubject_id: e.target.value });  
+    setExam({ ...exam, subsubject_id: e.target.value });
   };
 
   // xử lý back từ trang sửa sang trang danh sách đề thi đã tạo
@@ -234,7 +270,8 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited,setIsLo
     }
     try {
       if (!examEdited) {
-        setIsLoading(true)
+        setTitleLoading("Đang tạo bài thi...")
+        setIsLoading(true);
         const result = await makeExamAPI(
           exam.exam_name,
           exam.description,
@@ -243,7 +280,7 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited,setIsLo
           exam.subsubject_id,
           exam.questions
         );
-        setIsLoading(false)
+        setIsLoading(false);
 
         if (result.exam) {
           showSuccessToast(result.message, 1200);
@@ -253,14 +290,15 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited,setIsLo
           showErrorToast(result.message || "Không thể tạo bài thi!", 1200);
         }
       } else {
-        setIsLoading(true)
+        setTitleLoading("Đang cập nhật bài thi...")
+        setIsLoading(true);
         const result = await updateExamByExamIdAPI(
           examEdited.exam_id,
           exam.exam_name,
           exam.description,
           exam.questions
         );
-        setIsLoading(false)       
+        setIsLoading(false);
 
         if (result.status) {
           showSuccessToast(result.message, 1200);
@@ -294,6 +332,7 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited,setIsLo
               selectedSubSubject={selectedSubSubject}
               setRefreshQuestion={setRefreshQuestion}
               setIsLoading={setIsLoading}
+              setTitleLoading={setTitleLoading}
             />
           </div>
         )}
@@ -382,6 +421,37 @@ function MakeExam({ user, setSelectedContent, setHeaderTitle, examEdited,setIsLo
                 </span>
               )}
             </div>
+
+            <div className={cx("number-search-group")}>
+              <div className={cx("number-question")}>
+                Số câu hỏi hiện tại: {filteredQuestions.questions?.length}
+              </div>
+              {filteredQuestions.questions?.length > 0 && !isSearch && (
+                <FontAwesomeIcon
+                  className={cx("icon-search")}
+                  icon={faSearch}
+                  onClick={() => setIsSearch(true)}
+                />
+              )}
+              {isSearch && (
+                <FontAwesomeIcon
+                  className={cx("icon-close")}
+                  icon={faClose}
+                  onClick={() => setIsSearch(false)}
+                />
+              )}
+            </div>
+
+            {/* //TODO */}
+            {isSearch && (
+              <div className={cx("input-search")}>
+                <input
+                  value={contentSearch}
+                  onChange={(e) => setContentSearch(e.target.value)}
+                />
+              </div>
+            )}
+
             {/* lọc câu hỏi */}
             {Object.keys(questions).length !== 0 && (
               <div className={cx("filter-difficuty")}>

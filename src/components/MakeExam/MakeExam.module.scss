@@ -188,3 +188,37 @@
 .question-list h3 {
   text-align: center;
 }
+
+.number-search-group {
+  display: flex;
+  align-items: center;
+  padding: 3px 10px;
+
+  .icon-search,
+  .icon-close {
+    margin-left: auto;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out 0.1s;
+    padding: 5px;
+
+    &:hover {
+      transform: scale(1.4);
+    }
+  }
+
+  .icon-close {
+    color: red;
+  }
+}
+
+.input-search {
+  padding: 0 10px;
+
+  input {
+    width: 100%;
+    font-size: 1.6rem;
+    padding: 3px 5px;
+    outline: 2px solid aqua;
+    border-radius: 8px;
+  }
+}
