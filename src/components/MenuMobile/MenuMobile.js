@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from "framer-motion"; //tạo hiệu ứng dr
 import styles from "./MenuMobile.module.scss";
 import { getAllSubjectsAPI } from "../../Api/api";
 import { showErrorToast } from "../../Utils/ToastNotification";
-import { expandCollapseMotion } from "../../Utils/motionConfigs";
+import { expandCollapseMotion } from "../../configs/motionConfigs";
 
 const cx = classNames.bind(styles);
 

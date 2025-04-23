@@ -17,7 +17,8 @@ import ListExam from "../../components/ListExam/ListExam";
 import HistoryExam from "../../components/HistoryExam/HistoryExam";
 import Loading from "../../components/Loading/Loading";
 import Home from "../../components/Home/Home";
-import MakeQuestion from "../../MakeQuestion/MakeQuestion";
+import MakeQuestion from "../../components/MakeQuestion/MakeQuestion";
+import ListQuestion from "../../components/ListQuestion/ListQuestion";
 
 const cx = classNames.bind(styles);
 
@@ -141,10 +142,19 @@ function HomePage() {
               setHeaderTitle={setHeaderTitle}
               setQuestionsExam={setQuestionsExam}
               searchValue={searchValue}
+              setIsLoading={setIsLoading}
+              setTitleLoading={setTitleLoading}
             />
           )}
 
-          {selectedContent === "info" && <Info user={user} setUser={setUser} />}
+          {selectedContent === "info" && (
+            <Info
+              user={user}
+              setUser={setUser}
+              setIsLoading={setIsLoading}
+              setTitleLoading={setTitleLoading}
+            />
+          )}
           {!selectedContent && <Home />}
 
           {selectedContent === "history" && (
@@ -179,7 +189,15 @@ function HomePage() {
               setIsLoading={setIsLoading}
               setTitleLoading={setTitleLoading}
               setSelectedContent={setSelectedContent}
-              setHeaderTitle={setHeaderTitle}
+              setHeaderTitle={setHeaderTitle}         
+            />
+          )}
+
+          {selectedContent === "listQuestion" && (
+            <ListQuestion
+              user={user}
+              setIsLoading={setIsLoading}
+              setTitleLoading={setTitleLoading}
             />
           )}
 

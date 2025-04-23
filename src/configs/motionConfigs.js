@@ -16,6 +16,7 @@ const fadeSlideIn = {
 
 //xoay icon
 const rotateArrow = (isOpen) => ({
+  initial: { rotate: 0 },
   animate: { rotate: isOpen ? 90 : 0 },
   transition: { duration: 0.3 },
 });

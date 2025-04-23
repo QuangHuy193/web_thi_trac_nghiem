@@ -17,14 +17,22 @@ function Exam({
   setHeaderTitle,
   setQuestionsExam,
   searchValue,
+  setIsLoading,
+  setTitleLoading,
 }) {
   // Lưu danh sách đề thi tương ứng với môn học đã chọn
   const [exams, setExams] = useState([]);
 
+  const [isFetchDone, setIsFetchDone] = useState(false);
+
   // useEffect: gọi API để lấy danh sách đề khi selectedSubject thay đổi
   useEffect(() => {
     const getExams = async () => {
+      setTitleLoading("Đang tải danh sách bài thi...");
+      setIsLoading(true);
       const data = await getAllExamsBySubSubjectIdAPI(selectedSubject);
+      setIsLoading(false);
+      setIsFetchDone(true);
 
       // Cập nhật danh sách đề thi
       if (!searchValue) {
@@ -76,35 +84,37 @@ function Exam({
   return (
     <div className={cx("exam-container")}>
       {/* Hiển thị danh sách đề thi */}
-      {exams.length > 0 ? (
-        exams.map((exam) => (
-          <div key={exam.exam_id} className={cx("exam-card")}>
-            {/* Tên đề thi */}
-            <h3 className={cx("exam-title")}>{exam.title}</h3>
+      {isFetchDone ? (
+        exams.length > 0 ? (
+          exams.map((exam) => (
+            <div key={exam.exam_id} className={cx("exam-card")}>
+              {/* Tên đề thi */}
+              <h3 className={cx("exam-title")}>{exam.title}</h3>
 
-            {/* Mô tả đề thi */}
-            <p className={cx("exam-description")}>{exam.description}</p>
+              {/* Mô tả đề thi */}
+              <p className={cx("exam-description")}>{exam.description}</p>
 
-            {/* Nút làm bài */}
-            <button
-              className={cx("exam-button")}
-              onClick={() =>
-                handleClickDoExam(
-                  exam.exam_id,
-                  exam.title,
-                  exam.time,
-                  exam.question
-                )
-              }
-            >
-              Làm bài
-            </button>
-          </div>
-        ))
-      ) : (
-        // Nếu không có đề thi
-        <p className={cx("no-exam")}>Không có đề thi nào!</p>
-      )}
+              {/* Nút làm bài */}
+              <button
+                className={cx("exam-button")}
+                onClick={() =>
+                  handleClickDoExam(
+                    exam.exam_id,
+                    exam.title,
+                    exam.time,
+                    exam.question
+                  )
+                }
+              >
+                Làm bài
+              </button>
+            </div>
+          ))
+        ) : (
+          // Nếu không có đề thi
+          <p className={cx("no-exam")}>Không có đề thi nào!</p>
+        )
+      ) : null}
     </div>
   );
 }

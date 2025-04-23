@@ -24,10 +24,16 @@ function ListExam({
   // lưu để gọi lại api lấy exam
   const [isChangeExam, setIsChangeExam] = useState(false);
 
+  const [isFetchDone, setIsFetchDone] = useState(false);
+
   // Lấy danh sách đề thi của user khi component được mount
   useEffect(() => {
     const getExamByUserId = async () => {
+      setTitleLoading("Đang tải danh sách bài thi đã tạo...");
+      setIsLoading(true);
       const results = await getAllExamsByUserIdAPI(user.user_id);
+      setIsLoading(false);
+      setIsFetchDone(true);
       setExams(results);
     };
 
@@ -72,38 +78,40 @@ function ListExam({
   return (
     <div className={cx("exam-list")}>
       {/* Hiển thị khi không có đề thi */}
-      {exams.length === 0 ? (
-        <p className={cx("no-exams")}>Bạn chưa tạo bài thi nào.</p>
-      ) : (
-        // Hiển thị danh sách các đề thi
-        <ul className={cx("exam-container")}>
-          {exams.map((exam) => (
-            <li key={exam.exam_id} className={cx("exam-item")}>
-              <h3 className={cx("exam-title")}>{exam.title}</h3>
-              <p className={cx("exam-description")}>{exam.description}</p>
-              <p className={cx("exam-time")}>
-                <strong>Thời gian:</strong> {exam.time} phút
-              </p>
-              <div className={cx("exam-actions")}>
-                {/* Nút sửa bài thi */}
-                <button
-                  onClick={() => handleEdit(exam)}
-                  className={cx("edit-btn")}
-                >
-                  Sửa
-                </button>
-                {/* Nút xóa bài thi */}
-                <button
-                  onClick={() => handleDelete(exam.exam_id)}
-                  className={cx("delete-btn")}
-                >
-                  Xóa
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+      {isFetchDone ? (
+        exams.length === 0 ? (
+          <p className={cx("no-exams")}>Bạn chưa tạo bài thi nào.</p>
+        ) : (
+          // Hiển thị danh sách các đề thi
+          <ul className={cx("exam-container")}>
+            {exams.map((exam) => (
+              <li key={exam.exam_id} className={cx("exam-item")}>
+                <h3 className={cx("exam-title")}>{exam.title}</h3>
+                <p className={cx("exam-description")}>{exam.description}</p>
+                <p className={cx("exam-time")}>
+                  <strong>Thời gian:</strong> {exam.time} phút
+                </p>
+                <div className={cx("exam-actions")}>
+                  {/* Nút sửa bài thi */}
+                  <button
+                    onClick={() => handleEdit(exam)}
+                    className={cx("edit-btn")}
+                  >
+                    Sửa
+                  </button>
+                  {/* Nút xóa bài thi */}
+                  <button
+                    onClick={() => handleDelete(exam.exam_id)}
+                    className={cx("delete-btn")}
+                  >
+                    Xóa
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )
+      ) : null}
     </div>
   );
 }

@@ -2,9 +2,9 @@ import classNames from "classnames/bind";
 
 import styles from "./MakeQuestion.module.scss";
 import { useEffect, useRef, useState } from "react";
-import { getSubjectsAPI, getSubSubjectsAPI, makeQuestionAPI } from "../Api/api";
-import { showErrorToast, showSuccessToast } from "../Utils/ToastNotification";
-import { SPECIAL_CHAR } from "../Utils/const";
+import { getSubjectsAPI, getSubSubjectsAPI, makeQuestionAPI } from "../../Api/api";
+import { showErrorToast, showSuccessToast } from "../../Utils/ToastNotification";
+import { SPECIAL_CHAR } from "../../Utils/const";
 
 const cx = classNames.bind(styles);
 

@@ -12,7 +12,7 @@ import {
   expandCollapseMotion,
   fadeSlideIn,
   rotateArrow,
-} from "../../Utils/motionConfigs";
+} from "../../configs/motionConfigs";
 
 const cx = classNames.bind(styles);
 

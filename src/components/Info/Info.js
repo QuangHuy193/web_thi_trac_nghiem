@@ -11,7 +11,7 @@ import { EMAILREGEX } from "../../Utils/const";
 
 const cx = classNames.bind(styles);
 
-function Info({ user, setUser }) {
+function Info({ user, setUser, setIsLoading, setTitleLoading }) {
   // Trạng thái hiển thị form chỉnh sửa (true: đang chỉnh sửa, false: xem thông tin)
   const [isEditing, setIsEditing] = useState(false);
 
@@ -38,11 +38,14 @@ function Info({ user, setUser }) {
       } else {
         try {
           // Gửi yêu cầu cập nhật thông tin lên API
+          setTitleLoading("Đang cập nhật thông tin người dùng...")
+          setIsLoading(true)
           const result = await updateUserInfoAPI(
             user.user_id,
             formUpdate.name,
             formUpdate.email
           );
+          setIsLoading(false)
 
           if (result.user) {
             // Cập nhật thành công: hiển thị toast + cập nhật state user
@@ -141,6 +144,5 @@ function Info({ user, setUser }) {
     </div>
   );
 }
-
 
 export default Info;

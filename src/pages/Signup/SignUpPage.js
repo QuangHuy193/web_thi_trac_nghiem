@@ -22,12 +22,15 @@ import {
   togglePasswordVisibility,
 } from "../../Utils/function";
 import { registerAPI } from "../../Api/api";
+import Loading from "../../components/Loading/Loading";
 
 const cx = classNames.bind(styles);
 
 const Signup = () => {
   //chuyển trang
   const navigative = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // State quản lý trạng thái hiển thị mật khẩu (show/hide password)
   const [showPassword, setShowPassword] = useState({
@@ -145,12 +148,14 @@ const Signup = () => {
     if (allTouched && allValid) {
       try {
         // Gọi API đăng ký
+        setIsLoading(true)
         const result = await registerAPI(
           formData.name,
           formData.email,
           formData.password,
           "student"
         );
+        setIsLoading(false)
 
         // Kiểm tra kết quả đăng ký
         if (result.user) {
@@ -169,6 +174,9 @@ const Signup = () => {
 
   return (
     <div className={styles.signupContainer}>
+      {isLoading && (
+        <Loading setIsLoading={setIsLoading} title="Đang tạo tài khoản..." />
+      )}
       {/* Link về trang chủ */}
       <Link to={"/"} className={styles.homeLink}>
         <FontAwesomeIcon icon={faBook} /> Edu Quiz
