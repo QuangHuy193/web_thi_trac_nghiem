@@ -24,7 +24,6 @@ function Sidebar({
   user,
   setExamEdited,
   setSelectedSubjectName,
-
 }) {
   // State lưu trữ trạng thái hiển thị danh sách môn học (Hiện/Ẩn)
   const [showSubjects, setShowSubjects] = useState(false);
@@ -231,6 +230,24 @@ function Sidebar({
       </div>
 
       {/* Mục dành cho giáo viên */}
+      {user && user.role === "teacher" && (
+        <div
+          className={cx("item")}
+          onClick={() => handleCheckLogin("makeQuestion", "Tạo câu hỏi")}
+        >
+          Tạo câu hỏi
+        </div>
+      )}
+
+      {user && user.role === "teacher" && (
+        <div
+          className={cx("item")}
+          onClick={() => handleCheckLogin("listQuestion", "Danh sách câu hỏi")}
+        >
+          Danh sách câu hỏi đã tạo
+        </div>
+      )}
+
       {user && user.role === "teacher" && (
         <div
           className={cx("item")}

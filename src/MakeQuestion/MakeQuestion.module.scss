@@ -1,0 +1,154 @@
+.container {
+  padding: 20px;
+}
+
+.subject-container {
+  display: flex;
+  flex-wrap: wrap; /* Cho phép xuống dòng khi không đủ chỗ */
+  gap: 5px;
+  .select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 200px;
+  }
+}
+
+.select {
+  flex: 1;
+}
+
+.title-group {
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+  font-size: 2.2rem;
+}
+
+.difficulty-group {
+  display: flex;
+  padding: 5px;
+
+  label {
+    font-weight: bold;
+  }
+
+  select {
+    margin-left: 40px;
+    width: 250px;
+  }
+}
+
+.question-group {
+  padding: 5px;
+
+  .question {
+    width: 100%;
+    height: 80px;
+    padding: 5px;
+  }
+}
+
+.answer-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.answer-item {
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+
+  .is-correct-lable,
+  .is-correct {
+    display: flex;
+    justify-content: center;
+    flex: 0.3;
+    align-items: center;
+  }
+
+  .answer,
+  .answer-lable {
+    flex: 0.7;
+  }
+
+  .is-correct,
+  .answer {
+    padding: 5px;
+  }
+
+  .is-correct {
+    .is-correct-out {
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid black;
+      border-radius: 50%;
+      position: relative;
+
+      .is-correct-in {
+        position: absolute;
+        top: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        left: 50%;
+        width: 10px;
+        height: 10px;
+        background-color: green;
+        border-radius: 50%;
+      }
+    }
+  }
+
+  .answer {
+    flex: 0.7;
+    font-size: 1.6rem;
+  }
+}
+
+.btn-add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  button {
+    font-size: 1.8rem;
+    padding: 10px 50px;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+}
+
+.special-keyboard {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 5px;
+}
+
+.special-key {
+  padding: 4px 10px;
+  border: 1px solid #ccc;
+  background: #f4f4f4;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  &:hover {
+    background: #e0e0e0;
+  }
+}
+
+@media (max-width: 600px) {
+  .difficulty-group {
+    select {
+      margin-left: auto;
+    }
+  }
+}

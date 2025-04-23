@@ -21,7 +21,7 @@ import {
   showErrorToast,
   showSuccessToast,
 } from "../../Utils/ToastNotification";
-import MakeQuestion from "../MakeQuestion/MakeQuestion";
+import MakeQuestionPopup from "../MakeQuestionPopup/MakeQuestionPopup";
 
 const cx = classNames.bind(styles);
 
@@ -326,7 +326,7 @@ function MakeExam({
         {/* trang thêm câu hỏi */}
         {isMakeQuestion && (
           <div style={{ position: "relative" }}>
-            <MakeQuestion
+            <MakeQuestionPopup
               setIsMakeQuestion={setIsMakeQuestion}
               user={user}
               selectedSubSubject={selectedSubSubject}

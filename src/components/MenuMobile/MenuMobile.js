@@ -92,7 +92,13 @@ function MenuMobile({
           </div>
 
           {/* Tiêu đề menu */}
-          <h2 className={cx("menu-title")}>
+          <h2
+            className={cx("menu-title")}
+            onClick={() => {
+              setSelectedContent("");
+              setShowMenu(false);
+            }}
+          >
             <FontAwesomeIcon icon={faBook} /> <span>Edu Quiz</span>
           </h2>
 
@@ -179,6 +185,26 @@ function MenuMobile({
           </div>
 
           {/* Mục dành cho giáo viên */}
+          {user && user.role === "teacher" && (
+            <div
+              className={cx("menu-item-parent")}
+              onClick={() => handleCheckLogin("makeQuestion", "Tạo câu hỏi")}
+            >
+              Tạo câu hỏi
+            </div>
+          )}
+
+          {user && user.role === "teacher" && (
+            <div
+              className={cx("menu-item-parent")}
+              onClick={() =>
+                handleCheckLogin("listQuestion", "Danh sách câu hỏi")
+              }
+            >
+              Danh sách câu hỏi đã tạo
+            </div>
+          )}
+
           {user && user.role === "teacher" && (
             <div
               className={cx("menu-item-parent")}
