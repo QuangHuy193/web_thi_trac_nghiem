@@ -53,6 +53,9 @@ function HomePage() {
   // State lưu trữ thông tin bài thi đang được chỉnh sửa
   const [examEdited, setExamEdited] = useState({});
 
+  // State lưu trữ thông tin câu hỏi đang được chỉnh sửa
+  const [questionEdited, setQuestionEdited] = useState({});
+
   //state lưu kết quả làm bài - để hiển thị kết quả khi nộp bài nhưng không đăng nhập
   const [resultExam, setResultExam] = useState("");
 
@@ -86,10 +89,9 @@ function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []); // Chạy 1 lần khi component được mount
 
-  // reset giá trị của search
   useEffect(() => {
-    if (selectedContent !== "exam") {
-      setSearchValue("");
+    if (selectedContent !== "makeQuestion") {
+      setQuestionEdited("");
     }
   }, [selectedContent]);
 
@@ -189,7 +191,10 @@ function HomePage() {
               setIsLoading={setIsLoading}
               setTitleLoading={setTitleLoading}
               setSelectedContent={setSelectedContent}
-              setHeaderTitle={setHeaderTitle}         
+              headerTitle={headerTitle}
+              setHeaderTitle={setHeaderTitle}
+              questionEdited={questionEdited}
+              setQuestionEdited={setQuestionEdited}
             />
           )}
 
@@ -198,6 +203,9 @@ function HomePage() {
               user={user}
               setIsLoading={setIsLoading}
               setTitleLoading={setTitleLoading}
+              setQuestionEdited={setQuestionEdited}
+              setSelectedContent={setSelectedContent}
+              setHeaderTitle={setHeaderTitle}
             />
           )}
 

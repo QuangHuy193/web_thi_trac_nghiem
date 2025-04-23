@@ -5,12 +5,12 @@ import {
   faRightFromBracket,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import styles from "./Header.module.scss";
 import Button from "../Button/Button";
 import MenuMobile from "../MenuMobile/MenuMobile";
-import Search from "../Search/Search"; 
+import Search from "../Search/Search";
 import classNames from "classnames/bind";
 import {
   showErrorToast,
@@ -28,7 +28,7 @@ function Header({
   selectedContent,
   user,
   setUser,
-  setSearchValue
+  setSearchValue,
 }) {
   // Trạng thái hiển thị menu mobile
   const [showMenu, setShowMenu] = useState(false);
@@ -86,9 +86,14 @@ function Header({
       </div>
 
       {/* Ô tìm kiếm (chỉ hiện khi đang ở giao diện chọn đề thi) */}
-      {selectedContent === "exam" && (
+      {(selectedContent === "exam" ||
+        selectedContent === "listQuestion" ||
+        selectedContent === "listExam") && (
         <div className={cx("search-wrapper")}>
-        <Search setSearchValue={setSearchValue}/>
+          <Search
+            setSearchValue={setSearchValue}
+            selectedContent={selectedContent}
+          />
         </div>
       )}
 
@@ -115,7 +120,6 @@ function Header({
           {/* Tên người dùng */}
           <FontAwesomeIcon className={cx("username-icon")} icon={faUser} />{" "}
           <span className={cx("username-name")}>{user.username}</span>
-
           {/* Nút đăng xuất */}
           <FontAwesomeIcon
             className={cx("logout")}

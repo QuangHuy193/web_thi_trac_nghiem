@@ -296,7 +296,8 @@ function MakeExam({
           examEdited.exam_id,
           exam.exam_name,
           exam.description,
-          exam.questions
+          exam.questions,
+          exam.time
         );
         setIsLoading(false);
 

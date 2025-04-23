@@ -13,7 +13,6 @@ const getAllSubjectsAPI = async () => {
   }
 };
 
-
 //lấy ds môn học tổng
 const getSubjectsAPI = async () => {
   try {
@@ -72,13 +71,15 @@ const updateExamByExamIdAPI = async (
   exam_id,
   title,
   description,
-  questions
+  questions,
+  time
 ) => {
   try {
     const response = await axios.put(`${API_URL}/exams/update/${exam_id}`, {
       title,
       description,
       questions,
+      time,
     });
     return response.data;
   } catch (error) {
@@ -133,10 +134,10 @@ const loginAPI = async (email, password) => {
 };
 
 // Đăng nhập vưới google
-const loginGoogleAPI = async (id_token) => { 
+const loginGoogleAPI = async (id_token) => {
   try {
     const response = await axios.post(`${API_URL}/auth/google`, {
-      id_token
+      id_token,
     });
     return response.data;
   } catch (error) {
@@ -277,6 +278,55 @@ const makeQuestionAPI = async (
   }
 };
 
+// lấy danh sách câu hỏi theo user_id
+const getQuestionByUserIdAPI = async (user_id) => {
+  try {
+    const response = await axios.get(`${API_URL}/questions/creator/${user_id}`);
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Lỗi khi lấy danh sách câu hỏi được tạo bởi của người dùng có id là: ${user_id}`,
+      error
+    );
+    return [];
+  }
+};
+
+// xóa câu hỏi
+const deleteQuestionAPI = async (question_id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/questions/${question_id}`);
+
+    return response.data;
+  } catch (error) {
+    console.error(`Lỗi khi xóa câu hỏi có id là: ${question_id}`, error);
+    return [];
+  }
+};
+
+// cập nhật câu hỏi
+const updateQuestionAPI = async (
+  question_id,
+  question_text,
+  difficulty,
+  answers
+) => {
+  console.log(question_id);
+  try {
+    const response = await axios.put(`${API_URL}/questions/${question_id}`, {
+      question_text,
+      difficulty,
+      answers,      
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(`Lỗi khi cập nhật câu hỏi có id là: ${question_id}`, error);
+    return [];
+  }
+};
+
 // lấy lịch sử làm bài theo user_id
 const getHistoryByUserIdAPI = async (user_id) => {
   try {
@@ -304,7 +354,7 @@ const getHistoryByExamIdAPI = async (exam_id) => {
   }
 };
 
-//them mon hoc moi 
+//them mon hoc moi
 const addSubjectAPI = async (name) => {
   try {
     const response = await axios.post(`${API_URL}/subjects`, {
@@ -319,20 +369,20 @@ const addSubjectAPI = async (name) => {
   }
 };
 
-//xoa mon hoc 
+//xoa mon hoc
 const deleteSubjectAPI = async (subject_id) => {
   try {
     const response = await axios.delete(`${API_URL}/subjects/${subject_id}`);
     return response.data;
   } catch (error) {
     if (error.response && error.response.data) {
-      return error.response.data; 
+      return error.response.data;
     }
     return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
   }
 };
 
-//sua mon hoc 
+//sua mon hoc
 const updateSubjectAPI = async (subject_id, name) => {
   try {
     const response = await axios.put(`${API_URL}/subjects/${subject_id}`, {
@@ -347,17 +397,17 @@ const updateSubjectAPI = async (subject_id, name) => {
   }
 };
 
-//them mon hoc phan lop moi 
+//them mon hoc phan lop moi
 const addSubSubjectAPI = async (name, subjectId) => {
-  try {   
+  try {
     const response = await axios.post(`${API_URL}/subsubjects`, {
       subject_name: name,
-      subject_id: subjectId
+      subject_id: subjectId,
     });
-    
+
     return response.data;
   } catch (error) {
-    console.error('Lỗi khi thêm môn học phân lớp:', error);
+    console.error("Lỗi khi thêm môn học phân lớp:", error);
     if (error.response && error.response.data) {
       return error.response.data;
     }
@@ -368,7 +418,9 @@ const addSubSubjectAPI = async (name, subjectId) => {
 //xoa mon hoc phan lop
 const deleteSubSubjectAPI = async (subsubject_id) => {
   try {
-    const response = await axios.delete(`${API_URL}/subsubjects/${subsubject_id}`);
+    const response = await axios.delete(
+      `${API_URL}/subsubjects/${subsubject_id}`
+    );
     return response.data;
   } catch (error) {
     if (error.response && error.response.data) {
@@ -381,9 +433,12 @@ const deleteSubSubjectAPI = async (subsubject_id) => {
 //sua mon hoc phan lop
 const updateSubSubjectAPI = async (subsubject_id, subject_name) => {
   try {
-    const response = await axios.put(`${API_URL}/subsubjects/${subsubject_id}`, {
-      subject_name,
-    });
+    const response = await axios.put(
+      `${API_URL}/subsubjects/${subsubject_id}`,
+      {
+        subject_name,
+      }
+    );
     return response.data;
   } catch (error) {
     if (error.response && error.response.data) {
@@ -415,5 +470,8 @@ export {
   deleteSubSubjectAPI,
   makeExamAPI,
   updateSubSubjectAPI,
-  loginGoogleAPI
+  loginGoogleAPI,
+  getQuestionByUserIdAPI,
+  updateQuestionAPI,
+  deleteQuestionAPI,
 };

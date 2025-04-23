@@ -2,7 +2,11 @@ import classNames from "classnames/bind";
 
 import styles from "./ListQuestion.module.scss";
 import { useEffect, useState } from "react";
-import { getQuestionBySubSubjectIdAPI } from "../../Api/api";
+import {
+  deleteQuestionAPI,
+  getQuestionBySubSubjectIdAPI,
+  getQuestionByUserIdAPI,
+} from "../../Api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCaretRight,
@@ -16,42 +20,65 @@ import {
 } from "../../configs/motionConfigs";
 import { motion, AnimatePresence } from "framer-motion";
 import { showConfirmDialog } from "../confirmDialog/confirmDialog";
+import {
+  showErrorToast,
+  showSuccessToast,
+} from "../../Utils/ToastNotification";
 
 const cx = classNames.bind(styles);
 
-function ListQuestion({ user, setIsLoading, setTitleLoading }) {
+function ListQuestion({
+  user,
+  setSelectedContent,
+  setHeaderTitle,
+  setIsLoading,
+  setTitleLoading,
+  setQuestionEdited,
+}) {
   const [listQuestion, setListQuestion] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
   const [isFetchDone, setIsFetchDone] = useState(false);
+   // lưu để gọi lại api lấy question
+   const [isChangeQuestion, setIsChangeQuestion] = useState(false);
 
-  //   ! fake data
   useEffect(() => {
     const getData = async () => {
       setTitleLoading("Đang tải danh sách câu hỏi...");
       setIsLoading(true);
-      const rs = await getQuestionBySubSubjectIdAPI(1);
+      const rs = await getQuestionByUserIdAPI(user.user_id);
       setIsLoading(false);
       setIsFetchDone(true);
       setListQuestion(rs?.questions || []);
     };
     getData();
-  }, []);
+  }, [isChangeQuestion]);
 
   const toggleOpen = (index) => {
     setOpenIndex((prev) => (prev === index ? null : index));
   };
 
-  const handleEdit = async () => {
-    console.log("edit");
+  const handleEdit = async (question) => {
+    setHeaderTitle("Cập nhật câu hỏi");
+    setSelectedContent("makeQuestion");
+    setQuestionEdited(question);
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (question_id) => {
     showConfirmDialog(
       "Xóa câu hỏi",
       "Bạn chắc chắn muốn xóa câu hỏi này",
       "warning",
-      () => {
-        console.log("delete");
+      async () => {
+        setTitleLoading("Đang xóa câu hỏi...");
+        setIsLoading(true);
+        const deleted = await deleteQuestionAPI(question_id);
+        setIsLoading(false);
+        if (deleted.status) {
+          showSuccessToast(deleted.message, 1200);
+          setIsChangeQuestion(!isChangeQuestion)
+        } else {
+          showErrorToast(deleted.message, 1200);
+        }
       },
       "Có",
       "Không"
@@ -90,7 +117,7 @@ function ListQuestion({ user, setIsLoading, setTitleLoading }) {
                     <FontAwesomeIcon
                       icon={faTrash}
                       className={cx("icon-delete")}
-                      onClick={() => handleDelete(question)}
+                      onClick={() => handleDelete(question.question_id)}
                     />
                   </div>
                 </div>

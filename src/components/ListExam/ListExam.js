@@ -38,7 +38,7 @@ function ListExam({
     };
 
     getExamByUserId();
-  }, [isChangeExam]); // chỉ chạy một lần khi component render
+  }, [isChangeExam]);
 
   // Hàm xử lý xóa đề thi (chưa cài đặt logic xóa thực tế)
   const handleDelete = async (examId) => {

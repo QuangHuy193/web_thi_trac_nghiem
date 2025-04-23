@@ -6,13 +6,18 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./Search.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const cx = classNames.bind(styles);
 
-function Search({ setSearchValue }) {
+function Search({ setSearchValue, selectedContent }) {
   // lưu giá trị tạm của search
   const [tempValue, setTempValue] = useState("");
+
+  useEffect(() => {
+    setTempValue("");
+    setSearchValue("");
+  }, [selectedContent]);
 
   const handleSearch = () => {
     setSearchValue(tempValue);

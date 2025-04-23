@@ -2,8 +2,16 @@ import classNames from "classnames/bind";
 
 import styles from "./MakeQuestion.module.scss";
 import { useEffect, useRef, useState } from "react";
-import { getSubjectsAPI, getSubSubjectsAPI, makeQuestionAPI } from "../../Api/api";
-import { showErrorToast, showSuccessToast } from "../../Utils/ToastNotification";
+import {
+  getSubjectsAPI,
+  getSubSubjectsAPI,
+  makeQuestionAPI,
+  updateQuestionAPI,
+} from "../../Api/api";
+import {
+  showErrorToast,
+  showSuccessToast,
+} from "../../Utils/ToastNotification";
 import { SPECIAL_CHAR } from "../../Utils/const";
 
 const cx = classNames.bind(styles);
@@ -13,7 +21,10 @@ function MakeQuestion({
   setIsLoading,
   setTitleLoading,
   setSelectedContent,
+  headerTitle,
   setHeaderTitle,
+  questionEdited,
+  setQuestionEdited,
 }) {
   // ds môn chính
   const [subjects, setSubjects] = useState([]);
@@ -21,43 +32,87 @@ function MakeQuestion({
   const [subSubjects, setSubSubjects] = useState([]);
   // môn chính đang dc chọn trên select-option
   const [selectedSubject, setSelectedSubject] = useState(null);
+  // môn phân lớp đang dc chọn trên select-option
+  const [selectedSubSubject, setSelectedSubSubject] = useState(null);
   // form thêm
   const [formData, setFormdata] = useState({
     subject_id: "",
     question_text: "",
     difficulty: "",
     created_by: user.user_id,
-    answers: [{}, {}, {}, {}],
+    answers: [
+      { answer_text: "", is_correct: 0 },
+      { answer_text: "", is_correct: 0 },
+      { answer_text: "", is_correct: 0 },
+      { answer_text: "", is_correct: 0 },
+    ],
   });
 
   const textareaRef = useRef(null); // ref lưu textarea đang focus
 
-  // lấy ds môn học từ API
   useEffect(() => {
+    // lấy ds môn học từ API
     const getSubject = async () => {
       const subjectResult = await getSubjectsAPI();
 
       setSubjects(subjectResult);
     };
-
-    getSubject();
-  }, []);
-
-  // lấy môn phân lớp từ API
-  useEffect(() => {
+    // lấy môn phân lớp từ API
     const getSubSubject = async () => {
       const subSubjectResult = await getSubSubjectsAPI();
       setSubSubjects(subSubjectResult);
     };
 
+    getSubject();
     getSubSubject();
   }, []);
 
+  //cập nhật
+  useEffect(() => {
+    if (questionEdited) {
+      setFormdata((prev) => ({
+        ...prev,
+        subject_id: questionEdited.subject_id || "",
+        question_text: questionEdited.question_text || "",
+        difficulty: questionEdited.difficulty || "",
+        answers: questionEdited.answers || prev.answers,
+      }));
+
+      const subSubject = subSubjects.find(
+        (item) => item.subsubjects_id === questionEdited.subject_id
+      );
+
+      if (subSubject) {
+        setSelectedSubject(subSubject.subject_id);
+      }
+      setSelectedSubSubject(questionEdited.subject_id);
+    }
+  }, [questionEdited, subSubjects]);
+
+  //reset question edited
+  useEffect(() => {
+    if (headerTitle === "Tạo câu hỏi") {
+      setQuestionEdited("");
+      setSelectedSubject("");
+      setSelectedSubSubject("");
+      setFormdata({
+        subject_id: "",
+        question_text: "",
+        difficulty: "",
+        created_by: user.user_id,
+        answers: [
+          { answer_text: "", is_correct: 0 },
+          { answer_text: "", is_correct: 0 },
+          { answer_text: "", is_correct: 0 },
+          { answer_text: "", is_correct: 0 },
+        ],
+      });
+    }
+  }, [headerTitle]);
+
   //xử lý thay đổi của dropdown subsubject
   const handleChangeSubSUbject = (e) => {
- 
     setFormdata({ ...formData, subject_id: e.target.value });
-    console.log(formData);
   };
 
   // dùng để lấy ds môn phân lơp theo môn học chính dc chọn
@@ -118,27 +173,53 @@ function MakeQuestion({
     if (errMessage) {
       showErrorToast(errMessage, 1200);
     } else {
-      try {
-        setTitleLoading("Đang tạo câu hỏi...");
-        setIsLoading(true);
-        const result = await makeQuestionAPI(
-          formData.subject_id,
-          formData.question_text,
-          formData.difficulty,
-          formData.created_by,
-          formData.answers
-        );
-        setIsLoading(false);
+      if (!questionEdited) {
+        try {
+          setTitleLoading("Đang tạo câu hỏi...");
+          setIsLoading(true);
+          const result = await makeQuestionAPI(
+            formData.subject_id,
+            formData.question_text,
+            formData.difficulty,
+            formData.created_by,
+            formData.answers
+          );
+          setIsLoading(false);
 
-        if (result.question) {
-          showSuccessToast("Tạo câu hỏi thành công!", 1200);
-          setHeaderTitle("Danh sách câu hỏi đã tạo");
-          setSelectedContent("listQuestion");
-        } else {
-          showErrorToast(result.message, 1200);
+          if (result.question) {
+            showSuccessToast(result.message, 1200);
+            setHeaderTitle("Danh sách câu hỏi đã tạo");
+            setSelectedContent("listQuestion");
+          } else {
+            showErrorToast(result.message, 1200);
+          }
+        } catch (error) {
+          showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
         }
-      } catch (error) {
-        showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
+      } else {
+        try {
+          setTitleLoading("Đang tạo câu hỏi...");
+          setIsLoading(true);
+          // TODO thêm subject_id
+          const result = await updateQuestionAPI(
+            questionEdited.question_id,
+            formData.question_text,
+            formData.difficulty,
+            formData.answers
+            //formData.subject_id,
+          );
+          setIsLoading(false);
+
+          if (result.question) {
+            showSuccessToast(result.message, 1200);
+            setHeaderTitle("Danh sách câu hỏi đã tạo");
+            setSelectedContent("listQuestion");
+          } else {
+            showErrorToast(result.message, 1200);
+          }
+        } catch (error) {
+          showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
+        }
       }
     }
   };
@@ -182,7 +263,8 @@ function MakeQuestion({
         {/* Dropdown chọn subSubject */}
         <select
           className={cx("select")}
-          onChange={(e) => handleChangeSubSUbject(e)}      
+          onChange={(e) => handleChangeSubSUbject(e)}
+          value={selectedSubSubject}
         >
           <option value="">Chọn môn phân lớp</option>
           {filteredSubSubjects.map((subSubject) => (
@@ -201,6 +283,7 @@ function MakeQuestion({
           className={cx("question")}
           onChange={handleQuestionChange}
           onFocus={(e) => (textareaRef.current = e.target)}
+          value={formData.question_text}
         />
       </div>
 
@@ -220,7 +303,10 @@ function MakeQuestion({
 
       <div className={cx("difficulty-group")}>
         <label>Độ khó của câu hỏi:</label>
-        <select onChange={handleDifficultyicultyChange}>
+        <select
+          onChange={handleDifficultyicultyChange}
+          value={formData.difficulty}
+        >
           <option value="">--chọn độ khó--</option>
           <option value="easy">Dễ</option>
           <option value="medium">Trung bình</option>
@@ -234,30 +320,34 @@ function MakeQuestion({
           <label className={cx("answer-lable")}>Nội dung câu trả lời</label>
         </div>
 
-        {[0, 1, 2, 3].map((i) => (
-          <div key={i} className={cx("answer-item")}>
-            <div className={cx("is-correct")}>
-              <div
-                className={cx("is-correct-out")}
-                onClick={() => handleIsCorrectSelected(i)}
-              >
-                {formData.answers[i].is_correct && (
-                  <div className={cx("is-correct-in")}></div>
-                )}
+        {Array.isArray(formData.answers) &&
+          formData.answers.map((answer, i) => (
+            <div key={i} className={cx("answer-item")}>
+              <div className={cx("is-correct")}>
+                <div
+                  className={cx("is-correct-out")}
+                  onClick={() => handleIsCorrectSelected(i)}
+                >
+                  {answer.is_correct != 0 && (
+                    <div className={cx("is-correct-in")}></div>
+                  )}
+                </div>
               </div>
+              <textarea
+                className={cx("answer")}
+                value={answer.answer_text}
+                onChange={(e) => handleAnswerChange(e, i)}
+                onFocus={(e) => (textareaRef.current = e.target)}
+                data-index={i}
+              />
             </div>
-            <textarea
-              className={cx("answer")}
-              onChange={(e) => handleAnswerChange(e, i)}
-              onFocus={(e) => (textareaRef.current = e.target)}
-              data-index={i}
-            />
-          </div>
-        ))}
+          ))}
       </div>
 
       <div className={cx("btn-add")}>
-        <button onClick={handleSubmit}>Thêm</button>
+        <button onClick={handleSubmit}>
+          {!questionEdited ? "Thêm" : "Cập nhật"}
+        </button>
       </div>
     </div>
   );
