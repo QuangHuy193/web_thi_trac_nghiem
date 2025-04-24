@@ -93,12 +93,11 @@ function Login() {
   const handleSubmit = async (e, method = "form") => {
     e.preventDefault(); // Ngăn việc submit mặc định của form
     if (method === "google") {
-      const result = await loginGoogle();     
+      const result = await loginGoogle();
       if (result?.token) {
-      
-        setIsLoading(true)
-        const rs = await loginGoogleAPI(result.token);       
-        setIsLoading(false)
+        setIsLoading(true);
+        const rs = await loginGoogleAPI(result.token);
+        setIsLoading(false);
 
         if (rs.user) {
           showSuccessToast("Đăng nhập thành công", 1200);
@@ -120,7 +119,9 @@ function Login() {
       ) {
         try {
           // Gọi API đăng nhập
+          setIsLoading(true);
           const result = await loginAPI(formData.email, formData.password);
+          setIsLoading(false);
           if (result.user) {
             showSuccessToast(result.message || "Đăng nhập thành công!", 1200);
             localStorage.setItem("user", JSON.stringify(result.user)); // Lưu thông tin user vào localStorage
@@ -146,7 +147,9 @@ function Login() {
 
   return (
     <div className={cx("wrapper")}>
-      {isLoading && <Loading setIsLoading={setIsLoading} title="Đang đăng nhập..." />}
+      {isLoading && (
+        <Loading setIsLoading={setIsLoading} title="Đang đăng nhập..." />
+      )}
       {/* Link về trang chủ */}
       <Link to={"/"} className={cx("home")}>
         <FontAwesomeIcon icon={faBook} /> Edu Quiz

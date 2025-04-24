@@ -15,6 +15,7 @@ function History({
   setIsLoading,
   setTitleLoading,
 }) {
+  // lưu danh sách lịch sử
   const [history, setHistory] = useState([]);
 
   const [isFetchDone, setIsFetchDone] = useState(false);

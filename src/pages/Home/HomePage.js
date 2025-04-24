@@ -19,6 +19,7 @@ import Loading from "../../components/Loading/Loading";
 import Home from "../../components/Home/Home";
 import MakeQuestion from "../../components/MakeQuestion/MakeQuestion";
 import ListQuestion from "../../components/ListQuestion/ListQuestion";
+import ListUserHistory from "../../components/ListUserHistory/ListUserHistory";
 
 const cx = classNames.bind(styles);
 
@@ -38,7 +39,7 @@ function HomePage() {
   // State quản lý việc hiển thị nút scroll lên đầu trang khi cuộn xuống
   const [showScroll, setShowScroll] = useState(false);
 
-  // State lưu trữ id của bài thi (để gửi lên server lưu lịch sử làm bài)
+  // State lưu trữ id của bài thi
   const [idExam, setIdExam] = useState("");
 
   // State lưu trữ thời gian của bài thi (time limit)
@@ -230,6 +231,7 @@ function HomePage() {
               setExamEdited={setExamEdited}
               setIsLoading={setIsLoading}
               setTitleLoading={setTitleLoading}
+              setIdExam={setIdExam}
             />
           )}
 
@@ -241,7 +243,14 @@ function HomePage() {
               idExam={idExam}
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
+            />
+          )}
 
+          {selectedContent === "listUserHistory" && (
+            <ListUserHistory
+              idExam={idExam}
+              setHeaderTitle={setHeaderTitle}
+              setSelectedContent={setSelectedContent}
             />
           )}
 

@@ -18,6 +18,7 @@ function ListExam({
   setExamEdited,
   setIsLoading,
   setTitleLoading,
+  setIdExam,
 }) {
   // State lưu danh sách đề thi của người dùng
   const [exams, setExams] = useState([]);
@@ -75,6 +76,14 @@ function ListExam({
     setExamEdited(exam); // truyền dữ liệu đề thi được chọn để sửa
   };
 
+  // xem những ai đã làm bài thi
+  const handleViewHistory = (id) => {
+    console.log(id);
+    setHeaderTitle("Danh sách những người đã làm bài")
+    setSelectedContent("listUserHistory")
+    setIdExam(id)
+  };
+
   return (
     <div className={cx("exam-list")}>
       {/* Hiển thị khi không có đề thi */}
@@ -105,6 +114,16 @@ function ListExam({
                     className={cx("delete-btn")}
                   >
                     Xóa
+                  </button>
+                </div>
+                <div className={cx("button-wrapper")}>
+                  <button
+                    className={cx("history-btn")}
+                    onClick={() => {
+                      handleViewHistory(exam.exam_id);
+                    }}
+                  >
+                    Xem người tham gia bài thi
                   </button>
                 </div>
               </li>

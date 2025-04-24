@@ -60,6 +60,10 @@
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #0056b3;
+  }
 }
 
 .delete-btn {
@@ -69,12 +73,28 @@
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #c82333;
+  }
 }
 
-.edit-btn:hover {
-  background-color: #0056b3;
-}
+.button-wrapper {
+  margin-top: 10px;
 
-.delete-btn:hover {
-  background-color: #c82333;
+  .history-btn {
+    background-color: #9254de;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #722ed1;
+    }
+  }
 }
