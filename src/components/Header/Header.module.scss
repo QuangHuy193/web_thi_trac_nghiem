@@ -1,5 +1,7 @@
 .container {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* Đổi từ space-around thành space-between */
   align-items: center;
   padding: 10px 50px;
   background-color: var(--secondary);
@@ -8,11 +10,11 @@
   top: 0;
   left: 250px;
   right: 0;
+  gap: 20px;
   z-index: 10;
 }
 
 .title {
-  margin-right: 20px;
   font-size: 2rem;
 
   &:hover {
@@ -38,18 +40,6 @@
   }
 }
 
-.btn-login {
-  margin-left: auto;
-}
-
-.username {
-  margin-left: auto;
-}
-
-.search-wrapper {
-  margin-right: 20px;
-  margin-left: auto;
-}
 /* Ẩn menu trên điện thoại, chỉ hiện "Trang chủ" và icon */
 @media (max-width: 600px) {
   .btn-login {

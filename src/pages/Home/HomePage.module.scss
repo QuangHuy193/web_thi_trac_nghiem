@@ -24,12 +24,24 @@
   border-radius: 50%;
   padding: 10px;
   color: var(--color-text-sidebar);
-  background-color: #d0e0ff;
+  background-color: hsl(220, 100%, 91%);
   cursor: pointer;
 }
 
 @media (max-width: 600px) {
   .content {
     margin-left: 0px;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 814px) {
+  .content {
+    margin-top: 90px;
+  }
+}
+
+@media (min-width: 815px) and (max-width: 1000px) {
+  .content {
+    margin-top: 25px;
   }
 }

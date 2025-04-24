@@ -20,7 +20,7 @@
   display: flex;
   align-items: center;
   flex: 1;
-  gap: 8px;
+  gap: 15px;
   cursor: pointer;
 
   .arrow-icon {
@@ -86,7 +86,8 @@
   padding: 5px;
   justify-content: center;
   align-items: center;
-
+  flex-wrap: wrap;
+  gap: 15px;
   margin-bottom: 5px;
 }
 
@@ -112,6 +113,7 @@
 .group-number-question {
   display: flex;
   flex: 1;
+  flex-wrap: wrap;
   gap: 15px;
   justify-content: center;
 
@@ -126,6 +128,7 @@
   flex-wrap: wrap;
   gap: 15px;
   flex: 1;
+  flex-wrap: wrap;
   justify-content: center;
 
   .select-filter {
