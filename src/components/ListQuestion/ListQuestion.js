@@ -4,8 +4,8 @@ import styles from "./ListQuestion.module.scss";
 import { useEffect, useState } from "react";
 import {
   deleteQuestionAPI,
-  getQuestionBySubSubjectIdAPI,
   getQuestionByUserIdAPI,
+  getSubSubjectsAPI,
 } from "../../Api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -34,12 +34,22 @@ function ListQuestion({
   setIsLoading,
   setTitleLoading,
   setQuestionEdited,
+  searchValue,
 }) {
+  //lưu ds câu hỏi
   const [listQuestion, setListQuestion] = useState([]);
+  //lưu danh sách câu hỏi để hiển thị (đã lọc, tìm kiếm) tránh gọi lại api
+  const [resultQuestion, setResultQuestion] = useState([]);
+  //mở dropdown câu hỏi tương ứng
   const [openIndex, setOpenIndex] = useState(null);
+  //quản lý việc gọi api
   const [isFetchDone, setIsFetchDone] = useState(false);
-   // lưu để gọi lại api lấy question
-   const [isChangeQuestion, setIsChangeQuestion] = useState(false);
+  // lưu để gọi lại api lấy question
+  const [isChangeQuestion, setIsChangeQuestion] = useState(false);
+  //lưu ds môn phân lớp
+  const [subSubject, setSubSubject] = useState([]);
+  // lưu môn dc chọn
+  const [selectedSubject, setSelectedSubject] = useState("");
 
   useEffect(() => {
     const getData = async () => {
@@ -49,9 +59,42 @@ function ListQuestion({
       setIsLoading(false);
       setIsFetchDone(true);
       setListQuestion(rs?.questions || []);
+      setResultQuestion(rs?.questions || []);
     };
     getData();
   }, [isChangeQuestion]);
+
+  useEffect(() => {
+    const getSubSubject = async () => {
+      const rs = await getSubSubjectsAPI();
+      setSubSubject(rs);
+    };
+
+    getSubSubject();
+  }, []);
+
+  useEffect(() => {
+    let filtered = listQuestion;
+
+    // Lọc theo môn học nếu được chọn
+    if (selectedSubject) {
+      filtered = filtered.filter((q) => q.subject_id == selectedSubject);
+    }
+
+    // Lọc theo giá trị tìm kiếm nếu có
+    if (searchValue) {
+      const lowerSearch = searchValue.toLowerCase();
+      filtered = filtered.filter((q) =>
+        q.question_text.toLowerCase().includes(lowerSearch)
+      );
+    }
+
+    if (!selectedSubject && !searchValue) {
+      setResultQuestion(listQuestion);
+    }
+
+    setResultQuestion(filtered);
+  }, [selectedSubject, searchValue, listQuestion]);
 
   const toggleOpen = (index) => {
     setOpenIndex((prev) => (prev === index ? null : index));
@@ -75,7 +118,7 @@ function ListQuestion({
         setIsLoading(false);
         if (deleted.status) {
           showSuccessToast(deleted.message, 1200);
-          setIsChangeQuestion(!isChangeQuestion)
+          setIsChangeQuestion(!isChangeQuestion);
         } else {
           showErrorToast(deleted.message, 1200);
         }
@@ -87,9 +130,43 @@ function ListQuestion({
 
   return (
     <div className={cx("container")}>
+   
+      {isFetchDone
+        ? resultQuestion.length > 0 && (
+            <div className={cx("container-filter")}>
+              <div className={cx("group-number-question")}>
+                <label className={cx("title-number-question")}>
+                  Số câu hỏi hiện tại:
+                </label>
+                <div className={cx("number-question")}>
+                  {resultQuestion.length}
+                </div>
+              </div>
+
+              <div className={cx("group-filter")}>
+                <label className={cx("title-filter")}>Lọc theo môn học:</label>
+                <select
+                  className={cx("select-filter")}
+                  onChange={(e) => setSelectedSubject(e.target.value)}
+                >
+                  <option value="">Chọn môn học</option>
+                  {subSubject.map((subject) => (
+                    <option
+                      key={subject.subsubjects_id}
+                      value={subject.subsubjects_id}
+                    >
+                      {subject.subject_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )
+        : null}
+
       {isFetchDone ? (
-        listQuestion.length > 0 ? (
-          listQuestion.map((question, index) => {
+        resultQuestion.length > 0 ? (
+          resultQuestion.map((question, index) => {
             const isOpen = openIndex === index;
 
             return (
@@ -144,7 +221,7 @@ function ListQuestion({
             );
           })
         ) : (
-          <div className={cx("no-question")}>Bạn chưa tạo bài thi nào</div>
+          <div className={cx("no-question")}>Bạn chưa tạo câu hỏi nào</div>
         )
       ) : null}
     </div>

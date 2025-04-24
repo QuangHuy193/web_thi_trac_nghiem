@@ -71,15 +71,15 @@ const updateExamByExamIdAPI = async (
   exam_id,
   title,
   description,
-  questions,
-  time
+  question,
+  time,
 ) => {
   try {
     const response = await axios.put(`${API_URL}/exams/update/${exam_id}`, {
       title,
       description,
-      questions,
-      time,
+      question,
+      time,      
     });
     return response.data;
   } catch (error) {
@@ -310,14 +310,16 @@ const updateQuestionAPI = async (
   question_id,
   question_text,
   difficulty,
-  answers
+  answers,
+  subject_id
 ) => {
   console.log(question_id);
   try {
     const response = await axios.put(`${API_URL}/questions/${question_id}`, {
       question_text,
       difficulty,
-      answers,      
+      answers,
+      subject_id,
     });
 
     return response.data;

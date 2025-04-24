@@ -14,6 +14,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeftLong } from "@fortawesome/free-solid-svg-icons";
 import { submitExamAPI } from "../../Api/api";
+import IconBack from "../IconBack/IconBack";
 
 const cx = classNames.bind(styles);
 
@@ -237,11 +238,7 @@ function DoExam({
 
   return (
     <div className={cx("container")}>
-      <FontAwesomeIcon
-        className={cx("icon-back")}
-        icon={faArrowLeftLong}
-        onClick={handleBack}
-      />
+      <IconBack handleBack={handleBack}/>
 
       {/* Hiển thị thời gian còn lại */}
       <div className={cx("timer")}>

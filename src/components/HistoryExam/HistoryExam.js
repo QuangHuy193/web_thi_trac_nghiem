@@ -2,13 +2,11 @@ import classNames from "classnames/bind";
 
 import styles from "./HistoryExam.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeftLong,
-  faCheck,
-  faX,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faX } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { getHistoryByExamIdAPI } from "../../Api/api";
+import IconBack from "../IconBack/IconBack";
+import { handleBack } from "../../Utils/function";
 
 const cs = classNames.bind(styles);
 
@@ -29,7 +27,8 @@ function HistoryExam({
   useEffect(() => {
     const getExam = async () => {
       if (idHistory) {
-        const rs = await getHistoryByExamIdAPI(idHistory);
+        
+        const rs = await getHistoryByExamIdAPI(idHistory);        
         setExam(rs);
       }
     };
@@ -76,18 +75,18 @@ function HistoryExam({
 
   const score = ((correctCount / totalQuestions) * 10).toFixed(2); // Giữ 2 chữ số thập phân
 
-  const handleBack = () => {
-    setSelectedContent("history");
-    setHeaderTitle("Lịch sử làm bài");
-  };
-
   return (
     <div className={cs("history-container")}>
       {idHistory && (
-        <FontAwesomeIcon
-          className={cs("icon-back")}
-          icon={faArrowLeftLong}
-          onClick={handleBack}
+        <IconBack
+          handleBack={() =>
+            handleBack(
+              setHeaderTitle,
+              "Lịch sử làm bài",
+              setSelectedContent,
+              "history"
+            )
+          }
         />
       )}
 
@@ -116,7 +115,8 @@ function HistoryExam({
 
                 <div className={cs("options")}>
                   {question.answers.map((answer) => {
-                    const isSelected = answer.answer_id === item.selected_answer_id;
+                    const isSelected =
+                      answer.answer_id === item.selected_answer_id;
                     const isCorrect = answer.is_correct === 1;
 
                     return (

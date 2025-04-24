@@ -13,6 +13,8 @@ import {
   showSuccessToast,
 } from "../../Utils/ToastNotification";
 import { SPECIAL_CHAR } from "../../Utils/const";
+import IconBack from "../IconBack/IconBack";
+import { handleBack } from "../../Utils/function";
 
 const cx = classNames.bind(styles);
 
@@ -112,6 +114,7 @@ function MakeQuestion({
 
   //xử lý thay đổi của dropdown subsubject
   const handleChangeSubSUbject = (e) => {
+    setSelectedSubSubject(e.target.value)
     setFormdata({ ...formData, subject_id: e.target.value });
   };
 
@@ -198,15 +201,14 @@ function MakeQuestion({
         }
       } else {
         try {
-          setTitleLoading("Đang tạo câu hỏi...");
+          setTitleLoading("Đang cập nhật câu hỏi...");
           setIsLoading(true);
-          // TODO thêm subject_id
           const result = await updateQuestionAPI(
             questionEdited.question_id,
             formData.question_text,
             formData.difficulty,
-            formData.answers
-            //formData.subject_id,
+            formData.answers,
+            formData.subject_id,
           );
           setIsLoading(false);
 
@@ -245,6 +247,13 @@ function MakeQuestion({
 
   return (
     <div className={cx("container")}>
+    
+    {questionEdited && <IconBack handleBack={()=>handleBack(
+      setHeaderTitle,
+      "Danh sách câu hỏi",
+      setSelectedContent,
+      "listQuestion"
+    )}/>}
       <div className={cx("subject-container")}>
         {/* Dropdown chọn Subject */}
         <select

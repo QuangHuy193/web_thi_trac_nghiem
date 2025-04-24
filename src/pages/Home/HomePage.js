@@ -166,6 +166,8 @@ function HomePage() {
               user={user}
               setIdExam={setIdExam}
               setIdHistory={setIdHistory}
+              setIsLoading={setIsLoading}
+              setTitleLoading={setTitleLoading}
             />
           )}
           {selectedContent === "doExam" && (
@@ -206,6 +208,7 @@ function HomePage() {
               setQuestionEdited={setQuestionEdited}
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
+              searchValue={searchValue}
             />
           )}
 
@@ -238,6 +241,7 @@ function HomePage() {
               idExam={idExam}
               setSelectedContent={setSelectedContent}
               setHeaderTitle={setHeaderTitle}
+
             />
           )}
 

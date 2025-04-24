@@ -2,7 +2,6 @@ import classNames from "classnames/bind";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowLeftLong,
   faClose,
   faPlusCircle,
   faSearch,
@@ -16,12 +15,13 @@ import {
   makeExamAPI,
   updateExamByExamIdAPI,
 } from "../../Api/api";
-import { getDifficultyLabel } from "../../Utils/function";
+import { getDifficultyLabel, handleBack } from "../../Utils/function";
 import {
   showErrorToast,
   showSuccessToast,
 } from "../../Utils/ToastNotification";
 import MakeQuestionPopup from "../MakeQuestionPopup/MakeQuestionPopup";
+import IconBack from "../IconBack/IconBack";
 
 const cx = classNames.bind(styles);
 
@@ -31,7 +31,7 @@ function MakeExam({
   setHeaderTitle,
   examEdited,
   setIsLoading,
-  setTitleLoading
+  setTitleLoading,
 }) {
   // ds môn chính
   const [subjects, setSubjects] = useState([]);
@@ -43,6 +43,8 @@ function MakeExam({
   const [selectedSubSubject, setSelectedSubSubject] = useState(null);
   // ds câu hỏi lấy theo môn phân lớp
   const [questions, setQuestions] = useState({});
+  // lấy tất cả câu hỏi
+  // TODO
   // mở hộp thoại thêm câu hỏi
   const [isMakeQuestion, setIsMakeQuestion] = useState(false);
   // dùng để làm mới ds câu hỏi của môn phân lớp khi thêm mới câu hỏi
@@ -66,7 +68,6 @@ function MakeExam({
   const [isSearch, setIsSearch] = useState(false);
   //lưu nội dung search
   const [contentSearch, setContentSearch] = useState("");
-
 
   // lấy ds môn học từ API
   useEffect(() => {
@@ -96,15 +97,25 @@ function MakeExam({
         const questionResult = await getQuestionBySubSubjectIdAPI(
           selectedSubSubject
         );
+  
+        // Lọc bỏ các câu hỏi đã có trong exam.questions
+        const filtered = {
+          ...questionResult,
+          questions: questionResult.questions?.filter(
+            (q) => !exam.questions.includes(q.question_id)
+          ),
+        };
+  
         setQuestions(questionResult);
-        setFilteredQuestions(questionResult);
+        setFilteredQuestions(filtered); // Cập nhật lại filteredQuestions
       };
-
+  
       fetchQuestions();
     } else {
       setQuestions({});
     }
-  }, [selectedSubSubject, refreshQuestion]);
+  }, [selectedSubSubject, refreshQuestion]); // Không phụ thuộc vào exam.questions nữa
+  
 
   //xử lý khi cập nhật exam
   useEffect(() => {
@@ -176,19 +187,44 @@ function MakeExam({
   // thêm câu hỏi vào form
   const handleAddQuestion = (questionId) => {
     if (!exam.questions.includes(questionId)) {
+      // Thêm câu hỏi vào exam
       setExam((prev) => ({
         ...prev,
         questions: [...prev.questions, questionId],
       }));
+  
+      // Cập nhật lại filteredQuestions sau khi thêm câu hỏi vào exam
+      setFilteredQuestions((prev) => {
+        // Xoá câu hỏi khỏi filteredQuestions
+        const updatedQuestions = prev.questions.filter(
+          (q) => q.question_id !== questionId
+        );
+  
+        // Trả về filteredQuestions đã được cập nhật
+        return { ...prev, questions: updatedQuestions };
+      });
     }
-  };
+  };  
 
   // xóa câu hỏi khỏi form
   const handleRemoveQuestion = (questionId) => {
-    setExam((prev) => ({
-      ...prev,
-      questions: prev.questions.filter((id) => id !== questionId),
-    }));
+    const removedQuestion = questions.questions.find(
+      (q) => q.question_id === questionId
+    );
+
+    if (removedQuestion) {
+      // Cập nhật lại danh sách đề
+      setExam((prev) => ({
+        ...prev,
+        questions: prev.questions.filter((id) => id !== questionId),
+      }));
+
+      // Thêm lại vào danh sách hiển thị
+      setFilteredQuestions((prev) => ({
+        ...prev,
+        questions: [removedQuestion, ...prev.questions],
+      }));
+    }
   };
 
   // mở component thêm câu hỏi
@@ -196,17 +232,23 @@ function MakeExam({
     setIsMakeQuestion(true);
   };
 
-  // lọc ds câu hỏi theo độ khó
+  // lọc ds câu hỏi theo độ khó và tiềm kiếm
   const handleFilterQuestion = (difficulty) => {
     setFilterSelected(difficulty);
 
-    // Lọc theo độ khó
+    // Kiểm tra nếu questions đã có dữ liệu
+    if (!questions?.questions) return;
+
+    // Lọc các câu hỏi không có trong exam.questions
     let filteredByDifficulty = [];
     if (difficulty === "all") {
-      filteredByDifficulty = questions.questions;
+      filteredByDifficulty = questions.questions.filter(
+        (q) => !exam.questions.includes(q.question_id)
+      );
     } else {
       filteredByDifficulty = questions.questions.filter(
-        (q) => q.difficulty === difficulty
+        (q) =>
+          q.difficulty === difficulty && !exam.questions.includes(q.question_id)
       );
     }
 
@@ -238,12 +280,6 @@ function MakeExam({
     setExam({ ...exam, subsubject_id: e.target.value });
   };
 
-  // xử lý back từ trang sửa sang trang danh sách đề thi đã tạo
-  const handleBack = () => {
-    setSelectedContent("listExam");
-    setHeaderTitle("Danh sách bài thi");
-  };
-
   // submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -270,7 +306,7 @@ function MakeExam({
     }
     try {
       if (!examEdited) {
-        setTitleLoading("Đang tạo bài thi...")
+        setTitleLoading("Đang tạo bài thi...");
         setIsLoading(true);
         const result = await makeExamAPI(
           exam.exam_name,
@@ -290,8 +326,9 @@ function MakeExam({
           showErrorToast(result.message || "Không thể tạo bài thi!", 1200);
         }
       } else {
-        setTitleLoading("Đang cập nhật bài thi...")
+        setTitleLoading("Đang cập nhật bài thi...");
         setIsLoading(true);
+        console.log(exam);
         const result = await updateExamByExamIdAPI(
           examEdited.exam_id,
           exam.exam_name,
@@ -318,10 +355,15 @@ function MakeExam({
     <>
       <div className={cx("container")}>
         {examEdited && (
-          <FontAwesomeIcon
-            className={cx("icon-back")}
-            icon={faArrowLeftLong}
-            onClick={handleBack}
+          <IconBack
+            handleBack={() =>
+              handleBack(
+                setHeaderTitle,
+                "Danh sách bài thi",
+                setSelectedContent,
+                "listExam"
+              )
+            }
           />
         )}
         {/* trang thêm câu hỏi */}
@@ -340,7 +382,7 @@ function MakeExam({
         <div className={cx("subject-container")}>
           {/* Dropdown chọn Subject */}
           <select
-            className={cx("select")}
+            className={cx("select", { disable: examEdited })}
             onChange={(e) => setSelectedSubject(Number(e.target.value))}
             value={selectedSubject}
           >
@@ -443,7 +485,6 @@ function MakeExam({
               )}
             </div>
 
-            {/* //TODO */}
             {isSearch && (
               <div className={cx("input-search")}>
                 <input
@@ -463,7 +504,7 @@ function MakeExam({
                   <button
                     key={difficulty}
                     className={cx("filter-difficulty-item", {
-                      active: filterSelectd === difficulty, // Thêm class 'active' nếu được chọn
+                      active: filterSelectd === difficulty, 
                     })}
                     onClick={() => handleFilterQuestion(difficulty)}
                   >

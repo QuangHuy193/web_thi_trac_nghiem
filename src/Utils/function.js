@@ -83,10 +83,16 @@ const loginGoogle = async () => {
   }
 };
 
+const handleBack = (setHeaderTitle, header, setSelectedContent, content) => {
+  setSelectedContent(content);
+  setHeaderTitle(header);
+};
+
 export {
   handleChangePass,
   togglePasswordVisibility,
   getDifficultyLabel,
   removeVietnameseTones,
   loginGoogle,
+  handleBack
 };
