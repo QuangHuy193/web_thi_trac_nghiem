@@ -242,7 +242,7 @@ function HomePage() {
               questionsExam={questionsExam}
               idExam={idExam}
               setSelectedContent={setSelectedContent}
-              setHeaderTitle={setHeaderTitle}
+              setHeaderTitle={setHeaderTitle}        
             />
           )}
 
@@ -251,6 +251,8 @@ function HomePage() {
               idExam={idExam}
               setHeaderTitle={setHeaderTitle}
               setSelectedContent={setSelectedContent}
+              setIsLoading={setIsLoading}
+              setTitleLoading={setTitleLoading}
             />
           )}
 

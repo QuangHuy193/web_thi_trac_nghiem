@@ -72,14 +72,14 @@ const updateExamByExamIdAPI = async (
   title,
   description,
   question_ids,
-  time,
+  time
 ) => {
   try {
     const response = await axios.put(`${API_URL}/exams/update/${exam_id}`, {
       title,
       description,
       question_ids,
-      time,      
+      time,
     });
     return response.data;
   } catch (error) {
@@ -351,7 +351,22 @@ const getHistoryByExamIdAPI = async (exam_id) => {
 
     return response.data;
   } catch (error) {
-    console.error(`Lỗi khi lấy bài thi có id là: ${exam_id}`, error);
+    console.error(`Lỗi khi lấy lịch sử bài thi có id là: ${exam_id}`, error);
+    return [];
+  }
+};
+
+// lấy lịch sử theo exam_id
+const getListHistoryUserByExamIdAPI = async (exam_id) => {
+  try {
+    const response = await axios.get(`${API_URL}/history/exams/${exam_id}`);
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Lỗi khi lấy thông tin người đã làm bài thi có id là: ${exam_id}`,
+      error
+    );
     return [];
   }
 };
@@ -449,6 +464,7 @@ const updateSubSubjectAPI = async (subsubject_id, subject_name) => {
     return { message: "Có lỗi xảy ra khi cập nhật môn học, vui lòng thử lại!" };
   }
 };
+
 export {
   getAllSubjectsAPI,
   getSubjectsAPI,
@@ -476,4 +492,5 @@ export {
   getQuestionByUserIdAPI,
   updateQuestionAPI,
   deleteQuestionAPI,
+  getListHistoryUserByExamIdAPI
 };
