@@ -130,39 +130,34 @@ function ListQuestion({
 
   return (
     <div className={cx("container")}>
-   
-      {isFetchDone
-        ? resultQuestion.length > 0 && (
-            <div className={cx("container-filter")}>
-              <div className={cx("group-number-question")}>
-                <label className={cx("title-number-question")}>
-                  Số câu hỏi hiện tại:
-                </label>
-                <div className={cx("number-question")}>
-                  {resultQuestion.length}
-                </div>
-              </div>
+      {isFetchDone ? (
+        <div className={cx("container-filter")}>
+          <div className={cx("group-number-question")}>
+            <label className={cx("title-number-question")}>
+              Số câu hỏi hiện tại:
+            </label>
+            <div className={cx("number-question")}>{resultQuestion.length}</div>
+          </div>
 
-              <div className={cx("group-filter")}>
-                <label className={cx("title-filter")}>Lọc theo môn học:</label>
-                <select
-                  className={cx("select-filter")}
-                  onChange={(e) => setSelectedSubject(e.target.value)}
+          <div className={cx("group-filter")}>
+            <label className={cx("title-filter")}>Lọc theo môn học:</label>
+            <select
+              className={cx("select-filter")}
+              onChange={(e) => setSelectedSubject(e.target.value)}
+            >
+              <option value="">Chọn môn học</option>
+              {subSubject.map((subject) => (
+                <option
+                  key={subject.subsubjects_id}
+                  value={subject.subsubjects_id}
                 >
-                  <option value="">Chọn môn học</option>
-                  {subSubject.map((subject) => (
-                    <option
-                      key={subject.subsubjects_id}
-                      value={subject.subsubjects_id}
-                    >
-                      {subject.subject_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          )
-        : null}
+                  {subject.subject_name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      ) : null}
 
       {isFetchDone ? (
         resultQuestion.length > 0 ? (

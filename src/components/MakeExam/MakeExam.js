@@ -43,8 +43,6 @@ function MakeExam({
   const [selectedSubSubject, setSelectedSubSubject] = useState(null);
   // ds câu hỏi lấy theo môn phân lớp
   const [questions, setQuestions] = useState({});
-  // lấy tất cả câu hỏi
-  // TODO
   // mở hộp thoại thêm câu hỏi
   const [isMakeQuestion, setIsMakeQuestion] = useState(false);
   // dùng để làm mới ds câu hỏi của môn phân lớp khi thêm mới câu hỏi
@@ -328,12 +326,12 @@ function MakeExam({
       } else {
         setTitleLoading("Đang cập nhật bài thi...");
         setIsLoading(true);
-        console.log(exam);
+    
         const result = await updateExamByExamIdAPI(
           examEdited.exam_id,
           exam.exam_name,
           exam.description,
-          exam.questions,
+          examEdited.questions,
           exam.time
         );
         setIsLoading(false);
