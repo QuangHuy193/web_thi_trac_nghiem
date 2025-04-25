@@ -130,9 +130,16 @@
 .special-keyboard {
   margin: 0;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   gap: 6px;
   margin: 5px;
+}
+
+.special-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .special-key {

@@ -23,4 +23,9 @@ const SPECIAL_CHAR = [
   "χ",
   "Ω",
 ];
-export { EMAILREGEX,SPECIAL_CHAR };
+
+const TOP_INDEX = ["⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"];
+
+const BOTTOM_INDEX = ["₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉"];
+
+export { EMAILREGEX, SPECIAL_CHAR, TOP_INDEX, BOTTOM_INDEX };

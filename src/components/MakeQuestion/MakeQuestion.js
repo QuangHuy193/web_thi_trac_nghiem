@@ -12,7 +12,7 @@ import {
   showErrorToast,
   showSuccessToast,
 } from "../../Utils/ToastNotification";
-import { SPECIAL_CHAR } from "../../Utils/const";
+import { BOTTOM_INDEX, SPECIAL_CHAR, TOP_INDEX } from "../../Utils/const";
 import IconBack from "../IconBack/IconBack";
 import { handleBack } from "../../Utils/function";
 
@@ -114,7 +114,7 @@ function MakeQuestion({
 
   //xử lý thay đổi của dropdown subsubject
   const handleChangeSubSUbject = (e) => {
-    setSelectedSubSubject(e.target.value)
+    setSelectedSubSubject(e.target.value);
     setFormdata({ ...formData, subject_id: e.target.value });
   };
 
@@ -191,11 +191,21 @@ function MakeQuestion({
 
           if (result.question) {
             showSuccessToast(result.message, 1200);
-            setHeaderTitle("Danh sách câu hỏi đã tạo");
-            setSelectedContent("listQuestion");
+            setFormdata({
+              ...formData,
+              question_text: "",
+              difficulty: "",
+              answers: [
+                { answer_text: "", is_correct: 0 },
+                { answer_text: "", is_correct: 0 },
+                { answer_text: "", is_correct: 0 },
+                { answer_text: "", is_correct: 0 },
+              ],
+            });
           } else {
             showErrorToast(result.message, 1200);
           }
+          window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (error) {
           showErrorToast("Có lỗi xảy ra, vui lòng thử lại...", 1200);
         }
@@ -208,7 +218,7 @@ function MakeQuestion({
             formData.question_text,
             formData.difficulty,
             formData.answers,
-            formData.subject_id,
+            formData.subject_id
           );
           setIsLoading(false);
 
@@ -247,13 +257,18 @@ function MakeQuestion({
 
   return (
     <div className={cx("container")}>
-    
-    {questionEdited && <IconBack handleBack={()=>handleBack(
-      setHeaderTitle,
-      "Danh sách câu hỏi",
-      setSelectedContent,
-      "listQuestion"
-    )}/>}
+      {questionEdited && (
+        <IconBack
+          handleBack={() =>
+            handleBack(
+              setHeaderTitle,
+              "Danh sách câu hỏi",
+              setSelectedContent,
+              "listQuestion"
+            )
+          }
+        />
+      )}
       <div className={cx("subject-container")}>
         {/* Dropdown chọn Subject */}
         <select
@@ -298,16 +313,49 @@ function MakeQuestion({
 
       {/* Bàn phím ký tự đặc biệt */}
       <div className={cx("special-keyboard")}>
-        {SPECIAL_CHAR.map((char) => (
-          <button
-            key={char}
-            type="button"
-            className={cx("special-key")}
-            onClick={() => handleInsertSpecialChar(char)}
-          >
-            {char}
-          </button>
-        ))}
+        <div className={cx("special-group")}>
+          <div>
+            <strong>Ký hiệu đặc biệt:</strong>
+          </div>
+          {SPECIAL_CHAR.map((char) => (
+            <button
+              key={char}
+              type="button"
+              className={cx("special-key")}
+              onClick={() => handleInsertSpecialChar(char)}
+            >
+              {char}
+            </button>
+          ))}
+        </div>
+
+        <div className={cx("special-group")}>
+          <div>
+            <strong>Chỉ số trên:</strong>
+          </div>
+          {TOP_INDEX.map((char) => (
+            <button
+              className={cx("special-key")}
+              onClick={() => handleInsertSpecialChar(char)}
+            >
+              {char}
+            </button>
+          ))}
+        </div>
+
+        <div className={cx("special-group")}>
+          <div>
+            <strong>Chỉ số dưới:</strong>
+          </div>
+          {BOTTOM_INDEX.map((char) => (
+            <button
+              className={cx("special-key")}
+              onClick={() => handleInsertSpecialChar(char)}
+            >
+              {char}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className={cx("difficulty-group")}>

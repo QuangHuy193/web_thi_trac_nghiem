@@ -9,7 +9,7 @@ import {
   showErrorToast,
   showSuccessToast,
 } from "../../Utils/ToastNotification";
-import { SPECIAL_CHAR } from "../../Utils/const";
+import { BOTTOM_INDEX, SPECIAL_CHAR, TOP_INDEX } from "../../Utils/const";
 
 const cx = classNames.bind(styles);
 
@@ -116,7 +116,12 @@ function MakeQuestionPopup({
 
         if (result.question) {
           showSuccessToast("Tạo câu hỏi thành công!", 1200);
-          setIsMakeQuestion(false);
+          setFormdata({
+            ...formData,
+            question_text: "",
+            difficulty: "",
+            answers: [{}, {}, {}, {}],
+          });
           setRefreshQuestion((prev) => !prev);
         } else {
           showErrorToast(result.message, 1200);
@@ -170,16 +175,49 @@ function MakeQuestionPopup({
 
         {/* Bàn phím ký tự đặc biệt */}
         <div className={cx("special-keyboard")}>
-          {SPECIAL_CHAR.map((char) => (
-            <button
-              key={char}
-              type="button"
-              className={cx("special-key")}
-              onClick={() => handleInsertSpecialChar(char)}
-            >
-              {char}
-            </button>
-          ))}
+          <div className={cx("special-group")}>
+            <div>
+              <strong>Ký hiệu đặc biệt:</strong>
+            </div>
+            {SPECIAL_CHAR.map((char) => (
+              <button
+                key={char}
+                type="button"
+                className={cx("special-key")}
+                onClick={() => handleInsertSpecialChar(char)}
+              >
+                {char}
+              </button>
+            ))}
+          </div>
+
+          <div className={cx("special-group")}>
+            <div>
+              <strong>Chỉ số trên:</strong>
+            </div>
+            {TOP_INDEX.map((char) => (
+              <button
+                className={cx("special-key")}
+                onClick={() => handleInsertSpecialChar(char)}
+              >
+                {char}
+              </button>
+            ))}
+          </div>
+
+          <div className={cx("special-group")}>
+            <div>
+              <strong>Chỉ số dưới:</strong>
+            </div>
+            {BOTTOM_INDEX.map((char) => (
+              <button
+                className={cx("special-key")}
+                onClick={() => handleInsertSpecialChar(char)}
+              >
+                {char}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className={cx("difficulty-group")}>
