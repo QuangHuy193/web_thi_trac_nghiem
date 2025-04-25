@@ -6,6 +6,8 @@ import {
   faPlusCircle,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 
 import styles from "./MakeExam.module.scss";
 import {
@@ -95,7 +97,7 @@ function MakeExam({
         const questionResult = await getQuestionBySubSubjectIdAPI(
           selectedSubSubject
         );
-  
+
         // Lọc bỏ các câu hỏi đã có trong exam.questions
         const filtered = {
           ...questionResult,
@@ -103,17 +105,16 @@ function MakeExam({
             (q) => !exam.questions.includes(q.question_id)
           ),
         };
-  
+
         setQuestions(questionResult);
         setFilteredQuestions(filtered); // Cập nhật lại filteredQuestions
       };
-  
+
       fetchQuestions();
     } else {
       setQuestions({});
     }
   }, [selectedSubSubject, refreshQuestion]); // Không phụ thuộc vào exam.questions nữa
-  
 
   //xử lý khi cập nhật exam
   useEffect(() => {
@@ -190,19 +191,19 @@ function MakeExam({
         ...prev,
         questions: [...prev.questions, questionId],
       }));
-  
+
       // Cập nhật lại filteredQuestions sau khi thêm câu hỏi vào exam
       setFilteredQuestions((prev) => {
         // Xoá câu hỏi khỏi filteredQuestions
         const updatedQuestions = prev.questions.filter(
           (q) => q.question_id !== questionId
         );
-  
+
         // Trả về filteredQuestions đã được cập nhật
         return { ...prev, questions: updatedQuestions };
       });
     }
-  };  
+  };
 
   // xóa câu hỏi khỏi form
   const handleRemoveQuestion = (questionId) => {
@@ -326,7 +327,7 @@ function MakeExam({
       } else {
         setTitleLoading("Đang cập nhật bài thi...");
         setIsLoading(true);
-    
+
         const result = await updateExamByExamIdAPI(
           examEdited.exam_id,
           exam.exam_name,
@@ -457,9 +458,14 @@ function MakeExam({
                   )?.subject_name}
               </h3>
               {Object.keys(questions).length !== 0 && (
-                <span className={cx("icon-plus")} onClick={handleMakeQuestion}>
-                  <FontAwesomeIcon icon={faPlusCircle} />
-                </span>
+                <Tippy content="Thêm câu hỏi" placement="bottom">
+                  <span
+                    className={cx("icon-plus")}
+                    onClick={handleMakeQuestion}
+                  >
+                    <FontAwesomeIcon icon={faPlusCircle} />
+                  </span>
+                </Tippy>
               )}
             </div>
 
@@ -502,7 +508,7 @@ function MakeExam({
                   <button
                     key={difficulty}
                     className={cx("filter-difficulty-item", {
-                      active: filterSelectd === difficulty, 
+                      active: filterSelectd === difficulty,
                     })}
                     onClick={() => handleFilterQuestion(difficulty)}
                   >
@@ -542,10 +548,12 @@ function MakeExam({
 
           {/* Danh sách câu hỏi đã chọn */}
           <div className={cx("selected-questions")}>
-            <h3 className={cx("title")}>
-              Câu hỏi đã chọn:{" "}
-              {exam.questions.length !== 0 && "(" + exam.questions.length + ")"}
-            </h3>
+            <Tippy content={"Chỉ hiện câu hỏi của môn được chọn"} placement="bottom">
+              <h3 className={cx("title")}>
+                Câu hỏi đã chọn:{" "}
+                {exam.questions.length !== 0 && "(" + exam.questions.length + ")"}
+              </h3>
+            </Tippy>
             {exam.questions.length > 0 && (
               <ul>
                 {exam.questions.map((qId) => {
