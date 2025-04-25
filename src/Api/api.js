@@ -200,6 +200,24 @@ const updateUserInfoAPI = async (user_id, username, email) => {
   }
 };
 
+const updateUserPassInfoAPI = async (user_id, payload) => {
+  try {
+    // loại bỏ field password nếu không nhập gì
+    if (!payload.password) {
+      delete payload.password;
+    }
+
+    const response = await axios.put(`${API_URL}/users/${user_id}`, payload);
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi gọi API:", error); // In log cụ thể
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
+  }
+};
+
 //đăng ký
 const registerAPI = async (username, email, password, role) => {
   try {
@@ -525,6 +543,7 @@ export {
   getQuestionBySubSubjectIdAPI,
   loginAPI,
   updateUserInfoAPI,
+  updateUserPassInfoAPI,
   registerAPI,
   makeQuestionAPI,
   submitExamAPI,

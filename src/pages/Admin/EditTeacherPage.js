@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import styles from './EditSubjectPage.module.scss';
-import { updateUserInfoAPI } from '../../Api/api';
+import { updateUserPassInfoAPI } from '../../Api/api';
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +14,7 @@ function EditTeacherPage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleUpdate = async () => {
@@ -40,12 +41,13 @@ function EditTeacherPage() {
 
     try {
       setLoading(true);
-      const response = await updateUserInfoAPI(
-        user_id,
-        username.trim(),
-        email.trim()
-      );
-      console.log('Phản hồi updateUserInfoAPI:', response);
+      const payload = {
+        username: username.trim(),
+        email: email.trim(),
+        password: password.trim() || undefined, 
+      };
+      const response = await updateUserPassInfoAPI(user_id, payload);
+
       if (response && response.message?.toLowerCase().includes('cập nhật')) {
         console.log('Triggering Swal success notification'); // Debug log
         await Swal.fire({
@@ -55,7 +57,7 @@ function EditTeacherPage() {
           timer: 1500,
           showConfirmButton: false,
         });
-        navigate('/admin/teacher'); // Navigate after Swal completes
+        navigate('/admin/teacher'); 
       } else {
         Swal.fire({
           title: 'Lỗi!',
@@ -108,6 +110,16 @@ function EditTeacherPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Nhập email"
+          className={cx('input')}
+          disabled={loading}
+        />
+        <label htmlFor="password" className={cx('label')}>Mật khẩu mới</label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Nhập mật khẩu mới"
           className={cx('input')}
           disabled={loading}
         />

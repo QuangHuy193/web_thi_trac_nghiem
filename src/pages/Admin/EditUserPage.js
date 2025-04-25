@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import styles from './EditSubjectPage.module.scss';
-import { updateUserInfoAPI } from '../../Api/api';
+import { updateUserPassInfoAPI } from '../../Api/api';
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +14,8 @@ function EditUserPage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const [loading, setLoading] = useState(false);
 
   const handleUpdate = async () => {
@@ -38,14 +40,17 @@ function EditUserPage() {
       return;
     }
 
+
     try {
       setLoading(true);
-      const response = await updateUserInfoAPI(
-        user_id,
-        username.trim(),
-        email.trim()
-      );
-      console.log('Phản hồi updateUserInfoAPI:', response);
+      const payload = {
+        username: username.trim(),
+        email: email.trim(),
+        password: password.trim() || undefined, 
+      };
+      
+      const response = await updateUserPassInfoAPI(user_id, payload);
+
       if (response && response.message?.toLowerCase().includes('cập nhật')) {
         await Swal.fire({
           title: 'Đã cập nhật!',
@@ -78,17 +83,12 @@ function EditUserPage() {
 
   return (
     <div className={cx('container')}>
-      <button
-        className={cx('back-btn')}
-        onClick={() => navigate('/admin/user-list')}
-      >
+      <button className={cx('back-btn')} onClick={() => navigate('/admin/user-list')}>
         <FontAwesomeIcon icon={faArrowLeft} /> Quay lại
       </button>
       <h1 className={cx('title')}>Chỉnh sửa thông tin người dùng</h1>
       <div className={cx('form')}>
-        <label htmlFor="username" className={cx('label')}>
-          Họ và tên
-        </label>
+        <label htmlFor="username" className={cx('label')}>Họ và tên</label>
         <input
           id="username"
           type="text"
@@ -98,9 +98,8 @@ function EditUserPage() {
           className={cx('input')}
           disabled={loading}
         />
-        <label htmlFor="email" className={cx('label')}>
-          Email
-        </label>
+
+        <label htmlFor="email" className={cx('label')}>Email</label>
         <input
           id="email"
           type="email"
@@ -110,6 +109,18 @@ function EditUserPage() {
           className={cx('input')}
           disabled={loading}
         />
+
+        <label htmlFor="password" className={cx('label')}>Mật khẩu mới</label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Nhập mật khẩu mới"
+          className={cx('input')}
+          disabled={loading}
+        />
+
         <button
           className={cx('update-btn')}
           onClick={handleUpdate}

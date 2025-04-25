@@ -16,7 +16,7 @@ const rotateArrow = (isOpen) => ({
 });
 
 function AdminPage() {
-  // State riêng cho từng dropdown
+  // state cho tung dropdowns
   const [isSubjectDropdownOpen, setIsSubjectDropdownOpen] = useState(false);
   const [isTeacherDropdownOpen, setIsTeacherDropdownOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -24,7 +24,7 @@ function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
 
-  // Hàm toggle riêng cho từng dropdown
+  // ham toggle rieng cho tung dropdown
   const toggleSubjectDropdown = () => {
     setIsSubjectDropdownOpen(!isSubjectDropdownOpen);
   };
@@ -36,7 +36,7 @@ function AdminPage() {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
 
-  // Hàm lấy danh sách môn học
+  // ham lay danh sach mon hoc
   const fetchSubjects = async () => {
     try {
       setLoading(true);
@@ -55,12 +55,12 @@ function AdminPage() {
     }
   };
 
-  // Gọi API lấy danh sách môn học khi component mount
+  //goi api lay danh sach mon hoc khi  component mount
   useEffect(() => {
     fetchSubjects();
   }, []);
 
-  // Hàm xử lý xóa môn học
+  // ham xoa mon hoc
   const handleDelete = async (subject_id) => {
     const result = await Swal.fire({
       title: 'Xác nhận xóa',
