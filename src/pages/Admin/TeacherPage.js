@@ -6,7 +6,7 @@ import { faCaretRight, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-s
 import classNames from 'classnames/bind';
 import Swal from 'sweetalert2';
 import styles from './AdminPage.module.scss';
-import { getAllSubjectsAPI, deleteSubjectAPI } from '../../Api/api';
+import { getAllTeachersAPI, deleteTeacherAPI } from '../../Api/api';
 
 const cx = classNames.bind(styles);
 
@@ -15,16 +15,14 @@ const rotateArrow = (isOpen) => ({
   transition: { duration: 0.3 },
 });
 
-function AdminPage() {
-  // State riêng cho từng dropdown
+function TeacherPage() {
   const [isSubjectDropdownOpen, setIsSubjectDropdownOpen] = useState(false);
-  const [isTeacherDropdownOpen, setIsTeacherDropdownOpen] = useState(false);
+  const [isTeacherDropdownOpen, setIsTeacherDropdownOpen] = useState(true);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [subjects, setSubjects] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
 
-  // Hàm toggle riêng cho từng dropdown
   const toggleSubjectDropdown = () => {
     setIsSubjectDropdownOpen(!isSubjectDropdownOpen);
   };
@@ -36,35 +34,31 @@ function AdminPage() {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
 
-  // Hàm lấy danh sách môn học
-  const fetchSubjects = async () => {
+  const fetchTeachers = async () => {
     try {
       setLoading(true);
-      const data = await getAllSubjectsAPI();
-      setSubjects(data);
+      const data = await getAllTeachersAPI();
+      setTeachers(data);
     } catch (error) {
-      console.error('Lỗi khi lấy danh sách môn học:', error);
       Swal.fire({
         title: 'Lỗi!',
-        text: 'Không thể tải danh sách môn học. Vui lòng thử lại.',
+        text: 'Không thể tải danh sách giáo viên. Vui lòng thử lại.',
         icon: 'error',
       });
-      setSubjects([]);
+      setTeachers([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Gọi API lấy danh sách môn học khi component mount
   useEffect(() => {
-    fetchSubjects();
+    fetchTeachers();
   }, []);
 
-  // Hàm xử lý xóa môn học
-  const handleDelete = async (subject_id) => {
+  const handleDelete = async (user_id) => {
     const result = await Swal.fire({
       title: 'Xác nhận xóa',
-      text: 'Bạn có chắc muốn xóa môn học này? Hành động này không thể hoàn tác!',
+      text: 'Bạn có chắc muốn xóa giáo viên này? Hành động này không thể hoàn tác!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -75,28 +69,27 @@ function AdminPage() {
 
     if (result.isConfirmed) {
       try {
-        setDeletingId(subject_id);
-        const response = await deleteSubjectAPI(subject_id);
-        if (response && !response.message?.toLowerCase().includes('lỗi')) {
-          await fetchSubjects();
+        setDeletingId(user_id);
+        const response = await deleteTeacherAPI(user_id);
+        if (response.success || !response.message?.toLowerCase().includes('lỗi')) {
+          await fetchTeachers();
           Swal.fire({
             title: 'Đã xóa!',
-            text: 'Môn học đã được xóa thành công.',
+            text: 'Giáo viên đã được xóa thành công.',
             icon: 'success',
             timer: 1500,
           });
         } else {
           Swal.fire({
             title: 'Lỗi!',
-            text: response.message || 'Không thể xóa môn học. Vui lòng thử lại.',
+            text: response.message || 'Không thể xóa giáo viên. Vui lòng thử lại.',
             icon: 'error',
           });
         }
       } catch (error) {
-        console.error('Lỗi khi xóa môn học:', error);
         Swal.fire({
           title: 'Lỗi!',
-          text: 'Không thể xóa môn học. Vui lòng thử lại.',
+          text: 'Không thể xóa giáo viên. Vui lòng thử lại.',
           icon: 'error',
         });
       } finally {
@@ -146,103 +139,105 @@ function AdminPage() {
               )}
             </AnimatePresence>
           </li>
-          <li className={cx('menu-item')}>
-            <div className={cx('item', 'list')} onClick={toggleTeacherDropdown}>
-              <div>Quản lý giáo viên</div>
-              <motion.span {...rotateArrow(isTeacherDropdownOpen)}>
-                <FontAwesomeIcon icon={faCaretRight} className={cx('icon')} />
-              </motion.span>
-            </div>
-            <AnimatePresence initial={false}>
-              {isTeacherDropdownOpen && (
-                <motion.div
-                  key="teacher-options"
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className={cx('dropdown-menu')}
-                >
-                  <div className={cx('dropdown-item')}>
-                    <Link to="/admin/create-teacher">Tạo tài khoản giáo viên</Link>
-                  </div>
-                  <div className={cx('dropdown-item')}>
-                    <Link to="/admin/teacher">Danh sách giáo viên</Link>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </li>
-          <li className={cx('menu-item')}>
-            <div className={cx('item', 'list')} onClick={toggleUserDropdown}>
-              <div>Quản lý người dùng</div>
-              <motion.span {...rotateArrow(isUserDropdownOpen)}>
-                <FontAwesomeIcon icon={faCaretRight} className={cx('icon')} />
-              </motion.span>
-            </div>
-            <AnimatePresence initial={false}>
-              {isUserDropdownOpen && (
-                <motion.div
-                  key="user-options"
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className={cx('dropdown-menu')}>
-                  <div className={cx('dropdown-item')}>
-                    <Link to="/admin/user-list">Danh sách người dùng</Link>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </li>
+           <li className={cx('menu-item')}>
+                    <div className={cx('item', 'list')} onClick={toggleTeacherDropdown}>
+                      <div>Quản lý giáo viên</div>
+                      <motion.span {...rotateArrow(isTeacherDropdownOpen)}>
+                        <FontAwesomeIcon icon={faCaretRight} className={cx('icon')} />
+                      </motion.span>
+                    </div>
+                    <AnimatePresence initial={false}>
+                      {isTeacherDropdownOpen && (
+                        <motion.div
+                          key="teacher-options"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className={cx('dropdown-menu')}
+                        >
+                          <div className={cx('dropdown-item')}>
+                            <Link to="/admin/create-teacher">Tạo tài khoản giáo viên</Link>
+                          </div>
+                          <div className={cx('dropdown-item')}>
+                            <Link to="/admin/teacher">Danh sách giáo viên</Link>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </li>
+                  <li className={cx('menu-item')}>
+                    <div className={cx('item', 'list')} onClick={toggleUserDropdown}>
+                      <div>Quản lý người dùng</div>
+                      <motion.span {...rotateArrow(isUserDropdownOpen)}>
+                        <FontAwesomeIcon icon={faCaretRight} className={cx('icon')} />
+                      </motion.span>
+                    </div>
+                    <AnimatePresence initial={false}>
+                      {isUserDropdownOpen && (
+                        <motion.div
+                          key="user-options"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className={cx('dropdown-menu')}>
+                          <div className={cx('dropdown-item')}>
+                            <Link to="/admin/user-list">Danh sách người dùng</Link>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </li>
         </ul>
       </aside>
 
       <main className={cx('main')}>
-        <h1 className={cx('title')}>Danh sách môn học</h1>
+        <h1 className={cx('title')}>Danh sách giáo viên</h1>
         <div className={cx('action-bar')}>
-          <Link to="/admin/add-subject">
+          <Link to="/admin/create-teacher">
             <button className={cx('add-btn')}>
-              <FontAwesomeIcon icon={faPlus} /> Thêm môn học
+              <FontAwesomeIcon icon={faPlus} /> Thêm giáo viên
             </button>
           </Link>
         </div>
         <div className={cx('section')}>
           {loading ? (
             <p className={cx('no-data')}>Đang tải dữ liệu...</p>
-          ) : subjects.length > 0 ? (
+          ) : teachers.length > 0 ? (
             <table className={cx('subject-table')}>
               <thead>
                 <tr>
                   <th className={cx('table-header')}>ID</th>
-                  <th className={cx('table-header')}>Tên môn học</th>
+                  <th className={cx('table-header')}>Họ và tên</th>
+                  <th className={cx('table-header')}>Email</th>
                   <th className={cx('table-header')}>Hành động</th>
                 </tr>
               </thead>
               <tbody>
-                {subjects.map((subject) => (
-                  <tr key={subject.id}>
-                    <td className={cx('table-cell')}>{subject.subject_id}</td>
-                    <td className={cx('table-cell')}>{subject.name}</td>
+                {teachers.map((teacher) => (
+                  <tr key={teacher.user_id}>
+                    <td className={cx('table-cell')}>{teacher.user_id || 'N/A'}</td>
+                    <td className={cx('table-cell')}>{teacher.username}</td>
+                    <td className={cx('table-cell')}>{teacher.email}</td>
                     <td className={cx('table-cell')}>
-                      <Link to={`/admin/edit-subject/${subject.subject_id}`}>
+                      <Link to={`/admin/edit-teacher/${teacher.user_id}`}>
                         <button
                           className={cx('edit-btn')}
-                          title="Sửa môn học"
-                          disabled={deletingId === subject.subject_id}
+                          title="Sửa thông tin giáo viên"
+                          disabled={deletingId === teacher.user_id}
                         >
                           <FontAwesomeIcon icon={faEdit} />
                         </button>
                       </Link>
                       <button
                         className={cx('delete-btn')}
-                        onClick={() => handleDelete(subject.subject_id)}
-                        title="Xóa môn học"
-                        disabled={deletingId === subject.subject_id}
+                        onClick={() => handleDelete(teacher.user_id)}
+                        title="Xóa giáo viên"
+                        disabled={deletingId === teacher.user_id}
                       >
                         <FontAwesomeIcon icon={faTrash} />
-                        {deletingId === subject.subject_id && <span>Đang xóa...</span>}
+                        {deletingId === teacher.user_id && <span>Đang xóa...</span>}
                       </button>
                     </td>
                   </tr>
@@ -250,7 +245,7 @@ function AdminPage() {
               </tbody>
             </table>
           ) : (
-            <p className={cx('no-data')}>Không có môn học nào để hiển thị.</p>
+            <p className={cx('no-data')}>Không có giáo viên nào để hiển thị.</p>
           )}
         </div>
       </main>
@@ -258,4 +253,4 @@ function AdminPage() {
   );
 }
 
-export default AdminPage;
+export default TeacherPage;

@@ -6,7 +6,7 @@ import { faCaretRight, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-s
 import classNames from 'classnames/bind';
 import Swal from 'sweetalert2';
 import styles from './AdminPage.module.scss';
-import { getAllSubjectsAPI, deleteSubjectAPI } from '../../Api/api';
+import { getAllUsersAPI, deleteUserAPI } from '../../Api/api';
 
 const cx = classNames.bind(styles);
 
@@ -15,16 +15,14 @@ const rotateArrow = (isOpen) => ({
   transition: { duration: 0.3 },
 });
 
-function AdminPage() {
-  // State riêng cho từng dropdown
+function UserPage() {
   const [isSubjectDropdownOpen, setIsSubjectDropdownOpen] = useState(false);
   const [isTeacherDropdownOpen, setIsTeacherDropdownOpen] = useState(false);
-  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [subjects, setSubjects] = useState([]);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false); 
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
 
-  // Hàm toggle riêng cho từng dropdown
   const toggleSubjectDropdown = () => {
     setIsSubjectDropdownOpen(!isSubjectDropdownOpen);
   };
@@ -32,39 +30,49 @@ function AdminPage() {
   const toggleTeacherDropdown = () => {
     setIsTeacherDropdownOpen(!isTeacherDropdownOpen);
   };
+
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
 
-  // Hàm lấy danh sách môn học
-  const fetchSubjects = async () => {
+  //lay tat ca user
+  const fetchUsers = async () => {
     try {
       setLoading(true);
-      const data = await getAllSubjectsAPI();
-      setSubjects(data);
+      const data = await getAllUsersAPI();
+      // loc role 
+      const validUsers = Array.isArray(data)
+        ? data.filter(user => 
+            user && 
+            user.user_id && 
+            user.username && 
+            user.email && 
+            user.role.toLowerCase() === 'student' 
+          )
+        : [];
+      setUsers(validUsers);
     } catch (error) {
-      console.error('Lỗi khi lấy danh sách môn học:', error);
+      console.error('Lỗi khi lấy danh sách người dùng:', error);
       Swal.fire({
         title: 'Lỗi!',
-        text: 'Không thể tải danh sách môn học. Vui lòng thử lại.',
+        text: 'Không thể tải danh sách người dùng. Vui lòng thử lại.',
         icon: 'error',
       });
-      setSubjects([]);
+      setUsers([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Gọi API lấy danh sách môn học khi component mount
   useEffect(() => {
-    fetchSubjects();
+    fetchUsers();
   }, []);
 
-  // Hàm xử lý xóa môn học
-  const handleDelete = async (subject_id) => {
+  // handle xoa user
+  const handleDelete = async (user_id) => {
     const result = await Swal.fire({
       title: 'Xác nhận xóa',
-      text: 'Bạn có chắc muốn xóa môn học này? Hành động này không thể hoàn tác!',
+      text: 'Bạn có chắc muốn xóa người dùng này? Hành động này không thể hoàn tác!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -75,34 +83,40 @@ function AdminPage() {
 
     if (result.isConfirmed) {
       try {
-        setDeletingId(subject_id);
-        const response = await deleteSubjectAPI(subject_id);
-        if (response && !response.message?.toLowerCase().includes('lỗi')) {
-          await fetchSubjects();
+        setDeletingId(user_id);
+        const response = await deleteUserAPI(user_id);
+        if (response.message && !response.message.toLowerCase().includes('lỗi')) {
+          await fetchUsers();
           Swal.fire({
             title: 'Đã xóa!',
-            text: 'Môn học đã được xóa thành công.',
+            text: 'Người dùng đã được xóa thành công.',
             icon: 'success',
             timer: 1500,
           });
         } else {
           Swal.fire({
             title: 'Lỗi!',
-            text: response.message || 'Không thể xóa môn học. Vui lòng thử lại.',
+            text: response.message || 'Không thể xóa người dùng. Vui lòng thử lại.',
             icon: 'error',
           });
         }
       } catch (error) {
-        console.error('Lỗi khi xóa môn học:', error);
+        console.error('Lỗi khi xóa người dùng:', error);
         Swal.fire({
           title: 'Lỗi!',
-          text: 'Không thể xóa môn học. Vui lòng thử lại.',
+          text: 'Có lỗi xảy ra, vui lòng thử lại!',
           icon: 'error',
         });
       } finally {
         setDeletingId(null);
       }
     }
+  };
+
+  // Handle edit user (navigate to edit page)
+  const handleEdit = (user_id) => {
+    // Navigate to the edit page
+    window.location.href = `/admin/edit-user/${user_id}`;
   };
 
   return (
@@ -188,7 +202,8 @@ function AdminPage() {
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={cx('dropdown-menu')}>
+                  className={cx('dropdown-menu')}
+                >
                   <div className={cx('dropdown-item')}>
                     <Link to="/admin/user-list">Danh sách người dùng</Link>
                   </div>
@@ -200,49 +215,45 @@ function AdminPage() {
       </aside>
 
       <main className={cx('main')}>
-        <h1 className={cx('title')}>Danh sách môn học</h1>
-        <div className={cx('action-bar')}>
-          <Link to="/admin/add-subject">
-            <button className={cx('add-btn')}>
-              <FontAwesomeIcon icon={faPlus} /> Thêm môn học
-            </button>
-          </Link>
-        </div>
+        <h1 className={cx('title')}>Danh sách người dùng</h1>
+    
         <div className={cx('section')}>
           {loading ? (
             <p className={cx('no-data')}>Đang tải dữ liệu...</p>
-          ) : subjects.length > 0 ? (
+          ) : users.length > 0 ? (
             <table className={cx('subject-table')}>
               <thead>
                 <tr>
                   <th className={cx('table-header')}>ID</th>
-                  <th className={cx('table-header')}>Tên môn học</th>
+                  <th className={cx('table-header')}>Tên người dùng</th>
+                  <th className={cx('table-header')}>Email</th>
                   <th className={cx('table-header')}>Hành động</th>
                 </tr>
               </thead>
               <tbody>
-                {subjects.map((subject) => (
-                  <tr key={subject.id}>
-                    <td className={cx('table-cell')}>{subject.subject_id}</td>
-                    <td className={cx('table-cell')}>{subject.name}</td>
+                {users.map((user) => (
+                  <tr key={user.user_id}>
+                    <td className={cx('table-cell')}>{user.user_id || 'N/A'}</td>
+                    <td className={cx('table-cell')}>{user.username}</td>
+                    <td className={cx('table-cell')}>{user.email}</td>
                     <td className={cx('table-cell')}>
-                      <Link to={`/admin/edit-subject/${subject.subject_id}`}>
+                      <Link to={`/admin/edit-user/${user.user_id}`}>
                         <button
                           className={cx('edit-btn')}
-                          title="Sửa môn học"
-                          disabled={deletingId === subject.subject_id}
+                          title="Sửa thông tin người dùng"
+                          disabled={deletingId === user.user_id}
                         >
                           <FontAwesomeIcon icon={faEdit} />
                         </button>
                       </Link>
                       <button
                         className={cx('delete-btn')}
-                        onClick={() => handleDelete(subject.subject_id)}
-                        title="Xóa môn học"
-                        disabled={deletingId === subject.subject_id}
+                        onClick={() => handleDelete(user.user_id)}
+                        title="Xóa người dùng"
+                        disabled={deletingId === user.user_id}
                       >
                         <FontAwesomeIcon icon={faTrash} />
-                        {deletingId === subject.subject_id && <span>Đang xóa...</span>}
+                        {deletingId === user.user_id && <span>Đang xóa...</span>}
                       </button>
                     </td>
                   </tr>
@@ -250,7 +261,7 @@ function AdminPage() {
               </tbody>
             </table>
           ) : (
-            <p className={cx('no-data')}>Không có môn học nào để hiển thị.</p>
+            <p className={cx('no-data')}>Không có người dùng nào để hiển thị.</p>
           )}
         </div>
       </main>
@@ -258,4 +269,4 @@ function AdminPage() {
   );
 }
 
-export default AdminPage;
+export default UserPage;

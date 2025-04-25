@@ -17,6 +17,8 @@ const rotateArrow = (isOpen) => ({
 
 function SubSubjectPage() {
   const [isSubjectDropdownOpen, setIsSubjectDropdownOpen] = useState(false);
+  const [isTeacherDropdownOpen, setIsTeacherDropdownOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
@@ -24,7 +26,12 @@ function SubSubjectPage() {
   const toggleSubjectDropdown = () => {
     setIsSubjectDropdownOpen(!isSubjectDropdownOpen);
   };
-
+  const toggleTeacherDropdown = () => {
+    setIsTeacherDropdownOpen(!isTeacherDropdownOpen);
+  };
+  const toggleUserDropdown = () => {
+    setIsUserDropdownOpen(!isUserDropdownOpen);
+  };
   const fetchSubjects = async () => {
     try {
       setLoading(true);
@@ -136,7 +143,56 @@ function SubSubjectPage() {
               )}
             </AnimatePresence>
           </li>
-         
+           <li className={cx('menu-item')}>
+                     <div className={cx('item', 'list')} onClick={toggleTeacherDropdown}>
+                       <div>Quản lý giáo viên</div>
+                       <motion.span {...rotateArrow(isTeacherDropdownOpen)}>
+                         <FontAwesomeIcon icon={faCaretRight} className={cx('icon')} />
+                       </motion.span>
+                     </div>
+                     <AnimatePresence initial={false}>
+                       {isTeacherDropdownOpen && (
+                         <motion.div
+                           key="teacher-options"
+                           initial={{ height: 0, opacity: 0 }}
+                           animate={{ height: 'auto', opacity: 1 }}
+                           exit={{ height: 0, opacity: 0 }}
+                           transition={{ duration: 0.3 }}
+                           className={cx('dropdown-menu')}
+                         >
+                           <div className={cx('dropdown-item')}>
+                             <Link to="/admin/create-teacher">Tạo tài khoản giáo viên</Link>
+                           </div>
+                           <div className={cx('dropdown-item')}>
+                             <Link to="/admin/teacher">Danh sách giáo viên</Link>
+                           </div>
+                         </motion.div>
+                       )}
+                     </AnimatePresence>
+                   </li>
+                   <li className={cx('menu-item')}>
+                     <div className={cx('item', 'list')} onClick={toggleUserDropdown}>
+                       <div>Quản lý người dùng</div>
+                       <motion.span {...rotateArrow(isUserDropdownOpen)}>
+                         <FontAwesomeIcon icon={faCaretRight} className={cx('icon')} />
+                       </motion.span>
+                     </div>
+                     <AnimatePresence initial={false}>
+                       {isUserDropdownOpen && (
+                         <motion.div
+                           key="user-options"
+                           initial={{ height: 0, opacity: 0 }}
+                           animate={{ height: 'auto', opacity: 1 }}
+                           exit={{ height: 0, opacity: 0 }}
+                           transition={{ duration: 0.3 }}
+                           className={cx('dropdown-menu')}>
+                           <div className={cx('dropdown-item')}>
+                             <Link to="/admin/user-list">Danh sách người dùng</Link>
+                           </div>
+                         </motion.div>
+                       )}
+                     </AnimatePresence>
+                   </li>
         </ul>
       </aside>
 

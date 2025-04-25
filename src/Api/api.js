@@ -465,6 +465,57 @@ const updateSubSubjectAPI = async (subsubject_id, subject_name) => {
   }
 };
 
+// lay danh sach giao vien
+const getAllTeachersAPI = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users`);
+    const teachers = Array.isArray(response.data)
+      ? response.data
+          .filter((user) => user.role === 'teacher' && user.username && user.email)
+          .map((user) => ({
+            ...user,
+            user_id: user.user_id || user.id || user._id, 
+          }))
+      : [];
+    return teachers;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách giáo viên:", error);
+    return [];
+  }
+};
+
+
+// xoa giao vien
+const deleteTeacherAPI = async (user_id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/users/${user_id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Lỗi khi xóa giáo viên có id là: ${user_id}`, error);
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
+  }
+};
+//lay tat ca nguoi dung
+const getAllUsersAPI = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Không thể lấy danh sách người dùng.' };
+  }
+};
+//xoa nguoi dung
+const deleteUserAPI = async (user_id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/users/${user_id}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Không thể xóa người dùng.' };
+  }
+};
 export {
   getAllSubjectsAPI,
   getSubjectsAPI,
@@ -492,5 +543,9 @@ export {
   getQuestionByUserIdAPI,
   updateQuestionAPI,
   deleteQuestionAPI,
+  deleteTeacherAPI ,
+  getAllTeachersAPI,
+  getAllUsersAPI,
+  deleteUserAPI,
   getListHistoryUserByExamIdAPI
 };
