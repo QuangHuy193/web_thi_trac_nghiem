@@ -77,7 +77,7 @@ function History({
             </div>
           ))
         ) : (
-          <div className={cx("no-history")}>Bạn chưa làm bài thi nào!</div>
+          <div className={cx("no-content")}>Bạn chưa làm bài thi nào!</div>
         )
       ) : null}
     </div>

@@ -19,9 +19,14 @@ function ListExam({
   setIsLoading,
   setTitleLoading,
   setIdExam,
+  searchValue,
 }) {
   // State lưu danh sách đề thi của người dùng
   const [exams, setExams] = useState([]);
+
+  // lưu exam hiển thị
+  const [resultSearchExam, setResultSearchExam] = useState([]);
+
   // lưu để gọi lại api lấy exam
   const [isChangeExam, setIsChangeExam] = useState(false);
 
@@ -36,10 +41,24 @@ function ListExam({
       setIsLoading(false);
       setIsFetchDone(true);
       setExams(results);
+      setResultSearchExam(results);
     };
 
     getExamByUserId();
   }, [isChangeExam]);
+
+  // tìm kiếm
+  useEffect(() => {
+    if (searchValue) {
+      const resultSearch = resultSearchExam.filter((exam) =>
+        exam.title.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setResultSearchExam(resultSearch);
+    } else {
+      // Nếu không nhập gì thì hiển thị toàn bộ danh sách
+      setResultSearchExam(exams);
+    }
+  }, [searchValue]);
 
   // Hàm xử lý xóa đề thi (chưa cài đặt logic xóa thực tế)
   const handleDelete = async (examId) => {
@@ -79,21 +98,21 @@ function ListExam({
   // xem những ai đã làm bài thi
   const handleViewHistory = (id) => {
     console.log(id);
-    setHeaderTitle("Danh sách những người đã làm bài")
-    setSelectedContent("listUserHistory")
-    setIdExam(id)
+    setHeaderTitle("Danh sách những người đã làm bài");
+    setSelectedContent("listUserHistory");
+    setIdExam(id);
   };
 
   return (
     <div className={cx("exam-list")}>
       {/* Hiển thị khi không có đề thi */}
       {isFetchDone ? (
-        exams.length === 0 ? (
-          <p className={cx("no-exams")}>Bạn chưa tạo bài thi nào.</p>
+        resultSearchExam.length === 0 ? (
+          <p className={cx("no-content")}>Bạn chưa tạo bài thi nào.</p>
         ) : (
           // Hiển thị danh sách các đề thi
           <ul className={cx("exam-container")}>
-            {exams.map((exam) => (
+            {resultSearchExam.map((exam) => (
               <li key={exam.exam_id} className={cx("exam-item")}>
                 <h3 className={cx("exam-title")}>{exam.title}</h3>
                 <p className={cx("exam-description")}>{exam.description}</p>

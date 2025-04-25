@@ -232,6 +232,7 @@ function HomePage() {
               setIsLoading={setIsLoading}
               setTitleLoading={setTitleLoading}
               setIdExam={setIdExam}
+              searchValue={searchValue}
             />
           )}
 

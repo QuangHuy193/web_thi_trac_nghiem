@@ -145,7 +145,7 @@ function ListQuestion({
               className={cx("select-filter")}
               onChange={(e) => setSelectedSubject(e.target.value)}
             >
-              <option value="">Chọn môn học</option>
+              <option value="">Tất cả môn học</option>
               {subSubject.map((subject) => (
                 <option
                   key={subject.subsubjects_id}
@@ -216,7 +216,7 @@ function ListQuestion({
             );
           })
         ) : (
-          <div className={cx("no-question")}>Bạn chưa tạo câu hỏi nào</div>
+          <div className={cx("no-content")}>Bạn chưa tạo câu hỏi nào</div>
         )
       ) : null}
     </div>

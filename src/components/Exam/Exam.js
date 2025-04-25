@@ -112,7 +112,7 @@ function Exam({
           ))
         ) : (
           // Nếu không có đề thi
-          <p className={cx("no-exam")}>Không có đề thi nào!</p>
+          <div className={cx("no-content")}>Không có đề thi nào!</div>
         )
       ) : null}
     </div>
