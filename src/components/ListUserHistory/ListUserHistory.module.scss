@@ -10,6 +10,39 @@
   text-align: center;
 }
 
+.filter-score {
+  display: flex;
+  margin-bottom: 20px;
+  align-items: center;
+
+  label {
+    margin-bottom: 0px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  select {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    }
+
+    option {
+      padding: 10px;
+      background-color: #fff;
+      color: #333;
+    }
+  }
+}
+
 .group-user {
   display: flex;
   align-items: center;
@@ -19,12 +52,31 @@
   border-radius: 8px;
   background-color: #f9fafb;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  &:not(.header) {
+    .score {
+      color: #10b981;
+    }
+    .finished_at {
+      font-style: italic;
+      color: #6b7280;
+    }
+  }
 }
 
 .group-user.header {
   font-weight: bold;
   background-color: #e0f2fe;
   border-color: #bae6fd;
+
+  span {
+    margin-left: 10px;
+    cursor: pointer;
+
+    &:hover {
+      color: #2f68da;
+    }
+  }
 }
 
 .username,
@@ -39,13 +91,10 @@
 
 .score {
   text-align: center;
-  color: #10b981;
 }
 
 .finished_at {
   text-align: right;
-  font-style: italic;
-  color: #6b7280;
 }
 
 .no-user {

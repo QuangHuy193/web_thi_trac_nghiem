@@ -6,8 +6,6 @@ import {
   faPlusCircle,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
-import Tippy from "@tippyjs/react";
-import "tippy.js/dist/tippy.css";
 
 import styles from "./MakeExam.module.scss";
 import {
@@ -24,6 +22,7 @@ import {
 } from "../../Utils/ToastNotification";
 import MakeQuestionPopup from "../MakeQuestionPopup/MakeQuestionPopup";
 import IconBack from "../IconBack/IconBack";
+import TippyCustom from "../TippyCustom/TippyCustom";
 
 const cx = classNames.bind(styles);
 
@@ -458,14 +457,14 @@ function MakeExam({
                   )?.subject_name}
               </h3>
               {Object.keys(questions).length !== 0 && (
-                <Tippy content="Thêm câu hỏi" placement="bottom">
+                <TippyCustom content="Thêm câu hỏi" placement="bottom">
                   <span
                     className={cx("icon-plus")}
                     onClick={handleMakeQuestion}
                   >
                     <FontAwesomeIcon icon={faPlusCircle} />
                   </span>
-                </Tippy>
+                </TippyCustom>
               )}
             </div>
 
@@ -548,12 +547,12 @@ function MakeExam({
 
           {/* Danh sách câu hỏi đã chọn */}
           <div className={cx("selected-questions")}>
-            <Tippy content={"Chỉ hiện câu hỏi của môn được chọn"} placement="bottom">
+            <TippyCustom content={"Chỉ hiện câu hỏi của môn được chọn"} placement="bottom">
               <h3 className={cx("title")}>
                 Câu hỏi đã chọn:{" "}
                 {exam.questions.length !== 0 && "(" + exam.questions.length + ")"}
               </h3>
-            </Tippy>
+            </TippyCustom>
             {exam.questions.length > 0 && (
               <ul>
                 {exam.questions.map((qId) => {

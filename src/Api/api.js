@@ -502,7 +502,6 @@ const getAllTeachersAPI = async () => {
   }
 };
 
-
 // xoa giao vien
 const deleteTeacherAPI = async (user_id) => {
   try {
@@ -516,6 +515,7 @@ const deleteTeacherAPI = async (user_id) => {
     return { message: "Có lỗi xảy ra, vui lòng thử lại!" };
   }
 };
+
 //lay tat ca nguoi dung
 const getAllUsersAPI = async () => {
   try {
@@ -525,6 +525,7 @@ const getAllUsersAPI = async () => {
     throw error.response?.data || { message: 'Không thể lấy danh sách người dùng.' };
   }
 };
+
 //xoa nguoi dung
 const deleteUserAPI = async (user_id) => {
   try {

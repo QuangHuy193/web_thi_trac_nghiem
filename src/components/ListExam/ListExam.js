@@ -97,7 +97,6 @@ function ListExam({
 
   // xem những ai đã làm bài thi
   const handleViewHistory = (id) => {
-    console.log(id);
     setHeaderTitle("Danh sách những người đã làm bài");
     setSelectedContent("listUserHistory");
     setIdExam(id);
