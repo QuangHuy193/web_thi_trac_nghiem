@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretRight, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCaretRight, faEdit, faTrash, faPlus,faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
 import Swal from 'sweetalert2';
 import styles from './AdminPage.module.scss';
@@ -67,6 +67,25 @@ function UserPage() {
   useEffect(() => {
     fetchUsers();
   }, []);
+
+ //dang xuat
+  const handleClickLogout = () => {
+    Swal.fire({
+      title: 'Xác nhận đăng xuất',
+      text: 'Bạn có chắc muốn đăng xuất?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Đăng xuất',
+      cancelButtonText: 'Hủy',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem('token'); // xoa token
+        window.location.href = '/login'; // chuyen huong
+      }
+    });
+  };
 
   // handle xoa user
   const handleDelete = async (user_id) => {
@@ -215,8 +234,15 @@ function UserPage() {
       </aside>
 
       <main className={cx('main')}>
-        <h1 className={cx('title')}>Danh sách người dùng</h1>
-    
+      <div className={cx('header')}>
+          <h1 className={cx('title')}>Danh sách người dùng</h1>
+          <FontAwesomeIcon
+            className={cx('logout')}
+            icon={faRightFromBracket}
+            onClick={handleClickLogout}
+            title="Đăng xuất"
+          />
+        </div>    
         <div className={cx('section')}>
           {loading ? (
             <p className={cx('no-data')}>Đang tải dữ liệu...</p>

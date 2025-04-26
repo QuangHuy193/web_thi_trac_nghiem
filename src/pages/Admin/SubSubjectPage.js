@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretRight, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCaretRight, faEdit, faTrash, faPlus,faRightFromBracket} from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
 import Swal from 'sweetalert2';
 import styles from './AdminPage.module.scss';
@@ -57,7 +57,24 @@ function SubSubjectPage() {
   useEffect(() => {
     fetchSubjects();
   }, []);
-
+  //dang xuat
+  const handleClickLogout = () => {
+    Swal.fire({
+      title: 'Xác nhận đăng xuất',
+      text: 'Bạn có chắc muốn đăng xuất?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Đăng xuất',
+      cancelButtonText: 'Hủy',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem('token'); // Xóa token nếu có
+        window.location.href = '/login'; // Chuyển hướng về trang đăng nhập
+      }
+    });
+  };
   const handleDelete = async (subsubject_id) => {
     const result = await Swal.fire({
       title: 'Xác nhận xóa',
@@ -197,8 +214,15 @@ function SubSubjectPage() {
       </aside>
 
       <main className={cx('main')}>
-        <h1 className={cx('title')}>Danh sách môn học phân lớp</h1>
-        <div className={cx('action-bar')}>
+       <div className={cx('header')}>
+          <h1 className={cx('title')}>Danh sách môn học</h1>
+          <FontAwesomeIcon
+            className={cx('logout')}
+            icon={faRightFromBracket}
+            onClick={handleClickLogout}
+            title="Đăng xuất"
+          />
+        </div>        <div className={cx('action-bar')}>
           <Link to="/admin/add-subsubject">
             <button className={cx('add-btn')}>
               <FontAwesomeIcon icon={faPlus} /> Thêm môn học phân lớp
