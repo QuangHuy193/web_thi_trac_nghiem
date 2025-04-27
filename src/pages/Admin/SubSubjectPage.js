@@ -6,7 +6,7 @@ import { faCaretRight, faEdit, faTrash, faPlus,faRightFromBracket} from '@fortaw
 import classNames from 'classnames/bind';
 import Swal from 'sweetalert2';
 import styles from './AdminPage.module.scss';
-import { getSubSubjectsAPI, deleteSubSubjectAPI } from '../../Api/api';
+import { getSubSubjectsAPI, deleteSubSubjectAPI } from '../../apis';
 
 const cx = classNames.bind(styles);
 

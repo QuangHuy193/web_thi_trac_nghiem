@@ -4,7 +4,7 @@ import styles from "./HistoryExam.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faX } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import { getHistoryByExamIdAPI } from "../../Api/api";
+import { getHistoryByExamIdAPI } from "../../apis";
 import IconBack from "../IconBack/IconBack";
 import { handleBack } from "../../Utils/function";
 

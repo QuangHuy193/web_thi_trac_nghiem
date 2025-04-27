@@ -11,8 +11,8 @@ import {
   showConfirmDialog,
   showOkDialog,
 } from "../confirmDialog/confirmDialog";
-import { submitExamAPI } from "../../Api/api";
 import IconBack from "../IconBack/IconBack";
+import { submitExamAPI } from "../../apis";
 
 const cx = classNames.bind(styles);
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import classNames from "classnames/bind";
 
 import styles from "./Info.module.scss";
-import { updateUserInfoAPI } from "../../Api/api";
+import { updateUserInfoAPI } from "../../apis";
 import {
   showErrorToast,
   showSuccessToast,

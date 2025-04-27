@@ -23,7 +23,7 @@ import {
   togglePasswordVisibility,
 } from "../../Utils/function";
 import { EMAILREGEX } from "../../Utils/const";
-import { loginAPI, loginGoogleAPI } from "../../Api/api";
+import { loginAPI, loginGoogleAPI } from "../../apis";
 import Loading from "../../components/Loading/Loading";
 
 const cx = classNames.bind(styles);

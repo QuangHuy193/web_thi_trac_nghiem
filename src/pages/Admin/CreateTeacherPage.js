@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
 import styles from './AddSubjectPage.module.scss'; 
-import { registerAPI } from '../../Api/api';
+import { registerAPI } from '../../apis';
 
 const cx = classNames.bind(styles);
 

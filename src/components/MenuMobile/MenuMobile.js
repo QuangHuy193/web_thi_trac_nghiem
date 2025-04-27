@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion"; //tạo hiệu ứng dropdown mượt hơn
 
 import styles from "./MenuMobile.module.scss";
-import { getAllSubjectsAPI } from "../../Api/api";
+import { getAllSubjectsAPI } from "../../apis";
 import { showErrorToast } from "../../Utils/ToastNotification";
 import { expandCollapseMotion } from "../../configs/motionConfigs";
 

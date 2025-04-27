@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames/bind";
 import styles from "./Sidebar.module.scss";
 import { showErrorToast } from "../../Utils/ToastNotification";
-import { getAllSubjectsAPI } from "../../Api/api";
+import { getAllSubjectsAPI } from "../../apis";
 import { showConfirmDialog } from "../confirmDialog/confirmDialog";
 import {
   expandCollapseMotion,

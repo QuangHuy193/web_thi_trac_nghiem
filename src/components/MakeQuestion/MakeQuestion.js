@@ -7,7 +7,7 @@ import {
   getSubSubjectsAPI,
   makeQuestionAPI,
   updateQuestionAPI,
-} from "../../Api/api";
+} from "../../apis";
 import {
   showErrorToast,
   showSuccessToast,

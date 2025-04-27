@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { addSubSubjectAPI, getSubSubjectsAPI, getSubjectsAPI } from '../../Api/api';
+import { addSubSubjectAPI, getSubSubjectsAPI, getSubjectsAPI } from '../../apis';
 import styles from './AddSubjectPage.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { useParams, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 

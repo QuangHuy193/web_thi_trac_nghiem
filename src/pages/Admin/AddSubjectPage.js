@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { addSubjectAPI, getAllSubjectsAPI } from '../../Api/api';
-import { useParams, useNavigate } from 'react-router-dom';
+import { addSubjectAPI, getAllSubjectsAPI } from '../../apis';
+import {  useNavigate } from 'react-router-dom';
 import styles from './AddSubjectPage.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

@@ -21,7 +21,7 @@ import {
   handleChangePass,
   togglePasswordVisibility,
 } from "../../Utils/function";
-import { registerAPI } from "../../Api/api";
+import { registerAPI } from "../../apis";
 import Loading from "../../components/Loading/Loading";
 
 const cx = classNames.bind(styles);

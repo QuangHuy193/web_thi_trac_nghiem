@@ -4,7 +4,7 @@ import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useRef, useState } from "react";
 
 import styles from "./MakeQuestionPopup.module.scss";
-import { getSubSubjectsAPI, makeQuestionAPI } from "../../Api/api";
+import { getSubSubjectsAPI, makeQuestionAPI } from "../../apis";
 import {
   showErrorToast,
   showSuccessToast,

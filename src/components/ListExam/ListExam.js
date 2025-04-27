@@ -2,7 +2,7 @@ import classNames from "classnames/bind";
 
 import styles from "./ListExam.module.scss";
 import { useEffect, useState } from "react";
-import { deleteExamsByExamIdAPI, getAllExamsByUserIdAPI } from "../../Api/api";
+import { deleteExamsByExamIdAPI, getAllExamsByUserIdAPI } from "../../apis";
 import {
   showErrorToast,
   showSuccessToast,

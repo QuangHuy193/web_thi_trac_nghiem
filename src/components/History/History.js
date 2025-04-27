@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 import styles from "./History.module.scss";
 import { useEffect, useState } from "react";
-import { getHistoryByUserIdAPI } from "../../Api/api";
+import { getHistoryByUserIdAPI } from "../../apis";
 
 const cx = classNames.bind(styles);
 

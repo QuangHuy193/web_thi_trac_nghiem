@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import {
   deleteQuestionAPI,
   getQuestionByUserIdAPI,
-  getSubSubjectsAPI,
-} from "../../Api/api";
+} from "../../apis/questionApi";
+import { getSubSubjectsAPI } from "../../apis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCaretRight,

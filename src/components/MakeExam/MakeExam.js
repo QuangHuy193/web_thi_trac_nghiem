@@ -14,7 +14,8 @@ import {
   getSubSubjectsAPI,
   makeExamAPI,
   updateExamByExamIdAPI,
-} from "../../Api/api";
+} from "../../apis";
+
 import { getDifficultyLabel, handleBack } from "../../Utils/function";
 import {
   showErrorToast,
@@ -547,10 +548,14 @@ function MakeExam({
 
           {/* Danh sách câu hỏi đã chọn */}
           <div className={cx("selected-questions")}>
-            <TippyCustom content={"Chỉ hiện câu hỏi của môn được chọn"} placement="bottom">
+            <TippyCustom
+              content={"Chỉ hiện câu hỏi của môn được chọn"}
+              placement="bottom"
+            >
               <h3 className={cx("title")}>
                 Câu hỏi đã chọn:{" "}
-                {exam.questions.length !== 0 && "(" + exam.questions.length + ")"}
+                {exam.questions.length !== 0 &&
+                  "(" + exam.questions.length + ")"}
               </h3>
             </TippyCustom>
             {exam.questions.length > 0 && (

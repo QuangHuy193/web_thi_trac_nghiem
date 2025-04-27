@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import styles from './EditSubjectPage.module.scss';
-import { updateSubjectAPI } from '../../Api/api';
+import { updateSubjectAPI } from '../../apis';
 
 const cx = classNames.bind(styles);
 

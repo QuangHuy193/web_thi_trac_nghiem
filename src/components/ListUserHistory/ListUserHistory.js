@@ -11,7 +11,7 @@ import styles from "./ListUserHistory.module.scss";
 import IconBack from "../IconBack/IconBack";
 import TippyCustom from "../TippyCustom/TippyCustom";
 import { handleBack } from "../../Utils/function";
-import { getListHistoryUserByExamIdAPI } from "../../Api/api";
+import { getListHistoryUserByExamIdAPI } from "../../apis";
 
 const cx = classNames.bind(styles);
 
