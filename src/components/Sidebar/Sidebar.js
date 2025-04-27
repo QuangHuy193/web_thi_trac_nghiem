@@ -43,7 +43,7 @@ function Sidebar({
       if (selectedContent === "doExam") {
         showConfirmDialog(
           "Bạn có muốn tiếp tục?",
-          "Bạn đang làm bài, hành động này sẽ hủy kết quả làm bài của bạn, bạn vẫn muốn tiếp tục",
+          "Bạn đang làm bài, hành động này sẽ hủy kết quả làm bài của bạn",
           "warning",
           () => {
             handleSetSelectedContent(selected, titlePage);

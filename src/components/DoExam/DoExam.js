@@ -11,8 +11,6 @@ import {
   showConfirmDialog,
   showOkDialog,
 } from "../confirmDialog/confirmDialog";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeftLong } from "@fortawesome/free-solid-svg-icons";
 import { submitExamAPI } from "../../Api/api";
 import IconBack from "../IconBack/IconBack";
 
@@ -29,7 +27,7 @@ function DoExam({
   setIdExam,
   selectedSubjectName,
   setIsLoading,
-  setTitleLoading
+  setTitleLoading,
 }) {
   // Lưu đáp án người dùng chọn
   const [answers, setAnswers] = useState([]);
@@ -117,8 +115,8 @@ function DoExam({
   const handleSubmitHasLogin = async () => {
     const now = new Date().toISOString();
     try {
-      setTitleLoading("Đang nộp bài...")
-      setIsLoading(true)
+      setTitleLoading("Đang nộp bài...");
+      setIsLoading(true);
       const rs = await submitExamAPI(
         formData.user_id,
         formData.exam_id,
@@ -126,7 +124,7 @@ function DoExam({
         now,
         formData.answers
       );
-      setIsLoading(false)
+      setIsLoading(false);
 
       if (rs.history_id) {
         setSelectedContent("history");
@@ -142,7 +140,7 @@ function DoExam({
   };
 
   const handleSubmitNoLogin = () => {
-    setResultExam(formData);    
+    setResultExam(formData);
     setIdExam("");
     setHeaderTitle("Kết quả làm bài");
     setSelectedContent("historyExam");
@@ -152,7 +150,7 @@ function DoExam({
   const handleBack = () => {
     showConfirmDialog(
       "Bạn có muốn tiếp tục?",
-      "Bạn đang làm bài, hành động này sẽ hủy kết quả làm bài của bạn, bạn vẫn muốn tiếp tục",
+      "Bạn đang làm bài, hành động này sẽ hủy kết quả làm bài của bạn",
       "warning",
       () => {
         setSelectedContent("exam");
@@ -238,11 +236,14 @@ function DoExam({
 
   return (
     <div className={cx("container")}>
-      <IconBack handleBack={handleBack}/>
+      <IconBack handleBack={handleBack} />
 
       {/* Hiển thị thời gian còn lại */}
       <div className={cx("timer")}>
-        Thời gian còn lại: {formatTime(timeLeft)}
+        ⏱️ Thời gian còn lại:{" "}
+        <span className={cx("time", { timeout: timeLeft < 300 })}>
+          {formatTime(timeLeft)}
+        </span>
       </div>
 
       {/* Form câu hỏi trắc nghiệm */}

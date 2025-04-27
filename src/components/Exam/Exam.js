@@ -63,7 +63,7 @@ function Exam({
           // Cho phép làm bài nhưng không lưu lịch sử
           handleDoExam(idExam, nameExam, timeExam, questionExam);
         },
-        "Đồng ý",
+        "Làm bài",
         "Hủy"
       );
     } else {

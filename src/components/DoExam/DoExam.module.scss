@@ -5,6 +5,26 @@
   font-family: Arial, sans-serif;
 }
 
+.timer {
+  margin-bottom: 5px;
+  font-size: 18px;
+
+  span {
+    font-weight: bold;
+    font-size: 20px; /* Làm chữ lớn hơn */
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+}
+
+.time {
+  color: green;
+}
+
+.timeout {
+  color: red;
+  animation: blink 1s infinite;
+}
+
 .form {
   display: flex;
   flex-direction: column;
@@ -65,4 +85,16 @@
 
 .submit-button:hover {
   background: #0056b3;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
