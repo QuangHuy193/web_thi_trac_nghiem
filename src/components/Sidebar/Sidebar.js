@@ -1,17 +1,16 @@
-import classNames from "classnames/bind";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook, faCaretRight } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
-
+import { motion, AnimatePresence } from "framer-motion";
+import classNames from "classnames/bind";
 import styles from "./Sidebar.module.scss";
 import { showErrorToast } from "../../Utils/ToastNotification";
 import { getAllSubjectsAPI } from "../../Api/api";
 import { showConfirmDialog } from "../confirmDialog/confirmDialog";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   expandCollapseMotion,
-  fadeSlideIn,
   rotateArrow,
+  fadeSlideIn,
 } from "../../configs/motionConfigs";
 
 const cx = classNames.bind(styles);
@@ -25,29 +24,22 @@ function Sidebar({
   setExamEdited,
   setSelectedSubjectName,
 }) {
-  // State lưu trữ trạng thái hiển thị danh sách môn học (Hiện/Ẩn)
   const [showSubjects, setShowSubjects] = useState(false);
-
-  // State lưu trữ môn học đang được chọn (Để quản lý việc mở/đóng dropdown)
   const [activeSubject, setActiveSubject] = useState(null);
-
-  // State lưu trữ danh sách môn học được fetch từ API
   const [subjects, setSubjects] = useState([]);
+  const [showTeacherMenu, setShowTeacherMenu] = useState(false); // State cho dropdown giáo viên
 
-  // Lấy danh sách môn học từ API khi component được mount
   useEffect(() => {
     const fetchSubjects = async () => {
-      const data = await getAllSubjectsAPI(); // Gọi API lấy danh sách môn học
-      setSubjects(data); // Cập nhật state subjects
+      const data = await getAllSubjectsAPI();
+      setSubjects(data);
     };
 
-    fetchSubjects(); // Gọi hàm lấy dữ liệu
-  }, []); // Chạy 1 lần khi component được mount
+    fetchSubjects();
+  }, []);
 
-  // Kiểm tra người dùng đã đăng nhập chưa trước khi thao tác
-  const handleCheckLogin = (selected, titlePage) => {
+  const handleCheckLogin = (selected, titlePage) => {   
     if (user) {
-      // Nếu đang làm bài thi, yêu cầu xác nhận trước khi chuyển trang
       if (selectedContent === "doExam") {
         showConfirmDialog(
           "Bạn có muốn tiếp tục?",
@@ -60,24 +52,21 @@ function Sidebar({
           "Không"
         );
       } else {
-        handleSetSelectedContent(selected, titlePage); // Nếu không đang làm bài thi, trực tiếp chuyển trang
+        handleSetSelectedContent(selected, titlePage);
       }
     } else {
-      showErrorToast("Bận cần đăng nhập để thực hiện chức năng này!", 1500); // Thông báo nếu chưa đăng nhập
+      showErrorToast("Bận cần đăng nhập để thực hiện chức năng này!", 1500);
     }
   };
 
-  // Cập nhật nội dung và tiêu đề khi menu được chọn
   const handleSetSelectedContent = (selected, titlePage) => {
-    setSelectedContent(selected); // Cập nhật nội dung đã chọn
-    setHeaderTitle(titlePage); // Cập nhật tiêu đề trang
-    setExamEdited(null); // Reset trạng thái chỉnh sửa bài thi
+    setHeaderTitle(titlePage);
+    setSelectedContent(selected);
+    setExamEdited(null);
   };
 
-  // Cập nhật môn học được chọn và chuyển đến subsubject khi người dùng chọn môn học
   const handleSelectdSubject = (selected, subject_id, subsubject_name) => {
     if (selectedContent === "doExam") {
-      // Nếu đang làm bài thi, yêu cầu xác nhận trước khi chuyển trang
       showConfirmDialog(
         "Bạn có muốn tiếp tục?",
         "Bạn đang làm bài, hành động này sẽ hủy kết quả làm bài của bạn, bạn vẫn muốn tiếp tục",
@@ -87,88 +76,60 @@ function Sidebar({
           setSelectedSubjectName(subsubject_name);
           setSelectedContent(selected);
           setHeaderTitle(subsubject_name);
-          setShowSubjects(null); // Ẩn danh sách môn học sau khi chọn
-          setExamEdited(null); // Reset trạng thái chỉnh sửa bài thi
+          setShowSubjects(null);
+          setExamEdited(null);
         },
         "Tiếp tục",
         "Không"
       );
     } else {
-      // Nếu không đang làm bài thi, trực tiếp chọn môn học và chuyển trang
       setSelectedSubject(subject_id);
       setSelectedSubjectName(subsubject_name);
       setSelectedContent(selected);
       setHeaderTitle(subsubject_name);
-      setShowSubjects(null); // Ẩn danh sách môn học sau khi chọn
-      setExamEdited(null); // Reset trạng thái chỉnh sửa bài thi
+      setShowSubjects(null);
+      setExamEdited(null);
     }
   };
 
-  // Toggle hiển thị danh sách môn học
   const toggleSubjects = () => {
-    setShowSubjects(!showSubjects); // Đảo ngược trạng thái hiển thị danh sách môn học
+    setShowSubjects(!showSubjects);
   };
 
-  // Toggle môn học (mở/đóng danh sách subsubjects)
-  const toggleSubject = (subjectId) => {
-    setActiveSubject(activeSubject === subjectId ? null : subjectId); // Chuyển đổi môn học đang mở/đóng
-  };
-
-  // Reset trang home
-  const resetHome = () => {
-    if (selectedContent === "doExam") {
-      // Nếu đang làm bài thi, yêu cầu xác nhận trước khi quay lại trang chủ
-      showConfirmDialog(
-        "Bạn có muốn tiếp tục?",
-        "Bạn đang làm bài, hành động này sẽ hủy kết quả làm bài của bạn, bạn vẫn muốn tiếp tục",
-        "warning",
-        () => {
-          setSelectedContent(null);
-          setSelectedSubject(null);
-          setHeaderTitle(null);
-          setExamEdited(null); // Reset toàn bộ trạng thái
-        },
-        "Tiếp tục",
-        "Hủy"
-      );
-    } else {
-      // Nếu không đang làm bài thi, quay lại trang chủ mà không yêu cầu xác nhận
-      setSelectedContent(null);
-      setSelectedSubject(null);
-      setHeaderTitle(null);
-      setExamEdited(null); // Reset toàn bộ trạng thái
-    }
+  const toggleTeacherMenu = () => {
+    setShowTeacherMenu(!showTeacherMenu); // Toggle menu giáo viên
   };
 
   return (
     <aside className={cx("container")}>
-      {/* Logo */}
-      <div className={cx("logo")} onClick={resetHome}>
+      <div
+        className={cx("logo")}
+        onClick={() => handleSetSelectedContent(null, null)}
+      >
         <FontAwesomeIcon icon={faBook} /> <span>Edu Quiz</span>
       </div>
 
-      {/* Danh sách bài thi */}
       <div className={cx("item", "list")} onClick={toggleSubjects}>
         <div>Danh sách bài thi</div>
         <motion.span {...rotateArrow(showSubjects)}>
           <FontAwesomeIcon icon={faCaretRight} />
         </motion.span>
       </div>
-      {/* Danh sách môn học có hiệu ứng mở rộng */}
+
       <AnimatePresence initial={false}>
         {showSubjects && (
-          <motion.div
-            key="subjects-list"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
+          <motion.div {...expandCollapseMotion}>
             {subjects.map((subject) => (
               <div key={subject.subject_id} className={cx("subject")}>
                 <div
                   className={cx("item")}
-                  onClick={() => toggleSubject(subject.subject_id)}
+                  onClick={() =>
+                    setActiveSubject(
+                      activeSubject === subject.subject_id
+                        ? null
+                        : subject.subject_id
+                    )
+                  }
                 >
                   {subject.name}
                   {subject.subsubjects.length !== 0 && (
@@ -183,7 +144,6 @@ function Sidebar({
                   )}
                 </div>
 
-                {/* Subsubjects có hiệu ứng mở rộng */}
                 <AnimatePresence initial={false}>
                   {activeSubject === subject.subject_id && (
                     <motion.div
@@ -215,7 +175,6 @@ function Sidebar({
         )}
       </AnimatePresence>
 
-      {/* Các mục khác */}
       <div
         className={cx("item")}
         onClick={() => handleCheckLogin("info", "Thông tin cá nhân")}
@@ -229,42 +188,47 @@ function Sidebar({
         Lịch sử làm bài
       </div>
 
-      {/* Mục dành cho giáo viên */}
       {user && user.role === "teacher" && (
-        <div
-          className={cx("item")}
-          onClick={() => handleCheckLogin("makeQuestion", "Tạo câu hỏi")}
-        >
-          Tạo câu hỏi
+        <div className={cx("item")} onClick={toggleTeacherMenu}>
+          Các chức năng giáo viên
+          <motion.span {...rotateArrow(showTeacherMenu)}>
+            <FontAwesomeIcon icon={faCaretRight} />
+          </motion.span>
         </div>
       )}
 
-      {user && user.role === "teacher" && (
-        <div
-          className={cx("item")}
-          onClick={() => handleCheckLogin("listQuestion", "Danh sách câu hỏi")}
-        >
-          Danh sách câu hỏi đã tạo
-        </div>
-      )}
-
-      {user && user.role === "teacher" && (
-        <div
-          className={cx("item")}
-          onClick={() => handleCheckLogin("makeExam", "Tạo bài thi")}
-        >
-          Tạo bài thi
-        </div>
-      )}
-
-      {user && user.role === "teacher" && (
-        <div
-          className={cx("item")}
-          onClick={() => handleCheckLogin("listExam", "Danh sách bài thi")}
-        >
-          Danh sách bài thi đã tạo
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {showTeacherMenu && user && user.role === "teacher" && (
+          <motion.div {...expandCollapseMotion}>
+            <div
+              className={cx("item", "subject")}
+              onClick={() => handleCheckLogin("makeQuestion", "Tạo câu hỏi")}
+            >
+              Tạo câu hỏi
+            </div>
+            <div
+              className={cx("item", "subject")}
+              onClick={() =>
+                handleCheckLogin("listQuestion", "Danh sách câu hỏi")
+              }
+            >
+              Danh sách câu hỏi đã tạo
+            </div>
+            <div
+              className={cx("item", "subject")}
+              onClick={() => handleCheckLogin("makeExam", "Tạo bài thi")}
+            >
+              Tạo bài thi
+            </div>
+            <div
+              className={cx("item", "subject")}
+              onClick={() => handleCheckLogin("listExam", "Danh sách bài thi")}
+            >
+              Danh sách bài thi đã tạo
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </aside>
   );
 }

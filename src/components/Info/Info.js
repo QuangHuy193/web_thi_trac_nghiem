@@ -38,14 +38,14 @@ function Info({ user, setUser, setIsLoading, setTitleLoading }) {
       } else {
         try {
           // Gửi yêu cầu cập nhật thông tin lên API
-          setTitleLoading("Đang cập nhật thông tin người dùng...")
-          setIsLoading(true)
+          setTitleLoading("Đang cập nhật thông tin người dùng...");
+          setIsLoading(true);
           const result = await updateUserInfoAPI(
             user.user_id,
             formUpdate.name,
             formUpdate.email
           );
-          setIsLoading(false)
+          setIsLoading(false);
 
           if (result.user) {
             // Cập nhật thành công: hiển thị toast + cập nhật state user
@@ -126,8 +126,8 @@ function Info({ user, setUser, setIsLoading, setTitleLoading }) {
 
       {/* Hiển thị role của người dùng */}
       <div className={cx("info-item")}>
-        <label>Role:</label>
-        <span>{user.role}</span>
+        <label>Bạn là:</label>
+        <span>{user.role === "student" ? "Học sinh" : "Giáo viên"}</span>
       </div>
 
       {/* Nút "Chỉnh sửa" hoặc "Lưu" */}

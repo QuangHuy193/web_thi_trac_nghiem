@@ -63,7 +63,7 @@ function Header({
       () => {
         if (selectedContent !== "doExam") {
           // Nếu không đang làm bài thì cho phép đăng xuất
-          localStorage.removeItem("user"); // Xóa user khỏi localStorage
+          localStorage.removeItem("user");
           setHeaderTitle(""); // Reset tiêu đề
           setSelectedContent(""); // Quay về giao diện chính
           setUser(JSON.parse(localStorage.getItem("user"))); // Reset user

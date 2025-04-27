@@ -52,7 +52,7 @@ function History({
               </div>
               <div className={cx("history-row")}>
                 <span className={cx("label")}>Điểm số:</span>
-                <span className={cx("value")}>{item.score}</span>
+                <span className={cx("value")}>{item.score.toFixed(2)}</span>
               </div>
               <div className={cx("history-row")}>
                 <span className={cx("label")}>Bắt đầu lúc:</span>

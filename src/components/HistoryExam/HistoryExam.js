@@ -16,19 +16,22 @@ function HistoryExam({
   setHeaderTitle,
   setSelectedContent,
   idHistory,
+  setTitleLoading,
+  setIsLoading,
 }) {
   let correctCount = 0;
   let totalQuestions = 0;
   const answers = resultExam.answers;
-  console.log("resultExam.answers: ", JSON.stringify(resultExam.answers));
 
   const [exam, setExam] = useState({});
 
   useEffect(() => {
     const getExam = async () => {
       if (idHistory) {
-        
-        const rs = await getHistoryByExamIdAPI(idHistory);        
+        setTitleLoading("Đang tải kết quả chi tiết...");
+        setIsLoading(true);
+        const rs = await getHistoryByExamIdAPI(idHistory);
+        setIsLoading(false);
         setExam(rs);
       }
     };
@@ -72,8 +75,7 @@ function HistoryExam({
   } else if (idHistory) {
     totalQuestions = exam.question?.length;
   }
-
-  const score = ((correctCount / totalQuestions) * 10).toFixed(2); // Giữ 2 chữ số thập phân
+  let score = ((correctCount / totalQuestions) * 10).toFixed(2); // Giữ 2 chữ số thập phân
 
   return (
     <div className={cs("history-container")}>

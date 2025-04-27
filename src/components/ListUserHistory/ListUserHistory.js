@@ -1,17 +1,17 @@
 import classNames from "classnames/bind";
-
-import styles from "./ListUserHistory.module.scss";
-import IconBack from "../IconBack/IconBack";
-import { handleBack } from "../../Utils/function";
 import { useEffect, useState } from "react";
-import { getListHistoryUserByExamIdAPI } from "../../Api/api";
 import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowUpShortWide,
   faArrowUpWideShort,
 } from "@fortawesome/free-solid-svg-icons";
+
+import styles from "./ListUserHistory.module.scss";
+import IconBack from "../IconBack/IconBack";
 import TippyCustom from "../TippyCustom/TippyCustom";
+import { handleBack } from "../../Utils/function";
+import { getListHistoryUserByExamIdAPI } from "../../Api/api";
 
 const cx = classNames.bind(styles);
 
@@ -22,100 +22,72 @@ function ListUserHistory({
   setIsLoading,
   setTitleLoading,
 }) {
-  // danh sách user
-  const [listHistoryUser, setListHistoryUser] = useState([]);
-  // danh sách user để hiển thị
+  const [listHistoryUser, setListHistoryUser] = useState(null);
   const [listHistoryUserDisplay, setListHistoryUserDisplay] = useState([]);
-  // fetch api xong chưa?
-  const [isFetchDone, setIsFetchDone] = useState(false);
-  // lưu trạng thái sắp xếp
   const [statusSort, setStatusSort] = useState({
     score: "ascending",
     finished_at: "ascending",
   });
+  const [isFetchDone, setIsFetchDone] = useState(false);
 
   useEffect(() => {
-    const getListUser = async () => {
+    const fetchListUser = async () => {
       setTitleLoading("Đang tải danh sách thí sinh...");
       setIsLoading(true);
-      const rs = await getListHistoryUserByExamIdAPI(idExam);
+      const result = await getListHistoryUserByExamIdAPI(idExam);
+      setListHistoryUser(result);
+      setListHistoryUserDisplay(result?.takers || []);
       setIsFetchDone(true);
       setIsLoading(false);
-      setListHistoryUser(rs);
-      setListHistoryUserDisplay(rs);
     };
 
-    getListUser();
-  }, []);
+    fetchListUser();
+  }, [idExam, setIsLoading, setTitleLoading]);
 
-  const handleFilterScore = (e) => {
-    const value = e.target.value;
+  const filterScore = (value) => {
+    if (!listHistoryUser) return [];
 
-    let filteredTakers = [];
-
-    if (value === "=0") {
-      filteredTakers = listHistoryUser.takers.filter(
-        (user) => user.score === 0
-      );
-    } else if (value === ">0") {
-      filteredTakers = listHistoryUser.takers.filter((user) => user.score > 0);
-    } else if (value === ">=5") {
-      filteredTakers = listHistoryUser.takers.filter((user) => user.score >= 5);
-    } else if (value === ">=8") {
-      filteredTakers = listHistoryUser.takers.filter((user) => user.score >= 8);
-    } else if (value === "=10") {
-      filteredTakers = listHistoryUser.takers.filter(
-        (user) => user.score === 10
-      );
-    } else {
-      filteredTakers = listHistoryUser.takers;
+    const { takers } = listHistoryUser;
+    switch (value) {
+      case "=0":
+        return takers.filter((user) => user.score === 0);
+      case ">0":
+        return takers.filter((user) => user.score > 0);
+      case ">=5":
+        return takers.filter((user) => user.score >= 5);
+      case ">=8":
+        return takers.filter((user) => user.score >= 8);
+      case "=10":
+        return takers.filter((user) => user.score === 10);
+      default:
+        return takers;
     }
-
-    // 📌 Sort filteredTakers trước khi set
-    const sortedTakers = filteredTakers.sort((a, b) => {
-      const timeA = new Date(a.finished_at).getTime();
-      const timeB = new Date(b.finished_at).getTime();
-
-      if (statusSort === "ascending") {
-        return timeA - timeB;
-      } else {
-        return timeB - timeA;
-      }
-    });
-
-    // 📌 Cập nhật list hiển thị
-    setListHistoryUserDisplay({
-      ...listHistoryUser,
-      takers: sortedTakers,
-    });
   };
 
-  const handleSort = (field) => {
-    const newStatusSort =
-      statusSort[field] === "ascending" ? "decreasing" : "ascending";
+  const handleFilterScore = (e) => {
+    const filtered = filterScore(e.target.value);
+    const sorted = sortList(filtered, "finished_at", statusSort.finished_at);
+    setListHistoryUserDisplay(sorted);
+  };
 
-    const sorted = [...listHistoryUserDisplay.takers].sort((a, b) => {
+  const sortList = (list, field, direction) => {
+    const sorted = [...list].sort((a, b) => {
       const valueA =
         field === "finished_at" ? new Date(a.finished_at).getTime() : a[field];
       const valueB =
         field === "finished_at" ? new Date(b.finished_at).getTime() : b[field];
-
-      if (newStatusSort === "ascending") {
-        return valueA - valueB;
-      } else {
-        return valueB - valueA;
-      }
+      return direction === "ascending" ? valueA - valueB : valueB - valueA;
     });
+    return sorted;
+  };
 
-    setListHistoryUserDisplay({
-      ...listHistoryUserDisplay,
-      takers: sorted,
-    });
+  const handleSort = (field) => {
+    const newDirection =
+      statusSort[field] === "ascending" ? "decreasing" : "ascending";
+    const sorted = sortList(listHistoryUserDisplay, field, newDirection);
 
-    setStatusSort((prev) => ({
-      ...prev,
-      [field]: newStatusSort,
-    }));
+    setListHistoryUserDisplay(sorted);
+    setStatusSort((prev) => ({ ...prev, [field]: newDirection }));
   };
 
   return (
@@ -131,18 +103,14 @@ function ListUserHistory({
         }
       />
 
-      {isFetchDone && (
+      {isFetchDone && listHistoryUser && (
         <div className={cx("title")}>{listHistoryUser.exam.title}</div>
       )}
 
-      {/* các bộ lọc */}
+      {/* Bộ lọc điểm */}
       <div className={cx("filter-score")}>
         <label>Lọc điểm</label>
-        <select
-          onChange={(e) => {
-            handleFilterScore(e);
-          }}
-        >
+        <select onChange={handleFilterScore}>
           <option value="">Tất cả</option>
           <option value="=0">Điểm = 0</option>
           <option value=">0">Điểm &gt; 0</option>
@@ -152,11 +120,11 @@ function ListUserHistory({
         </select>
       </div>
 
-      {/* danh sách user */}
-      {isFetchDone ? (
-        listHistoryUserDisplay.takers?.length > 0 ? (
+      {/* Danh sách thí sinh */}
+      {isFetchDone &&
+        (listHistoryUserDisplay.length > 0 ? (
           <div className={cx("list-user")}>
-            {/* HÀNG TIÊU ĐỀ */}
+            {/* Header */}
             <div className={cx("group-user", "header")}>
               <div className={cx("username")}>Tên thí sinh</div>
               <div className={cx("email")}>Email</div>
@@ -169,11 +137,7 @@ function ListUserHistory({
                       : "Sắp xếp giảm dần"
                   }
                 >
-                  <span
-                    onClick={() => {
-                      handleSort("score");
-                    }}
-                  >
+                  <span onClick={() => handleSort("score")}>
                     <FontAwesomeIcon
                       icon={
                         statusSort.score === "ascending"
@@ -193,11 +157,7 @@ function ListUserHistory({
                       : "Sắp xếp giảm dần"
                   }
                 >
-                  <span
-                    onClick={() => {
-                      handleSort("finished_at");
-                    }}
-                  >
+                  <span onClick={() => handleSort("finished_at")}>
                     <FontAwesomeIcon
                       icon={
                         statusSort.finished_at === "ascending"
@@ -208,26 +168,33 @@ function ListUserHistory({
                   </span>
                 </TippyCustom>
               </div>
+              <div className={cx("duration")}>Thời gian làm bài</div>
             </div>
 
-            {/* DANH SÁCH THÍ SINH */}
-            {listHistoryUserDisplay.takers?.map((taker) => (
-              <div className={cx("group-user")}>
-                <div className={cx("username")}>{taker.username}</div>
-                <div className={cx("email")}>{taker.email}</div>
-                <div className={cx("score")}>{taker.score}</div>
-                <div className={cx("finished_at")}>
-                  {dayjs(taker.finished_at).format("HH:mm DD/MM/YYYY")}
+            {/* Body */}
+            {listHistoryUserDisplay.map((taker, index) => {
+              const durationMinutes = Math.floor(
+                (new Date(taker.finished_at) - new Date(taker.started_at)) /
+                  60000
+              );
+              return (
+                <div key={index} className={cx("group-user")}>
+                  <div className={cx("username")}>{taker.username}</div>
+                  <div className={cx("email")}>{taker.email}</div>
+                  <div className={cx("score")}>{taker.score.toFixed(2)}</div>
+                  <div className={cx("finished_at")}>
+                    {dayjs(taker.finished_at).format("HH:mm DD/MM/YYYY")}
+                  </div>
+                  <div className={cx("duration")}>{durationMinutes} phút</div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className={cx("no-user")}>
             Chưa có thí sinh nào làm bài thi này!
           </div>
-        )
-      ) : null}
+        ))}
     </div>
   );
 }

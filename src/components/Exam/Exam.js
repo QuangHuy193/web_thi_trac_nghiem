@@ -49,7 +49,7 @@ function Exam({
       }
     };
     getExams();
-  }, [selectedSubject, searchValue]);
+  }, [selectedSubject, searchValue, setTitleLoading, setIsLoading]);
 
   // Xử lý khi người dùng click "Làm bài"
   const handleClickDoExam = (idExam, nameExam, timeExam, questionExam) => {
@@ -89,10 +89,13 @@ function Exam({
           exams.map((exam) => (
             <div key={exam.exam_id} className={cx("exam-card")}>
               {/* Tên đề thi */}
-              <h3 className={cx("exam-title")}>{exam.title}</h3>
+              <h3 className={cx("exam-title")}>📖 {exam.title}</h3>
 
               {/* Mô tả đề thi */}
-              <p className={cx("exam-description")}>{exam.description}</p>
+              <p className={cx("exam-description")}>📝 {exam.description}</p>
+
+              {/* Thời gian làm bài */}
+              <p className={cx("exam-time")}>⏱️ Thời gian: {exam.time} phút</p>
 
               {/* Nút làm bài */}
               <button
@@ -106,13 +109,12 @@ function Exam({
                   )
                 }
               >
-                Làm bài
+                🚀 Làm bài ngay
               </button>
             </div>
           ))
         ) : (
-          // Nếu không có đề thi
-          <div className={cx("no-content")}>Không có đề thi nào!</div>
+          <div className={cx("no-content")}>Không có bài thi nào cho môn học này!</div>
         )
       ) : null}
     </div>

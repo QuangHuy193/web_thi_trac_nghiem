@@ -82,19 +82,17 @@
 .username,
 .email,
 .score,
-.finished_at {
+.finished_at,
+.duration {
   flex: 1;
   font-size: 16px;
   padding: 0 8px;
   word-break: break-word;
 }
 
-.score {
+.score,
+.duration {
   text-align: center;
-}
-
-.finished_at {
-  text-align: right;
 }
 
 .no-user {
