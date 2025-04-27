@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretRight, faEdit, faTrash, faPlus,faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faCaretRight, faEdit, faTrash, faRightFromBracket,faChartBar } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
 import Swal from 'sweetalert2';
 import styles from './AdminPage.module.scss';
-import { getAllUsersAPI, deleteUserAPI } from '../../apis';
+import { getAllUsersAPI, deleteUserAPI, updateUserRoleAPI } from '../../apis/userApi.js';
 
 const cx = classNames.bind(styles);
 
@@ -22,6 +22,7 @@ function UserPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
+  const [updatingRoleId, setUpdatingRoleId] = useState(null); // State để theo dõi user đang được cập nhật role
 
   const toggleSubjectDropdown = () => {
     setIsSubjectDropdownOpen(!isSubjectDropdownOpen);
@@ -35,19 +36,19 @@ function UserPage() {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
 
-  //lay tat ca user
+  // Lấy tất cả user
   const fetchUsers = async () => {
     try {
       setLoading(true);
       const data = await getAllUsersAPI();
-      // loc role 
+      // Lọc role
       const validUsers = Array.isArray(data)
         ? data.filter(user => 
             user && 
             user.user_id && 
             user.username && 
             user.email && 
-            user.role.toLowerCase() === 'student' 
+            ['student', 'teacher'].includes(user.role.toLowerCase()) // Lọc cả student và teacher
           )
         : [];
       setUsers(validUsers);
@@ -68,7 +69,7 @@ function UserPage() {
     fetchUsers();
   }, []);
 
- //dang xuat
+  // Đăng xuất
   const handleClickLogout = () => {
     Swal.fire({
       title: 'Xác nhận đăng xuất',
@@ -81,13 +82,13 @@ function UserPage() {
       cancelButtonText: 'Hủy',
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.removeItem('token'); // xoa token
-        window.location.href = '/login'; // chuyen huong
+        localStorage.removeItem('token');
+        window.location.href = '/login'; 
       }
     });
   };
 
-  // handle xoa user
+  // Handle xóa user
   const handleDelete = async (user_id) => {
     const result = await Swal.fire({
       title: 'Xác nhận xóa',
@@ -134,8 +135,54 @@ function UserPage() {
 
   // Handle edit user (navigate to edit page)
   const handleEdit = (user_id) => {
-    // Navigate to the edit page
     window.location.href = `/admin/edit-user/${user_id}`;
+  };
+
+  // Handle thay đổi role
+  const handleChangeRole = async (user_id, currentRole) => {
+    const newRole = currentRole.toLowerCase() === 'student' ? 'teacher' : 'student';
+    
+    const result = await Swal.fire({
+      title: 'Xác nhận thay đổi quyền',
+      text: `Bạn có chắc muốn thay đổi quyền của người dùng này thành ${newRole === 'student' ? 'Học sinh' : 'Giáo viên'}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Thay đổi',
+      cancelButtonText: 'Hủy',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setUpdatingRoleId(user_id);
+        const response = await updateUserRoleAPI(user_id, newRole);
+        if (response.message && !response.message.toLowerCase().includes('lỗi')) {
+          await fetchUsers(); // Cập nhật lại danh sách người dùng
+          Swal.fire({
+            title: 'Thành công!',
+            text: `Đã thay đổi quyền thành ${newRole === 'student' ? 'Học sinh' : 'Giáo viên'}.`,
+            icon: 'success',
+            timer: 1500,
+          });
+        } else {
+          Swal.fire({
+            title: 'Lỗi!',
+            text: response.message || 'Không thể thay đổi quyền. Vui lòng thử lại.',
+            icon: 'error',
+          });
+        }
+      } catch (error) {
+        console.error('Lỗi khi thay đổi quyền:', error);
+        Swal.fire({
+          title: 'Lỗi!',
+          text: 'Có lỗi xảy ra, vui lòng thử lại!',
+          icon: 'error',
+        });
+      } finally {
+        setUpdatingRoleId(null);
+      }
+    }
   };
 
   return (
@@ -230,11 +277,17 @@ function UserPage() {
               )}
             </AnimatePresence>
           </li>
+          <li className={cx('menu-item')}>
+            <Link to="/admin/chart">
+              <FontAwesomeIcon icon={faChartBar} className="mr-2" />
+              Thống kê 
+            </Link>
+          </li>
         </ul>
       </aside>
 
       <main className={cx('main')}>
-      <div className={cx('header')}>
+        <div className={cx('header')}>
           <h1 className={cx('title')}>Danh sách người dùng</h1>
           <FontAwesomeIcon
             className={cx('logout')}
@@ -253,6 +306,7 @@ function UserPage() {
                   <th className={cx('table-header')}>ID</th>
                   <th className={cx('table-header')}>Tên người dùng</th>
                   <th className={cx('table-header')}>Email</th>
+                  <th className={cx('table-header')}>Quyền</th>
                   <th className={cx('table-header')}>Hành động</th>
                 </tr>
               </thead>
@@ -263,11 +317,14 @@ function UserPage() {
                     <td className={cx('table-cell')}>{user.username}</td>
                     <td className={cx('table-cell')}>{user.email}</td>
                     <td className={cx('table-cell')}>
+                      {user.role.toLowerCase() === 'student' ? 'Học sinh' : 'Giáo viên'}
+                    </td>
+                    <td className={cx('table-cell')}>
                       <Link to={`/admin/edit-user/${user.user_id}`}>
                         <button
                           className={cx('edit-btn')}
                           title="Sửa thông tin người dùng"
-                          disabled={deletingId === user.user_id}
+                          disabled={updatingRoleId === user.user_id || deletingId === user.user_id}
                         >
                           <FontAwesomeIcon icon={faEdit} />
                         </button>
@@ -276,10 +333,18 @@ function UserPage() {
                         className={cx('delete-btn')}
                         onClick={() => handleDelete(user.user_id)}
                         title="Xóa người dùng"
-                        disabled={deletingId === user.user_id}
+                        disabled={updatingRoleId === user.user_id || deletingId === user.user_id}
                       >
                         <FontAwesomeIcon icon={faTrash} />
                         {deletingId === user.user_id && <span>Đang xóa...</span>}
+                      </button>
+                      <button
+                        className={cx('edit-btn')}
+                        onClick={() => handleChangeRole(user.user_id, user.role)}
+                        title="Thay đổi quyền"
+                        disabled={updatingRoleId === user.user_id || deletingId === user.user_id}
+                      >
+                        {updatingRoleId === user.user_id ? 'Đang cập nhật...' : 'Thay đổi quyền'}
                       </button>
                     </td>
                   </tr>

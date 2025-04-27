@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretRight, faEdit, faTrash, faPlus,faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faCaretRight, faEdit, faTrash, faPlus,faRightFromBracket,faChartBar } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
 import Swal from 'sweetalert2';
 import styles from './AdminPage.module.scss';
-import { getAllSubjectsAPI, deleteSubjectAPI } from '../../apis';
+import { getAllSubjectsAPI, deleteSubjectAPI } from '../../apis/subjectApi';
 
 const cx = classNames.bind(styles);
 
@@ -214,6 +214,12 @@ function AdminPage() {
               )}
             </AnimatePresence>
           </li>
+                <li className={cx('menu-item')}>
+        <Link to="/admin/chart">
+          <FontAwesomeIcon icon={faChartBar} className="mr-2" />
+          Thống kê
+        </Link>
+        </li>
         </ul>
       </aside>
 

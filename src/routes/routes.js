@@ -12,6 +12,7 @@ import TeacherPage from "../pages/Admin/TeacherPage";
 import EditTeacherPage from "../pages/Admin/EditTeacherPage";
 import UserPage from "../pages/Admin/UserPage";
 import EditUserPage from "../pages/Admin/EditUserPage";
+import StatisticsPage from "../pages/Admin/StatisticsPage";
 const publicRoutes = [
   {
     path: "/",
@@ -71,6 +72,10 @@ const privateRoutes = [
   {
     path: "/admin/edit-user/:user_id",
     page: EditUserPage,
+  },
+  {
+    path: "/admin/chart",
+    page: StatisticsPage,
   },
 ];
 

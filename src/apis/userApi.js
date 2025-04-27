@@ -169,6 +169,21 @@ const deleteUserAPI = async (user_id) => {
   }
 };
 
+// cap nhat role của người dùng
+const updateUserRoleAPI = async (user_id, role) => {
+  try {
+    const response = await axios.put(`${API_URL}/users/${user_id}/role`, {
+      role,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return { message: "Có lỗi xảy ra khi cập nhật role, vui lòng thử lại!" };
+  }
+};
+
 export {
   loginAPI,
   loginGoogleAPI,
@@ -180,4 +195,5 @@ export {
   getAllUsersAPI,
   deleteTeacherAPI,
   getAllTeachersAPI,
+  updateUserRoleAPI
 };
