@@ -8,7 +8,6 @@ import Swal from 'sweetalert2';
 import styles from './AdminPage.module.scss';
 import Chart from 'chart.js/auto';
 import { getAllUsersAPI } from '../../apis/userApi';
-import axios from 'axios';
 
 const cx = classNames.bind(styles);
 

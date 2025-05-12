@@ -172,7 +172,7 @@ const deleteUserAPI = async (user_id) => {
 // cap nhat role của người dùng
 const updateUserRoleAPI = async (user_id, role) => {
   try {
-    const response = await axios.put(`${API_URL}/users/${user_id}/role`, {
+    const response = await axios.put(`${API_URL}/users/${user_id}`, {
       role,
     });
     return response.data;

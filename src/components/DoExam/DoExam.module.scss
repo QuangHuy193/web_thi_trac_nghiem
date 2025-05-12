@@ -1,5 +1,5 @@
 .container {
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
@@ -32,10 +32,19 @@
 }
 
 .card {
+  display: flex;
+  // TODO
+  flex-wrap: wrap;
   background: #fff;
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+// TODO
+.card > * {
+  flex: 0 0 50%;
+  box-sizing: border-box;
 }
 
 .question {
@@ -56,8 +65,13 @@
 
 .options {
   display: flex;
-  flex-direction: column;
   gap: 8px;
+}
+
+// TODO
+.options > * {
+  flex: 0 0 25%;
+  box-sizing: border-box;
 }
 
 .answer {
