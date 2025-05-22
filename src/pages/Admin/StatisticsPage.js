@@ -288,7 +288,7 @@ function StatisticsPage() {
           <li className={cx('menu-item')}>
             <Link to="/admin/chart" className={cx('active')}>
               <FontAwesomeIcon icon={faChartBar} className="mr-2" /> 
-               Thống kê 
+               Thống kê
             </Link>
           </li>
         </ul>
