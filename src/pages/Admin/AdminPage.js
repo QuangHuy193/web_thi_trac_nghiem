@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretRight, faEdit, faTrash, faPlus,faRightFromBracket,faChartBar } from '@fortawesome/free-solid-svg-icons';
+import { faCaretRight, faEdit, faTrash, faPlus,faRightFromBracket,faChartBar,faCheck } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames/bind';
 import Swal from 'sweetalert2';
 import styles from './AdminPage.module.scss';
@@ -249,6 +249,7 @@ function AdminPage() {
                 <tr>
                   <th className={cx('table-header')}>ID</th>
                   <th className={cx('table-header')}>Tên môn học</th>
+                  <th className={cx('table-header')}>Check</th>
                   <th className={cx('table-header')}>Hành động</th>
                 </tr>
               </thead>
@@ -257,6 +258,13 @@ function AdminPage() {
                   <tr key={subject.id}>
                     <td className={cx('table-cell')}>{subject.subject_id}</td>
                     <td className={cx('table-cell')}>{subject.name}</td>
+
+                    <td className={cx('table-cell')}>
+                       
+                    {subject.name.includes('n') && (
+    <FontAwesomeIcon icon={faCheck} />
+  )} </td>
+
                     <td className={cx('table-cell')}>
                       <Link to={`/admin/edit-subject/${subject.subject_id}`}>
                         <button

@@ -42,17 +42,16 @@ function StatisticsPage() {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
 
-  // Lấy danh sách người dùng và tính toán thống kê
+  //lay danh sach nguoi dung va tinh toan thong ke
   const fetchUsersAndCalculateStats = async () => {
     try {
       const year = new Date().getFullYear(); // 2025
       const month = new Date().getMonth(); // 3 (tháng 4, vì tháng bắt đầu từ 0)
-      const daysInMonth = new Date(year, month + 1, 0).getDate(); // Số ngày trong tháng
+      const daysInMonth = new Date(year, month + 1, 0).getDate(); // So ngay trong thang
       const labels = Array.from({ length: daysInMonth }, (_, i) => `Ngày ${i + 1}`);
-      const data = Array(daysInMonth).fill(0); // Mảng để lưu số tài khoản mỗi ngày
+      const data = Array(daysInMonth).fill(0); //mang luu so tai khoan 
       let totalUsersInMonth = 0;
 
-      // Gọi API mà không gửi token, để cookie tự động được gửi
       console.log('Gửi yêu cầu tới API /users (không gửi token)');
       const users = await getAllUsersAPI();
       console.log('Dữ liệu trả về từ API /users:', users);
@@ -109,12 +108,12 @@ function StatisticsPage() {
     }
   };
 
-  // Gọi API khi component mount
+  // goi api khi component mount
   useEffect(() => {
     fetchUsersAndCalculateStats();
   }, []);
 
-  // Hàm khởi tạo biểu đồ
+  // ham khoi tao bieu do
   useEffect(() => {
     if (!loading && stats.usersPerDay.labels.length > 0) {
       const ctx = document.getElementById('userChart')?.getContext('2d');
@@ -295,30 +294,6 @@ function StatisticsPage() {
         </ul>
       </aside>
 
-      <main className={cx('main')}>
-        <div className={cx('header')}>
-          <h1 className={cx('title')}>Thống kê</h1>
-          <FontAwesomeIcon
-            className={cx('logout')}
-            icon={faRightFromBracket}
-            onClick={handleClickLogout}
-            title="Đăng xuất"
-          />
-        </div>
-        <div className={cx('section')}>
-          {loading ? (
-            <p className={cx('no-data')}>Đang tải dữ liệu...</p>
-          ) : (
-            <>
-              <OverviewStats />
-              <div className={cx('bg-white', 'p-6', 'rounded-lg', 'shadow')}>
-                <h2 className="text-xl font-semibold mb-4">Số tài khoản được tạo trong tháng</h2>
-                <canvas id="userChart" className="w-full h-96"></canvas>
-              </div>
-            </>
-          )}
-        </div>
-      </main>
     </div>
   );
 }
